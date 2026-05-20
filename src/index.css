@@ -1,0 +1,83 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+hr {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+input,
+button,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:root {
+  /* --- PALETA PRINCIPAL DEL NUEVO DISEÑO --- */
+  --color-azul: #1b326b;
+  --color-blanco: #ffffff;
+  --color-gris-oscuro: #4d4d4d;
+  --color-gris: #464a5e;
+
+  --alert1-color: #e30513;
+  --alert2-color: #054321;
+  --alert3-color: #ff9e15;
+  --alert4-color: #022c5b;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+/* por defecto sin header (landing) */
+.app-main {
+  width: 100%;
+}
+
+/* cuando hay PrincipalHeader fixed */
+.app-main--with-header {
+
+  padding-top: calc(2.8em + 2.8rem);
+}
+
+
+
+/* Versión mobile: topbar más baja + navbar 3.5rem */
+/* @media (max-width: 768px) {
+  .app-main--with-header {
+    padding-top: 8.5rem; 
+  }
+} */

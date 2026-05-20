@@ -1,0 +1,672 @@
+/* ============================
+   VALIDACION PAGO - EDUKA STYLE
+   (MISMO LOOK que Secretaria.css)
+   ============================ */
+
+:root {
+  --edukaBlue: #1b326b;
+  --edukaBlue2: #0f2a63;
+  --edukaAccent: #ffb703;
+  --edukaDanger: #c0392b;
+  --headerOffset: 9rem;
+}
+
+.secPage {
+  width: 100%;
+}
+
+/* Overlay mobile */
+.secOverlay {
+  display: none;
+}
+
+.secShell.vpShell {
+  width: 100%;
+  min-height: calc(100dvh - var(--headerOffset));
+  padding-top: 1.2rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  position: relative;
+  background: #ffffff;
+}
+
+/* ============================
+   MENU
+   ============================ */
+.secMenu {
+  position: sticky;
+  top: calc(var(--headerOffset) + 1rem);
+  height: calc(100dvh - var(--headerOffset) - 2rem);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.08);
+  padding-top: 0;
+  transition: transform 0.25s ease;
+}
+
+.secMenuHeader {
+  padding: 1.4rem 1.2rem 1rem;
+  background: linear-gradient(180deg, rgba(27, 50, 107, 0.08), transparent);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.secMenuLogo {
+  width: 7rem;
+  display: block;
+  margin: 0 auto 0.4rem;
+}
+
+.secMenuSubtitle {
+  margin: 0;
+  color: #4d4d4d;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.secMenuBtn {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #2e2e2e;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.secMenuBtn:hover {
+  background-color: rgba(27, 50, 107, 0.08);
+  color: var(--edukaBlue);
+}
+
+.secMenuBtn.active {
+  background-color: rgba(27, 50, 107, 0.12);
+  color: var(--edukaBlue);
+  border-left-color: var(--edukaAccent);
+}
+
+/* ============================
+   HAMBURGER
+   ============================ */
+.secHamburger {
+  position: fixed;
+  left: 0.2rem;
+  top: 7rem;
+  z-index: 120;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+.secHamburgerLine {
+  height: 3px;
+  background: var(--edukaBlue);
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.secHamburger.is-open .secHamburgerLine:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+.secHamburger.is-open .secHamburgerLine:nth-child(2) {
+  opacity: 0;
+}
+.secHamburger.is-open .secHamburgerLine:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ============================
+   CONTENT
+   ============================ */
+.secContent.vpContent {
+  padding: 0 1rem 2.5rem 0;
+  overflow-y: auto;
+}
+
+/* Card */
+.secCard {
+  position: relative;
+  width: min(1250px, 100%);
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  overflow: hidden;
+  animation: secFade 0.35s ease both;
+}
+
+.secCard::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 55%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.secCardHeader {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.2rem;
+}
+
+.secTitle {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--edukaBlue);
+  display: inline-block;
+  padding-bottom: 0.35rem;
+  border-bottom: 3px solid var(--edukaAccent);
+}
+
+.secEmpty {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-weight: 800;
+  padding: 1rem;
+  font-size: 1.05rem;
+  color: #555;
+}
+
+/* ============================
+   FILTERS / INPUTS
+   ============================ */
+.secFilters {
+  position: relative;
+  z-index: 1;
+  margin: 1rem 0 1.2rem;
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.vpFiltersRow {
+  background: rgba(27, 50, 107, 0.06);
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.9rem;
+  border-radius: 1rem;
+}
+
+.secInputGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  max-width: 100%;
+  gap: 0.35rem;
+}
+
+.vpLbl {
+  font-weight: 900;
+  color: var(--edukaBlue);
+  font-size: 0.85rem;
+}
+
+.secInput {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 2px solid rgba(27, 50, 107, 0.65);
+  border-radius: 0.9rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.2s ease;
+  background: #fff;
+  color: #222;
+}
+
+.secInput:focus {
+  border-color: var(--edukaAccent);
+  box-shadow: 0 0 0 4px rgba(255, 183, 3, 0.18);
+}
+
+.secBtnPrimary {
+  background: var(--edukaBlue2);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.1rem;
+  border-radius: 0.9rem;
+  cursor: pointer;
+  font-weight: 900;
+  box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  height: 44px;
+}
+
+.secBtnPrimary:hover {
+  background: #081a3f;
+  transform: translateY(-2px);
+}
+
+.secBtnDanger {
+  background: var(--edukaDanger);
+  border: none;
+  color: white;
+  padding: 0.7rem 1.1rem;
+  font-weight: 900;
+  border-radius: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  height: 44px;
+  box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.15);
+}
+
+.secBtnDanger:hover {
+  background: #962d22;
+  transform: translateY(-2px);
+}
+
+.vpTrashBtn {
+  height: 44px;
+  white-space: nowrap;
+}
+
+.vpInfo,
+.vpInfoDanger {
+  position: relative;
+  z-index: 1;
+  margin: 0.6rem 0 1rem;
+  font-weight: 900;
+  color: var(--edukaBlue);
+}
+
+.vpInfoDanger {
+  color: #f91118;
+}
+
+.vpInfoOk {
+  color: #198754;
+  font-weight: 900;
+}
+
+/* ============================
+   TABLE
+   ============================ */
+/* Wrapper con scroll ARRIBA */
+.secTableWrap {
+  position: relative;
+  z-index: 1;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  /* 🔑 truco */
+  transform: rotateX(180deg);
+
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.secTable {
+  width: 100%;
+  min-width: 1100px; /* fuerza scroll */
+  border-collapse: collapse;
+
+  /* 🔑 corrige la inversión */
+  transform: rotateX(180deg);
+}
+
+.secTableWrap::-webkit-scrollbar {
+  height: 10px;
+}
+
+.secTableWrap::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+}
+
+.secTableWrap::-webkit-scrollbar-thumb {
+  background: var(--edukaBlue2);
+  border-radius: 999px;
+}
+
+.secTableWrap::-webkit-scrollbar-thumb:hover {
+  background: #081a3f;
+}
+
+
+.secTable {
+  width: 100%;
+  min-width: 1100px;
+  border-collapse: collapse;
+  color: #222;
+}
+
+.secTable th,
+.secTable td {
+  padding: 10px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.secTable th {
+  background: var(--edukaBlue2);
+  color: #fff;
+  font-weight: 900;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.secTable tr:nth-child(even) {
+  background-color: rgba(232, 234, 239, 0.55);
+}
+
+.vpThSortable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.vpTdWrap {
+  white-space: normal !important;
+  max-width: 5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.vpLink {
+  color: #0a58ca;
+  font-weight: 900;
+  text-decoration: underline;
+  font-size: 0.78rem;
+}
+.vpLink:hover {
+  text-decoration: none;
+  color: #073f93;
+}
+
+.vpMiniInput {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.8rem;
+  border: 2px solid rgba(27, 50, 107, 0.35);
+  outline: none;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.vpMiniInput:focus {
+  border-color: var(--edukaAccent);
+  box-shadow: 0 0 0 4px rgba(255, 183, 3, 0.18);
+}
+
+.vpMiniSelect {
+  font-size: 0.85rem;
+  padding: 0.55rem 0.75rem;
+}
+
+/* Botones tabla (los tuyos, pero armonizados) */
+.vp-btn-edit,
+.vp-btn-save,
+.vp-btn-cancel {
+  padding: 6px 8px;
+  font-size: 0.5rem !important;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  margin-right: 6px;
+  font-weight: 700;
+  transition: 0.15s ease;
+}
+
+.vp-btn-edit {
+  background: var(--edukaBlue2);
+  color: #fff;
+}
+.vp-btn-edit:hover {
+  background: #081a3f;
+  transform: translateY(-1px);
+}
+
+.vp-btn-save {
+  background: #2e7d32;
+  color: #fff;
+}
+.vp-btn-save:hover {
+  background: #225522;
+  transform: translateY(-1px);
+}
+
+.vp-btn-cancel {
+  background: #b00020;
+  color: #fff;
+}
+.vp-btn-cancel:hover {
+  background: #7a0013;
+  transform: translateY(-1px);
+}
+
+.vpBtnSmall {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* ============================
+   RESUMEN (cards)
+   ============================ */
+.vpResumenGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.vpStatCard {
+  background: rgba(232, 234, 239, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1.2rem;
+  padding: 1.2rem 1.3rem;
+  box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.08);
+}
+
+.vpStatLabel {
+  font-weight: 900;
+  color: #111;
+  margin-bottom: 0.4rem;
+}
+
+.vpStatValue {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  font-weight: 900;
+}
+
+.vpStatMain {
+  font-size: 1.8rem;
+  color: var(--edukaBlue2);
+}
+
+.vpStatSep {
+  color: #7a7a7a;
+  font-size: 1.3rem;
+}
+
+.vpStatOk {
+  font-size: 1.8rem;
+  color: #2e7d32;
+}
+
+/* ============================
+   MODAL (mantengo el tuyo)
+   ============================ */
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.user_delete_content {
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
+  padding: 2em;
+  border-radius: 1em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 25em;
+  text-align: center;
+  font-size: 1.1em;
+  color: #333;
+  z-index: 1000;
+}
+
+.btn_content {
+  margin-top: 1.5em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.btn {
+  padding: 0.6em 1.4em;
+  font-size: 1em;
+  border: none;
+  border-radius: 0.5em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn.yes {
+  background-color: #e53935;
+  color: white;
+}
+
+.btn.no {
+  background-color: #b0bec5;
+  color: #263238;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+
+/* ============================
+   ANIM
+   ============================ */
+@keyframes secFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+@media (max-width: 768px) {
+  .secShell.vpShell {
+    grid-template-columns: 1fr;
+    padding-top: 1rem;
+  }
+
+  .secHamburger {
+    display: flex;
+  }
+
+  .secOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 110;
+  }
+
+  .secOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .secMenu {
+    position: fixed;
+    top: var(--headerOffset);
+    left: 0;
+    height: calc(100dvh - var(--headerOffset));
+    width: 82%;
+    max-width: 320px;
+    transform: translateX(-110%);
+    z-index: 115;
+    border-radius: 0 1.2rem 1.2rem 0;
+  }
+
+  .secMenu.open {
+    transform: translateX(0);
+  }
+
+  .secContent.vpContent {
+    padding: 0 1rem 2.5rem 1rem;
+  }
+
+  .secCard {
+    padding: 1.4rem 1.1rem;
+    border-radius: 1.1rem;
+  }
+
+  .secTitle {
+    font-size: 1.5rem;
+  }
+
+  .secFilters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .secInputGroup {
+    width: 100%;
+  }
+
+  .vpResumenGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,132 @@
+/* Página */
+.verifyPage {
+  width: 100%;
+}
+
+/* Contenedor general */
+.verifyContainer {
+  min-height: calc(100dvh - 9rem);
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem 3rem;
+}
+
+/* Tarjeta */
+.verifyCard {
+  width: min(520px, 92%);
+  padding: 2.4rem 2rem;
+  border-radius: 1.4rem;
+  backdrop-filter: blur(6px);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Marca de agua EDUKA */
+.verifyCard::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 48%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* Icono */
+.verifyIcon {
+  width: 120px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Título */
+.verifyTitle {
+  position: relative;
+  z-index: 1;
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 0.7rem;
+}
+
+.verifyTitle.success {
+  color: #1b326b;
+}
+
+.verifyTitle.error {
+  color: #c0392b;
+}
+
+/* Texto */
+.verifyText {
+  position: relative;
+  z-index: 1;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #4d4d4d;
+  line-height: 1.6;
+  margin-bottom: 1.6rem;
+}
+
+/* Botón */
+.verifyBtn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 0.9rem;
+  border: none;
+  background-color: #0f2a63;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.verifyBtn span {
+  font-size: 1.2rem;
+}
+
+.verifyBtn:hover {
+  background-color: #081a3f;
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.35);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .verifyContainer {
+    min-height: calc(100dvh - 8.5rem);
+    padding: 1.6rem 1rem 2.5rem;
+  }
+
+  .verifyCard {
+    padding: 1.6rem 1.2rem;
+    border-radius: 1.1rem;
+  }
+
+  .verifyTitle {
+    font-size: 1.4rem;
+  }
+
+  .verifyText {
+    font-size: 0.95rem;
+  }
+
+  .verifyIcon {
+    width: 90px;
+  }
+
+  .verifyBtn {
+    width: 100%;
+  }
+}

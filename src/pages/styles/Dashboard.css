@@ -1,0 +1,153 @@
+/* ============================
+   DASHBOARD - EDUKA STYLE
+   (Mismo formato que Secretaria)
+   ============================ */
+
+:root {
+  --edukaBlue: #1b326b;
+  --edukaBlue2: #0f2a63;
+  --edukaAccent: #ffb703;
+  --edukaDanger: #c0392b;
+  --headerOffset: 9rem; /* ajusta si tu header es más alto */
+}
+
+.dashPage {
+  width: 100%;
+}
+
+/* Reutiliza overlay de Secretaria (mismo nombre) */
+.secOverlay {
+  display: none;
+}
+
+/* Shell: mismo grid de Secretaria */
+.dashShell {
+  background: #ffffff;
+}
+
+
+
+/* Labels para filtros */
+.dashLabel {
+  font-weight: 900;
+  color: #2e2e2e;
+  font-size: 0.85rem;
+}
+
+/* Filtros: ya hereda secFilters, secInputGroup, secInput */
+.dashFilters .secInputGroup {
+  width: 240px;
+  max-width: 100%;
+}
+
+/* Summary */
+.dashSummaryGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 0.7rem;
+}
+
+.dashSummaryCard {
+  background: rgba(232, 234, 239, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1.2rem;
+  padding: 1.2rem 1.3rem;
+  box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.08);
+  color: #111;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.dashSummaryCard h3 {
+  margin: 0;
+  font-weight: 900;
+  color: var(--edukaBlue);
+}
+
+.dashBigNumber {
+  margin: 0.6rem 0 0;
+  font-size: 2.4rem;
+  font-weight: 1000;
+  color: var(--edukaBlue2);
+}
+
+.dashSummary2 {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+/* Caja de gráficos con estilo Eduka */
+.dashChartBox {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1.2rem;
+  padding: 1.1rem 1.1rem;
+  box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.dashChartTitle {
+  margin: 0 0 0.8rem;
+  font-weight: 1000;
+  color: #111;
+}
+
+/* Totales debajo del pie chart */
+.dashTotalsBox {
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.dashHelp {
+  margin: 0.35rem 0 0;
+  color: #555;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+/* Nota: recharts mete SVG; esto suaviza un poco */
+.dashChartBox svg {
+  overflow: visible;
+}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+@media (max-width: 768px) {
+  /* reusamos el responsive de Secretaria, pero por si acaso: */
+  .dashSummary2 {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dashFilters .secInputGroup {
+    width: 100%;
+  }
+
+  /* Overlay */
+  .secOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 110;
+  }
+
+  .secOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

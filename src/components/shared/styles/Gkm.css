@@ -1,0 +1,53 @@
+.gkm_overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* fondo semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.gkm_container {
+  position: relative;
+  text-align: center;
+}
+
+.gkm_img {
+  width: 30em;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border-radius: 0.5em;
+}
+
+.gkm_img:hover {
+  transform: scale(1.05);
+}
+
+.gkm_close {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #fff;
+  color: #000;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s;
+}
+
+.gkm_close:hover {
+  background: #f44336;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .gkm_img {
+    width: 20em;
+  }
+}

@@ -1,0 +1,488 @@
+/* ===== INSTITUTO STYLE (similar a Home) ===== */
+
+:root {
+  --appHeaderOffset: 9rem;
+  --edukaBlue: #1b326b;
+  --edukaBlue2: #0f2a63;
+  --edukaGray: #3a4156;
+  --edukaAccent: #ffb703;
+}
+
+.institutoPage {
+  width: 100%;
+  overflow-x: hidden; /* ✅ evita que algo empuje el layout */
+}
+
+/* ✅ SUPER IMPORTANTE en grid: permite que el contenido se encoja */
+.institutoShell {
+  width: 100%;
+  min-height: calc(100dvh - var(--appHeaderOffset));
+  padding-top: 1.2rem;
+  display: grid;
+
+  /* ✅ antes: 280px 1fr (puede causar overflow)
+     ahora: el 1fr puede encogerse sin empujar */
+  grid-template-columns: 280px minmax(0, 1fr);
+
+  gap: 1.5rem;
+  position: relative;
+  background: #ffffff;
+
+  /* ✅ evita “ancho fantasma” por hijos */
+  overflow-x: hidden;
+}
+
+/* ✅ también clave: que estos contenedores puedan encogerse */
+.institutoContent,
+.institutoCard,
+.instTableWrapper {
+  min-width: 0;
+}
+
+/* ===== MENU ===== */
+.institutoMenu {
+  position: sticky;
+  top: 1rem;
+  height: calc(100dvh - var(--appHeaderOffset) - 2rem);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.08);
+}
+
+.institutoMenuHeader {
+  padding: 1.4rem 1.2rem 1rem;
+  background: linear-gradient(180deg, rgba(27, 50, 107, 0.08), transparent);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.institutoMenuLogo {
+  width: 7rem;
+  display: block;
+  margin: 0 auto 0.4rem;
+}
+
+.institutoMenuSubtitle {
+  margin: 0;
+  color: #4d4d4d;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.institutoMenuBtn {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2e2e2e;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.institutoMenuBtn:hover {
+  background-color: rgba(27, 50, 107, 0.08);
+  color: var(--edukaBlue);
+}
+
+.institutoMenuBtn.active {
+  background-color: rgba(27, 50, 107, 0.12);
+  color: var(--edukaBlue);
+  border-left-color: var(--edukaAccent);
+}
+
+/* ===== CONTENT ===== */
+.institutoContent {
+  padding: 0 1rem 2.5rem 0;
+}
+
+/* ✅ antes: width: 90% (puede generar comportamientos raros en mobile)
+   ahora: 100% + centrado */
+.institutoCard {
+  position: relative;
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  overflow: hidden;
+  animation: homeFade 0.35s ease both;
+}
+
+/* watermark */
+.institutoCard::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 55%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.institutoCardHeader {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.2rem;
+}
+
+.institutoTitle {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--edukaBlue);
+  display: inline-block;
+  padding-bottom: 0.35rem;
+  border-bottom: 3px solid var(--edukaAccent);
+}
+
+.institutoDescription {
+  position: relative;
+  z-index: 1;
+  color: #4d4d4d;
+  font-weight: 700;
+  line-height: 1.8;
+  margin-top: 0.4rem;
+}
+
+.institutoMuted {
+  position: relative;
+  z-index: 1;
+  color: #6b6f7b;
+  font-weight: 700;
+}
+
+/* ===== Tabla ===== */
+.instTableWrapper {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.2rem;
+
+  /* ✅ esto es lo que debe hacer scroll */
+  overflow-x: auto;
+
+  /* ✅ ayuda en iOS */
+  -webkit-overflow-scrolling: touch;
+
+  /* ✅ evita que “salte” el ancho por algo interno */
+  max-width: 100%;
+}
+
+/* ✅ Para que la tabla pueda ser más ancha sin romper el layout */
+.instTable {
+  width: 100%;
+  min-width: 720px; /* ✅ fuerza scroll horizontal en mobile si hace falta */
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: rgba(232, 234, 239, 0.6);
+  border-radius: 0.9rem;
+  overflow: hidden;
+}
+
+.instTable thead {
+  background: rgba(27, 50, 107, 0.08);
+}
+
+.instTable th,
+.instTable td {
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  text-align: left;
+
+  /* ✅ evita que textos larguísimos rompan celdas */
+  max-width: 0;
+}
+
+.instTable th {
+  font-weight: 800;
+  color: #2f2f2f;
+  font-size: 0.9rem;
+}
+
+.instTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.instCheckCell {
+  width: 42px;
+  text-align: center;
+}
+
+.instCheckCell input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* ✅ tu archivo puede venir MUY largo (URLs, etc.) */
+.instFileName {
+  font-weight: 700;
+
+  /* ✅ rompe palabras largas y evita overflow */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Botón ver */
+.instBtnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--edukaBlue2);
+  background: #ffffff;
+  color: var(--edukaBlue2);
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.instBtnOutline:hover {
+  background: var(--edukaBlue2);
+  color: #ffffff;
+  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.18);
+}
+
+/* Acciones */
+.instActions {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.instPrimaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.2rem;
+  border-radius: 0.9rem;
+  background: var(--edukaBlue2);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.instPrimaryBtn:hover:not(:disabled) {
+  background: #081a3f;
+  transform: translateY(-2px);
+}
+
+.instPrimaryBtn:disabled {
+  background: #a3a8b4;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.instSelectedInfo {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #6b6f7b;
+}
+
+/* JSON preview */
+.instJsonPreview {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  padding: 1rem 1rem;
+  border-radius: 0.9rem;
+  background: rgba(232, 234, 239, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: auto;
+  font-weight: 700;
+  color: #2e2e2e;
+
+  /* ✅ por si JSON trae líneas larguísimas */
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Upload */
+.instUploadForm {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.instFileLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-weight: 800;
+  color: #3a4156;
+}
+
+.instFileInput {
+  padding: 0.6rem 0.7rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(232, 234, 239, 0.6);
+  font-size: 0.9rem;
+}
+
+.instFileInput::-webkit-file-upload-button {
+  padding: 0.45rem 0.9rem;
+  margin-right: 0.7rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--edukaBlue2);
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.instFileNamePreview {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #4d4d4d;
+
+  /* ✅ nombres largos */
+  overflow-wrap: anywhere;
+}
+
+/* Anim */
+@keyframes homeFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Hamburger Mobile ===== */
+.institutoHamburger {
+  position: fixed;
+  left: 0.2rem;
+  top: 7rem;
+  z-index: 120;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+.institutoHamburgerLine {
+  height: 3px;
+  background: var(--edukaBlue);
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.institutoHamburger.is-open .institutoHamburgerLine:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+.institutoHamburger.is-open .institutoHamburgerLine:nth-child(2) {
+  opacity: 0;
+}
+.institutoHamburger.is-open .institutoHamburgerLine:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+.institutoOverlay {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  /* ✅ por si algún hijo se pasa, lo cortamos */
+  body { overflow-x: hidden; }
+
+  .institutoShell {
+    grid-template-columns: 1fr;
+    padding-top: 1rem;
+  }
+
+  .institutoHamburger {
+    display: flex;
+  }
+
+  .institutoOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 110;
+  }
+
+  .institutoOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .institutoMenu {
+    position: fixed;
+    top: var(--appHeaderOffset);
+    left: 0;
+    height: calc(100dvh - var(--appHeaderOffset));
+    width: 82%;
+    max-width: 320px;
+    transform: translateX(-110%);
+    transition: transform 0.25s ease;
+    z-index: 115;
+    border-radius: 0 1.2rem 1.2rem 0;
+  }
+
+  .institutoMenu.open {
+    transform: translateX(0);
+  }
+
+  .institutoContent {
+    padding: 0 1rem 2.5rem 1rem;
+  }
+
+  .institutoCard {
+    padding: 1.4rem 1.1rem;
+    border-radius: 1.1rem;
+  }
+
+  .institutoTitle {
+    font-size: 1.5rem;
+  }
+
+  .instPrimaryBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ✅ si el JSON preview era el culpable, aquí lo aseguramos */
+  .instJsonPreview {
+    max-width: 100%;
+  }
+}

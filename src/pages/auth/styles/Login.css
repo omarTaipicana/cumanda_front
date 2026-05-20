@@ -1,0 +1,332 @@
+/* ====== PAGE WRAP (respeta header fijo) ====== */
+.login_page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* shell con marca de agua estilo landing */
+.login_shell {
+  width: 92%;
+  position: relative;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 2.2rem;
+}
+
+/* marca de agua */
+.login_shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 45%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* tarjeta interna */
+.login_card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  backdrop-filter: blur(4px);
+  border-radius: 1.4rem;
+}
+
+/* ===== HEADERS ===== */
+.login_header,
+.profile_header {
+  text-align: center;
+  margin-bottom: 1.6rem;
+}
+
+.login__title,
+.profile_title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1b326b;
+  margin: 0;
+}
+
+.login_subtitle,
+.profile_subtitle {
+  margin: 0.8rem auto 0;
+  max-width: 44rem;
+  color: #3e4352;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* ====== LOGIN FORM ====== */
+.login_wrap {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.form__login {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.label__form__login {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.span__form__login {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #3a4156;
+}
+
+.input__form__login {
+  width: 100%;
+  border: none;
+  border-radius: 0.9rem;
+  background-color: #e8eaef;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
+  color: #333333;
+  outline: none;
+  text-align: center;
+}
+
+.input__form__login:focus {
+  outline: 0.15rem solid rgba(27, 50, 107, 0.25);
+}
+
+.password_row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #e8eaef;
+  border-radius: 0.9rem;
+  padding: 0.25rem 0.4rem;
+}
+
+.input__form__login--password {
+  background: transparent;
+  padding: 0.85rem 0.9rem;
+  border-radius: 0.8rem;
+}
+
+.toggle_pass {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.7rem;
+}
+
+.toggle_pass:hover {
+  background: rgba(27, 50, 107, 0.08);
+}
+
+.img__show {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.login_link {
+  text-align: center;
+  color: #1b326b;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 0.3rem;
+}
+
+.login_link:hover {
+  text-decoration: underline;
+}
+
+/* ===== BUTTONS (mismo estilo landing) ===== */
+.btn_primary_full {
+  width: 100%;
+  margin-top: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0.9rem;
+  border: none;
+  background-color: #0f2a63;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.btn_primary_full:hover {
+  background-color: #081a3f;
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+.btn_primary {
+  margin-top: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.4rem;
+  border-radius: 0.9rem;
+  border: none;
+  background-color: #0f2a63;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.btn_primary:hover {
+  background-color: #081a3f;
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.28);
+}
+
+.btn_secondary {
+  margin: 1.6rem auto 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.2rem;
+  border-radius: 0.9rem;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: #3a4156;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn_secondary:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.btn_arrow {
+  font-size: 1.2rem;
+}
+
+/* ====== PROFILE FORM (cuando ya está logueado) ====== */
+.profile_wrap {
+  width: 100%;
+}
+
+.form__user__info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 1.2rem;
+}
+
+.form__user__seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.label__user__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.span__user__info {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #3a4156;
+}
+
+.input__form__info {
+  width: 100%;
+  border: none;
+  border-radius: 0.9rem;
+  background-color: #e8eaef;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  color: #333333;
+  outline: none;
+}
+
+.input__form__info:focus {
+  outline: 0.15rem solid rgba(27, 50, 107, 0.25);
+}
+
+/* select para que se vea igual */
+select.input__form__info {
+  appearance: none;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .login_page {
+    padding: 1.2rem 0 3rem;
+  }
+
+  .login_shell {
+    width: 94%;
+    padding: 1.2rem;
+    border-radius: 1.2rem;
+  }
+
+  .login_shell::before {
+    background-size: 85%;
+  }
+
+  .login_card {
+    padding: 1.2rem;
+    border-radius: 1.1rem;
+  }
+
+  .login__title,
+  .profile_title {
+    font-size: 1.8rem;
+  }
+
+  .login_subtitle,
+  .profile_subtitle {
+    font-size: 0.95rem;
+  }
+
+  .input__form__login,
+  .input__form__info {
+    font-size: 0.95rem;
+    padding: 0.95rem 1rem;
+  }
+
+  .btn_primary_full {
+    font-size: 1.05rem;
+  }
+  .form__user__info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* 2) Manda el botón al final del formulario (aunque esté en el article del medio) */
+  .form__user__info .btn_primary {
+    grid-row: 12; /* último */
+    width: 100%;
+    justify-self: stretch;
+    margin-top: 0.6rem;
+  }
+  .form__user__seccion {
+    display: contents;
+  }
+}

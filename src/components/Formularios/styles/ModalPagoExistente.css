@@ -1,0 +1,151 @@
+.modal_pago_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1em; /* para que no toque bordes en móvil */
+  overflow-y: auto; /* scroll si hay muchos pagos */
+}
+
+.modal_pago_content {
+  background: #ffffff;
+  color: #003366;
+  width: 100%;
+  max-width: 600px; /* más ancho para aprovechar espacio */
+  max-height: 90vh; /* altura máxima para no tapar toda la pantalla */
+  padding: 2em;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 140, 255, 0.4);
+  overflow-y: auto; /* scroll interno si hay muchos pagos */
+  display: flex;
+  flex-direction: column;
+}
+
+.modal_pago_content h2 {
+  margin-bottom: 1em;
+  color: #0077cc;
+  font-size: 1.5em;
+  flex-shrink: 0;
+}
+
+.modal_pago_content p {
+  font-size: 1em;
+  margin-bottom: 0.7em;
+}
+
+.pago_item {
+  text-align: left;
+  padding: 0.8em 1em;
+  border: 1px solid #0077cc33;
+  border-radius: 8px;
+  margin-bottom: 1em;
+  background: #f0f8ff;
+}
+
+.pago_item p {
+  margin: 0.3em 0;
+}
+
+.modal_pago_ver_imagen {
+  display: inline-block;
+  margin-top: 0.6em;
+  background-color: #00aaff;
+  color: white;
+  padding: 0.4em 1em;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  font-size: 0.9em;
+}
+
+.modal_pago_ver_imagen:hover {
+  background-color: #008fcc;
+}
+
+.modal_pago_botones {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  margin-top: auto; /* pega abajo */
+  flex-wrap: wrap;
+}
+
+.modal_pago_cerrar,
+.modal_pago_nuevo {
+  padding: 0.5em 1.2em;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border: none;
+  font-size: 1em;
+  flex: 1 1 140px; /* ancho mínimo, crece con espacio */
+  max-width: 180px; /* tamaño máximo */
+  white-space: nowrap;
+  user-select: none;
+}
+
+.modal_pago_cerrar {
+  background-color: #cccccc;
+  color: #333333;
+}
+
+.modal_pago_cerrar:hover {
+  background-color: #aaaaaa;
+}
+
+.modal_pago_nuevo {
+  background-color: #0077cc;
+  color: white;
+}
+
+.modal_pago_nuevo:hover {
+  background-color: #005fa3;
+}
+
+/* Responsive */
+
+@media (max-width: 480px) {
+  .modal_pago_content {
+    max-width: 100%;
+    padding: 1.5em;
+    font-size: 0.95em;
+    max-height: 80vh;
+  }
+
+  .modal_pago_content h2 {
+    font-size: 1.3em;
+  }
+
+  .modal_pago_ver_imagen {
+    font-size: 0.85em;
+    padding: 0.5em 0.8em;
+  }
+
+  .modal_pago_cerrar,
+  .modal_pago_nuevo {
+    max-width: 100%;
+    flex: none;
+    width: 100%;
+    padding: 0.8em 0;
+    font-size: 1em;
+  }
+
+  .modal_pago_botones {
+    flex-direction: column;
+    gap: 0.8em;
+    margin-top: 1.5em;
+  }
+
+  .pago_item {
+    padding: 0.7em 0.8em;
+  }
+}

@@ -1,0 +1,119 @@
+.ul_footer {
+  background: linear-gradient(180deg, #1b326b, #4d4d4d);
+  color: white;
+  display: flex;
+  justify-content: right;
+  gap: 2em;
+  width: 100%;
+  height: 2.2em;
+  position: fixed;
+  bottom: 0;
+  z-index: 10000;
+}
+
+.li_footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+  list-style: none;
+  margin-right: 1em;
+}
+
+.li_footer_icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5em;
+  list-style: none;
+}
+
+.li_footer_icon a img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.li_footer_icon a img:hover {
+  transform: scale(1.25);
+}
+
+.link_footer {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.img_footer {
+  height: 3vh;
+  filter: invert(1);
+}
+.img_footer_c {
+  height: 2vh;
+  filter: invert(1);
+}
+
+.span_footer {
+  font-size: 0.7em;
+  margin-top: 0.7em;
+}
+
+
+@media (max-width: 768px) {
+  .ul_footer {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    padding: 1em 0;
+    gap: 1em;
+    position: static; /* Para que no esté fijo en móviles */
+  }
+
+  .li_footer,
+  .li_footer_icon {
+    justify-content: center;
+    gap: 1em;
+  }
+
+  .li_footer_icon a img {
+    height: 4vh; /* iconos un poco más grandes en móvil */
+  }
+
+  .img_footer {
+    height: 4vh;
+  }
+
+  .img_footer_c {
+    height: 3vh;
+  }
+
+  .span_footer {
+    font-size: 0.85em;
+    margin-top: 0.3em;
+    text-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .ul_footer {
+    padding: 0.5em 0;
+    gap: 0.7em;
+  }
+
+  .li_footer_icon a img {
+    height: 3vh;
+  }
+
+  .img_footer {
+    height: 3vh;
+  }
+
+  .img_footer_c {
+    height: 2.5vh;
+  }
+
+  .span_footer {
+    font-size: 0.75em;
+  }
+}

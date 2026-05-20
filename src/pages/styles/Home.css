@@ -1,0 +1,525 @@
+/* ===== HOME EDUKA STYLE ===== */
+
+/* Ajusta este valor según tu header total */
+:root {
+  --appHeaderOffset: 9rem;
+  --edukaBlue: #1b326b;
+  --edukaBlue2: #0f2a63;
+  --edukaGray: #3a4156;
+  --edukaAccent: #ffb703;
+}
+
+.homePage {
+  width: 100%;
+  overflow-x: hidden; /* ✅ evita que algo empuje el layout en mobile */
+}
+
+/* Contenedor general */
+.homeShell {
+  width: 100%;
+  min-height: calc(100dvh - var(--appHeaderOffset));
+  padding-top: 1.2rem;
+  display: grid;
+
+  /* ✅ IMPORTANTE: minmax(0,1fr) evita overflow por hijos anchos */
+  grid-template-columns: 280px minmax(0, 1fr);
+
+  gap: 1.5rem;
+  position: relative;
+  background: #ffffff;
+
+  overflow-x: hidden; /* ✅ blindaje extra */
+}
+
+/* ===== MENU ===== */
+.homeMenu {
+  position: sticky;
+  top: 1rem;
+  height: calc(100dvh - var(--appHeaderOffset) - 2rem);
+  border-radius: 1.2rem;
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.08);
+}
+
+.homeMenuHeader {
+  padding: 1.4rem 1.2rem 1rem;
+  background: linear-gradient(180deg, rgba(27, 50, 107, 0.08), transparent);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.homeMenuLogo {
+  width: 7rem;
+  display: block;
+  margin: 0 auto 0.4rem;
+}
+
+.homeMenuSubtitle {
+  margin: 0;
+  color: #4d4d4d;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.homeMenuBtn {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2e2e2e;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.homeMenuBtn:hover {
+  background-color: rgba(27, 50, 107, 0.08);
+  color: var(--edukaBlue);
+}
+
+.homeMenuBtn.active {
+  background-color: rgba(27, 50, 107, 0.12);
+  color: var(--edukaBlue);
+  border-left-color: var(--edukaAccent);
+}
+
+/* ===== CONTENT ===== */
+.homeContent {
+  padding: 0 1rem 2.5rem 0;
+  min-width: 0; /* ✅ permite que se encoja y no rompa el grid */
+}
+
+.homeCard {
+  position: relative;
+  width: min(1100px, 100%);
+  max-width: 1100px;
+  margin: 0 auto;
+  min-width: 0; /* ✅ evita overflow por contenido interno */
+
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  overflow: hidden;
+  animation: homeFade 0.35s ease both;
+}
+
+/* watermark */
+.homeCard::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 55%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.homeCardHeader {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.2rem;
+}
+
+.homeTitle {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--edukaBlue);
+  display: inline-block;
+  padding-bottom: 0.35rem;
+  border-bottom: 3px solid var(--edukaAccent);
+}
+
+/* ===== Anti-overflow de textos (clave en mobile) ===== */
+.homeLink,
+.homeLinkCert,
+.homeToggleText,
+.homePaymentCourseTitle,
+.homePaymentItem p,
+.homeDataValue,
+.homeMuted,
+.homeNotice p {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ===== Datos personales ===== */
+.homeDataGrid {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 1.2rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.homeDataItem {
+  background: rgba(232, 234, 239, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  min-width: 0;
+}
+
+.homeDataLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.homeDataValue {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #2f2f2f;
+  min-width: 0;
+}
+
+.homeWarn {
+  color: #c0392b;
+  font-weight: 900;
+}
+
+/* ===== Listas (cursos/calificaciones) ===== */
+.homeList {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  padding: 0;
+  margin: 1.2rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.homeListItem {
+  background: rgba(232, 234, 239, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  min-width: 0; /* ✅ evita que el contenido fuerce ancho */
+}
+
+.homeListTop {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.homeDot {
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--edukaBlue);
+}
+
+.homeLink {
+  text-decoration: none;
+  color: var(--edukaBlue2);
+  font-weight: 900;
+  min-width: 0;
+}
+
+.homeLink:hover {
+  text-decoration: underline;
+}
+
+.homeListBottom {
+  margin-top: 0.6rem;
+  padding-left: 2.05rem;
+  min-width: 0;
+}
+
+.homeLinkCert {
+  color: #167a2c;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.homeMuted {
+  position: relative;
+  z-index: 1;
+  color: #6b6f7b;
+  font-weight: 700;
+}
+
+/* ===== Toggle calificaciones ===== */
+.homeToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  min-width: 0;
+}
+
+.homeToggleArrow {
+  font-weight: 900;
+  color: var(--edukaBlue);
+  flex: 0 0 auto;
+}
+
+.homeToggleText {
+  font-weight: 900;
+  color: var(--edukaBlue2);
+  min-width: 0;
+}
+
+.homeStatus {
+  margin: 0.8rem 0 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.9rem;
+  font-weight: 800;
+}
+
+.homeStatus.ok {
+  background: rgba(22, 122, 44, 0.12);
+  color: #167a2c;
+  border: 1px solid rgba(22, 122, 44, 0.22);
+}
+
+.homeStatus.pending,
+.homeStatus.warn {
+  background: rgba(255, 183, 3, 0.18);
+  color: #8a5b00;
+  border: 1px solid rgba(255, 183, 3, 0.35);
+}
+
+.homeStatus.danger {
+  background: rgba(192, 57, 43, 0.12);
+  color: #c0392b;
+  border: 1px solid rgba(192, 57, 43, 0.22);
+}
+
+.homeNotes {
+  margin: 0.8rem 0 0;
+  padding-left: 1.2rem;
+  color: #2f2f2f;
+  font-weight: 700;
+}
+
+.homeNoteItem {
+  margin-bottom: 0.35rem;
+}
+
+/* ===== Pagos ===== */
+.homePayments {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.2rem;
+  min-width: 0;
+}
+
+.homePaymentCourse {
+  background: rgba(232, 234, 239, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+.homePaymentCourseTitle {
+  margin: 0 0 0.8rem;
+  font-weight: 900;
+  color: #2f2f2f;
+}
+
+.homePaymentItem p {
+  margin: 0.45rem 0;
+  font-weight: 700;
+  color: #333;
+}
+
+.homeBtnLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  padding: 0.85rem 1.2rem;
+  border-radius: 0.9rem;
+  background: var(--edukaBlue2);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 900;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  min-width: 0;
+}
+
+.homeBtnLink:hover {
+  background: #081a3f;
+  transform: translateY(-2px);
+}
+
+.homeDivider {
+  border: none;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.12);
+  margin: 1rem 0 0;
+}
+
+/* ===== Notice ===== */
+.homeNotice {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 183, 3, 0.12);
+  border: 1px solid rgba(255, 183, 3, 0.28);
+  border-radius: 1rem;
+  padding: 1.2rem 1.2rem;
+  color: #4d4d4d;
+  font-weight: 700;
+  line-height: 1.8;
+  min-width: 0;
+}
+
+.homeNotice p {
+  margin: 0 0 0.8rem;
+}
+.homeNotice p:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== Anim ===== */
+@keyframes homeFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Hamburger (Mobile) ===== */
+.homeHamburger {
+  position: fixed;
+  left: 0.2rem;
+  top: 7rem;
+  z-index: 120;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0.9rem 1.6rem rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+
+  display: none;
+}
+
+.homeHamburgerLine {
+  height: 3px;
+  background: var(--edukaBlue);
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.homeHamburger.is-open .homeHamburgerLine:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+.homeHamburger.is-open .homeHamburgerLine:nth-child(2) {
+  opacity: 0;
+}
+.homeHamburger.is-open .homeHamburgerLine:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Overlay mobile */
+.homeOverlay {
+  display: none;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .homeShell {
+    grid-template-columns: 1fr;
+    padding-top: 1rem;
+  }
+
+  .homeHamburger {
+    display: flex;
+  }
+
+  .homeOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 110;
+  }
+
+  .homeOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .homeMenu {
+    position: fixed;
+    top: var(--appHeaderOffset);
+    left: 0;
+    height: calc(100dvh - var(--appHeaderOffset));
+    width: 82%;
+    max-width: 320px;
+    transform: translateX(-110%);
+    transition: transform 0.25s ease;
+    z-index: 115;
+    border-radius: 0 1.2rem 1.2rem 0;
+  }
+
+  .homeMenu.open {
+    transform: translateX(0);
+  }
+
+  .homeContent {
+    padding: 0 1rem 2.5rem 1rem;
+  }
+
+  .homeCard {
+    padding: 1.4rem 1.1rem;
+    border-radius: 1.1rem;
+  }
+
+  .homeTitle {
+    font-size: 1.5rem;
+  }
+
+  .homeDataGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .homeBtnLink {
+    width: 100%;
+    justify-content: center;
+  }
+}

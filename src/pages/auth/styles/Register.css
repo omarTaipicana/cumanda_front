@@ -1,0 +1,203 @@
+/* Página */
+.registerPage {
+  width: 100%;
+}
+
+/* Contenedor centrado */
+.registerContainer {
+  min-height: calc(100dvh - 9rem); /* tu header fijo suele ocupar aprox esto */
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem 3rem;
+}
+
+/* Tarjeta */
+.registerCard {
+  width: min(520px, 92%);
+  padding: 2.2rem 2rem;
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+}
+
+/* Marca de agua */
+.registerCard::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.registerHeader {
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.registerTitle {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1b326b;
+}
+
+.registerSubtitle {
+  margin: 0.35rem 0 0;
+  color: #4d4d4d;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Labels */
+.registerLabel {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 800;
+  color: #1b326b;
+  font-size: 0.95rem;
+}
+
+.registerInput {
+  width: 100%;
+  border: none;
+  border-radius: 0.9rem;
+  background-color: #e8eaef;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
+  color: #333333;
+  outline: none;
+}
+
+.registerInput::placeholder {
+  color: #818698;
+  font-weight: 600;
+}
+
+.registerInput:focus {
+  outline: 0.16rem solid rgba(27, 50, 107, 0.35);
+}
+
+/* Password group */
+.registerPassword {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 0.9rem;
+  background-color: #e8eaef;
+  padding: 0.35rem 0.55rem;
+}
+
+.registerPasswordInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.7rem 0.65rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.registerPasswordInput::placeholder {
+  color: #818698;
+  font-weight: 600;
+}
+
+.eyeBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.45rem;
+  border-radius: 0.6rem;
+  display: grid;
+  place-items: center;
+}
+
+.eyeBtn:hover {
+  background: rgba(27, 50, 107, 0.08);
+}
+
+.eyeIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Botón */
+.registerBtn {
+  z-index: 1;
+  margin-top: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.4rem;
+  border-radius: 0.9rem;
+  border: none;
+  background-color: #0f2a63;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.30);
+  transition: background-color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.registerBtn .arrow {
+  font-size: 1.15rem;
+}
+
+.registerBtn:hover {
+  background-color: #081a3f;
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.35);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .registerContainer {
+    min-height: calc(100dvh - 8.5rem);
+    padding: 1.7rem 1rem 2.5rem;
+  }
+
+  .registerCard {
+    padding: 1.6rem 1.2rem;
+    border-radius: 1.1rem;
+    gap: 0.95rem;
+  }
+
+  .registerTitle {
+    font-size: 1.6rem;
+  }
+
+  .registerSubtitle {
+    font-size: 0.95rem;
+  }
+
+  .registerInput {
+    padding: 0.95rem 1rem;
+    font-size: 0.98rem;
+  }
+
+  .registerPasswordInput {
+    font-size: 0.98rem;
+  }
+
+  .registerBtn {
+    width: 100%;
+  }
+}

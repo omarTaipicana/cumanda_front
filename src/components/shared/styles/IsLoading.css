@@ -1,0 +1,99 @@
+/* Overlay */
+.isLoadingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999999;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(4px);
+}
+
+/* Tarjeta estilo landing */
+.isLoadingCard {
+  width: min(720px, 92%);
+  min-height: 80vh;
+  border-radius: 1.4rem;
+  padding: 12rem 4rem;
+  background: rgba(255, 255, 255, 0.616);
+  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  position: relative;
+  overflow: hidden;
+
+  justify-content: center;
+
+}
+
+/* Marca de agua */
+.isLoadingCard::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* Spinner (azul EDUKA) */
+.edukaSpinner {
+  width: 90px;
+  height: 90px;
+  border-radius: 999px;
+  border: 8px solid rgba(27, 50, 107, 0.15);
+  border-top-color: #1b326b;
+  border-right-color: rgba(27, 50, 107, 0.55);
+  animation: spin 0.95s linear infinite;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.10);
+  z-index: 1;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.isLoadingText {
+  margin: 0;
+  z-index: 1;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1b326b;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .isLoadingCard {
+    padding: 1.6rem 1.3rem;
+    border-radius: 1.1rem;
+    min-height: 50vh;
+
+
+  }
+
+  .edukaSpinner {
+    width: 64px;
+    height: 64px;
+    border-width: 8px;
+  }
+
+  .isLoadingText {
+    font-size: 1rem;
+  }
+}
+
+/* Accesibilidad: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .edukaSpinner {
+    animation: none;
+  }
+}

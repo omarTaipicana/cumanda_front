@@ -1,0 +1,740 @@
+/* ===============================
+   ESCENA GENERAL
+================================= */
+.pagos_scene {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(151, 190, 61, 0.14), transparent 18%),
+    linear-gradient(180deg, #f5f8fc 0%, #edf2f8 100%);
+}
+
+.pagos_scene_backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.pagos_scene_backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 85% 18%, rgba(255,255,255,0.2), transparent 16%),
+    linear-gradient(to bottom, transparent 56%, rgba(245, 248, 252, 0.97) 100%);
+}
+
+/* ===============================
+   HERO SUPERIOR
+================================= */
+.pagos_hero_intro {
+  position: relative;
+  z-index: 1;
+  width: min(50rem, 100%);
+  padding: 2rem 4.5rem 0;
+}
+
+.pagos_hero_badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.2rem;
+}
+
+.pagos_hero_title {
+  font-size: clamp(2.2rem, 4.8vw, 4.8rem);
+  line-height: 0.98;
+  margin: 0 0 1rem;
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-shadow: 0 0.5rem 1.6rem rgba(0, 0, 0, 0.22);
+  max-width: 52rem;
+}
+
+.pagos_hero_text {
+  max-width: 40rem;
+  margin: 0 0 1.5rem;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.pagos_hero_stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 0;
+}
+
+.pagos_hero_stat {
+  min-width: 130px;
+  padding: 1rem 1.1rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+}
+
+.pagos_hero_stat strong {
+  display: block;
+  font-size: 1.08rem;
+  font-weight: 900;
+  margin-bottom: 0.22rem;
+}
+
+.pagos_hero_stat span {
+  font-size: 0.9rem;
+  opacity: 0.96;
+}
+
+/* ===============================
+   CONTENEDOR PRINCIPAL
+================================= */
+.pagos_container {
+  width: min(95%, 1400px);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  padding: 3rem 0 3.5rem;
+}
+
+.pagos_container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center 30%;
+  background-size: 28%;
+  opacity: 0.045;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===============================
+   LAYOUT 2 COLUMNAS
+================================= */
+.pagos_wrapper {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 1.4rem;
+  align-items: stretch;
+}
+
+.pagos_medio_alto {
+  min-height: 560px;
+}
+
+/* ===============================
+   TARJETAS PRINCIPALES
+================================= */
+.pagos_left,
+.pagos_right {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 42, 99, 0.08);
+  backdrop-filter: blur(14px);
+  border-radius: 1.7rem;
+  box-shadow: 0 1.2rem 3rem rgba(15, 42, 99, 0.12);
+  overflow: hidden;
+}
+
+.pagos_left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.6rem 1.4rem;
+}
+
+.pagos_right {
+  padding: 1rem;
+}
+
+/* ===============================
+   FELICITACIÓN
+================================= */
+.pagos_felicitacion {
+  margin: 0 0 1.2rem;
+  text-align: center;
+  background: linear-gradient(180deg, #f7faff, #eef4fb);
+  border: 1px solid #dde7f4;
+  border-left: 4px solid #0f2a63;
+  border-radius: 1.2rem;
+  padding: 1.3rem 1.3rem;
+  box-shadow: 0 0.8rem 1.8rem rgba(0, 0, 0, 0.05);
+}
+
+.pagos_felicitacion h2 {
+  margin: 0 0 0.75rem;
+  color: #0f2a63;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.pagos_felicitacion p {
+  margin: 0 0 0.6rem;
+  color: #4b556b;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+/* ===============================
+   FORMULARIO BÚSQUEDA
+================================= */
+.pagos_form_buscar {
+  width: min(100%, 760px);
+}
+
+.pagos_label {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.pagos_label span {
+  display: block;
+  font-weight: 800;
+  color: #24324d;
+  margin: 0 auto 0.4rem;
+  text-align: center;
+}
+
+.pagos_btn_row--buscar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  align-items: stretch;
+}
+
+.pagos_input_cedula {
+  width: min(100%, 420px);
+  margin: 0 auto;
+  border: 1px solid #dce5f1;
+  border-radius: 1rem;
+  background-color: #f8fafc;
+  padding: 1rem 1.1rem;
+  font-size: 1rem;
+  color: #24324d;
+  outline: none;
+  box-sizing: border-box;
+  text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.pagos_input,
+.pagos_left input[type="file"],
+.pagos_left input[type="number"] {
+  width: 100%;
+  border: 1px solid #dce5f1;
+  border-radius: 1rem;
+  background-color: #f8fafc;
+  padding: 1rem 1.1rem;
+  font-size: 1rem;
+  color: #24324d;
+  outline: none;
+  box-sizing: border-box;
+  text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.pagos_input_cedula:focus,
+.pagos_left input[type="file"]:focus,
+.pagos_left input[type="number"]:focus {
+  border-color: #97be3d;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 0.22rem rgba(151, 190, 61, 0.16);
+}
+
+.pagos_left input[type="file"] {
+  text-align: left;
+}
+
+/* ===============================
+   BOTONES
+================================= */
+.pagos_btn_row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.95rem;
+}
+
+.pagos_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.4rem;
+  border-radius: 1rem;
+  border: none;
+  background: linear-gradient(135deg, #0f2a63, #1b4a96);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 1rem 2rem rgba(15, 42, 99, 0.22);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.pagos_btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 1.2rem 2.2rem rgba(15, 42, 99, 0.26);
+}
+
+.pagos_error {
+  font-size: 0.85rem;
+  color: #c0392b;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+/* ===============================
+   FORM 2 COLUMNAS INTERNO
+================================= */
+.pagos_form_dos {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.9fr);
+  gap: 1.1rem;
+  align-items: start;
+  width: 100%;
+}
+
+/* ===============================
+   DATOS USUARIO
+================================= */
+.pagos_datos_usuario {
+  text-align: center;
+  background: linear-gradient(180deg, #f7faff, #eef4fb);
+  border-radius: 1.1rem;
+  padding: 1.2rem 1.25rem;
+  border: 1px solid #dde7f4;
+  border-left: 4px solid #0f2a63;
+  margin-bottom: 1rem;
+}
+
+.pagos_datos_usuario h2 {
+  margin: 0 0 0.9rem;
+  color: #0f2a63;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.pagos_datos_usuario p {
+  margin: 0.35rem 0;
+  color: #333743;
+  font-size: 0.95rem;
+}
+
+/* ===============================
+   BOX EXTRAS
+================================= */
+.pagos_box {
+  background: #ffffff;
+  border-radius: 1.1rem;
+  padding: 1rem 1.05rem;
+  box-shadow: 0 0.8rem 1.8rem rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(15, 42, 99, 0.1);
+  margin-bottom: 0.9rem;
+}
+
+.pagos_check_row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.55rem 0;
+  color: #333743;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.pagos_check_row input[type="checkbox"] {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.pagos_label_file {
+  margin-top: 0.8rem;
+}
+
+.pagos_label_file span {
+  text-align: left;
+}
+
+/* ===============================
+   PANEL DERECHA / GUÍA
+================================= */
+.pagos_panel {
+  position: relative;
+  min-height: 100%;
+  height: 100%;
+  border-radius: 1.3rem;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+.pagos_panel.solo_imagen {
+  position: relative;
+  min-height: 560px;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.18), transparent 16%),
+    linear-gradient(180deg, rgba(8,26,63,0.06), rgba(15,42,99,0.12)),
+    #f7f9fc;
+  border-radius: 1.3rem;
+  padding: 1.2rem 1rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagos_panel_badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  background: #eef4e0;
+  color: #607d1a;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.pagos_img_full {
+  width: min(100%, 560px);
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2rem rgba(15, 42, 99, 0.16);
+  background: #ffffff;
+}
+
+/* ===============================
+   TOTAL / CONFIRMACIÓN
+================================= */
+.pagos_total {
+  margin: 0 0 0.7rem;
+  font-weight: 900;
+  color: #0f2a63;
+  background: linear-gradient(180deg, #f7faff, #eef4fb);
+  border: 1px solid #dde7f4;
+  border-radius: 0.95rem;
+  padding: 0.9rem 1rem;
+  text-align: center;
+}
+
+.pagos_check_container {
+  margin-top: 1rem;
+}
+
+.pagos_check_legal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.92rem;
+  color: #4a556d;
+  background: #f8fafc;
+  border: 1px solid #e4ebf5;
+  padding: 1rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.pagos_check_legal input[type="checkbox"] {
+  margin-top: 0.1rem;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+/* ===============================
+   ANIMACIONES
+================================= */
+.pagos_animate_left {
+  animation: pagosSlideLeft 0.5s ease-out;
+}
+
+.pagos_animate_right {
+  animation: pagosSlideRight 0.5s ease-out;
+}
+
+@keyframes pagosSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pagosSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===============================
+   MENSAJES CURSO NO DISPONIBLE
+================================= */
+.registro_container.curso_no_encontrado {
+  padding: 3rem 0 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.mensaje_curso_caja {
+  width: 95%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+  border-left: 6px solid #c0392b;
+}
+
+.mensaje_curso_caja::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/cumanda_sf.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 55%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.mensaje_curso_caja h2 {
+  position: relative;
+  z-index: 1;
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #1b326b;
+  margin-bottom: 1rem;
+}
+
+.mensaje_curso_caja p {
+  position: relative;
+  z-index: 1;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #3e4352;
+  margin: 0.5rem 0;
+}
+
+.mensaje_curso_caja--finalizado {
+  border-left-color: #f39c12;
+}
+
+.mensaje_acciones {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mensaje_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.88rem 1.4rem;
+  border-radius: 0.9rem;
+  background: #0f2a63;
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 0.8rem 1.7rem rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.mensaje_btn:hover {
+  background: #081a3f;
+  transform: translateY(-2px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.28);
+}
+
+.mensaje_btn--whatsapp {
+  background: #1d8f4a;
+}
+
+.mensaje_btn--whatsapp:hover {
+  background: #15713a;
+}
+
+/* ===============================
+   RESPONSIVE
+================================= */
+@media (max-width: 1100px) {
+  .pagos_hero_intro {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .pagos_container {
+    padding: 2rem 0 2.5rem;
+  }
+
+  .pagos_wrapper {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .pagos_medio_alto {
+    min-height: auto;
+  }
+
+  .pagos_left {
+    padding: 1.2rem 1rem;
+  }
+
+  .pagos_right {
+    padding: 0.9rem;
+  }
+
+  .pagos_panel.solo_imagen {
+    min-height: 320px;
+  }
+
+  .pagos_form_dos {
+    grid-template-columns: 1fr;
+  }
+
+  .pagos_btn {
+    width: 100%;
+  }
+
+  .pagos_input_cedula {
+    width: 100%;
+  }
+
+  .pagos_label {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .pagos_hero_intro {
+    padding: 1rem 1rem 0;
+  }
+
+  .pagos_hero_title {
+    font-size: 2rem;
+  }
+
+  .pagos_hero_text {
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .pagos_hero_stats {
+    gap: 0.8rem;
+  }
+
+  .pagos_hero_stat {
+    flex: 1 1 120px;
+  }
+
+  .pagos_container {
+    width: 96%;
+    padding: 1.5rem 0 2rem;
+  }
+
+  .pagos_container::before {
+    background-size: 52%;
+  }
+
+  .pagos_felicitacion {
+    padding: 1rem;
+  }
+
+  .pagos_panel.solo_imagen {
+    min-height: 260px;
+  }
+
+  .pagos_img_full {
+    width: min(100%, 460px);
+  }
+}
+
+@media (max-width: 480px) {
+  .pagos_hero_title {
+    font-size: 1.75rem;
+  }
+
+  .pagos_left,
+  .pagos_right {
+    border-radius: 1.25rem;
+  }
+
+  .pagos_felicitacion h2 {
+    font-size: 1.15rem;
+  }
+
+  .pagos_felicitacion p {
+    font-size: 0.92rem;
+  }
+
+  .pagos_left input[type="file"],
+  .pagos_left input[type="number"],
+  .pagos_input_cedula {
+    padding: 0.92rem 1rem;
+    border-radius: 0.9rem;
+    font-size: 0.98rem;
+  }
+
+  .pagos_btn {
+    padding: 0.95rem 1rem;
+  }
+
+  .pagos_check_row {
+    font-size: 0.92rem;
+  }
+
+  .mensaje_curso_caja {
+    padding: 1.8rem 1.3rem;
+  }
+
+  .mensaje_curso_caja h2 {
+    font-size: 1.5rem;
+  }
+
+  .mensaje_btn {
+    width: 100%;
+  }
+}

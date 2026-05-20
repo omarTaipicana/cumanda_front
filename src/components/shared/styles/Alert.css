@@ -1,0 +1,26 @@
+.alert-message {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: white;
+  font-style: italic;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  animation: fadeInOut 3s forwards;
+  height: 6vh;
+  font-size: 1rem; 
+  z-index: 10000000;
+}
+
+/* --- Responsividad --- */
+@media (max-width: 768px) {
+  .alert-message {
+    font-size: 0.9rem; /* Reducir texto en pantallas medianas */
+    padding: 5px; /* Ajustar padding */
+    height: 8vh; /* Reducir altura */
+  }
+}
+
