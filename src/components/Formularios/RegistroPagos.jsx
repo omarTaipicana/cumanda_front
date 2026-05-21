@@ -418,7 +418,7 @@ export const RegistroPagos = () => {
               <div className="pagos_panel_badge">Guía de pago</div>
 
               <img
-                src="/images/pago_all2.png"
+                src="/images/pago_all5.jpeg"
                 alt="Información de pago"
                 className="pagos_img_full"
               />
