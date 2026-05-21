@@ -87,7 +87,7 @@
   font-size: 1.22rem;
   font-weight: 950;
   margin-bottom: 0.2rem;
-  color: #e0eccd;
+  color: #1e0e58;
 }
 
 .pagos_hero_stat span {
@@ -704,6 +704,9 @@
 }
 
 @media (max-width: 900px) {
+  .pagos_btn_row{
+    flex-direction: column;
+  }
   .pagos_hero_intro {
     padding: 1rem 1rem 0;
   }
@@ -748,6 +751,9 @@
 }
 
 @media (max-width: 480px) {
+  .pagos_btn_row{
+    flex-direction: column;
+  }
   .pagos_hero_title {
     font-size: 1.76rem;
   }
