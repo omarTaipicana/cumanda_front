@@ -5,7 +5,15 @@
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
-  background: #f5f7ef;
+
+  background-image: url("/images/fondo.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+
+  /* imagen vertical/larga */
+  background-size: 100% auto;
+
+  background-attachment: fixed;
 }
 
 /* =========================
@@ -15,31 +23,6 @@
   position: relative;
   min-height: 100vh;
   padding: 3rem 4.5rem 4rem;
-}
-
-.cmcsce_backdrop {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 88% 12%, rgba(230, 255, 161, 0.38), transparent 24%),
-    radial-gradient(circle at 12% 86%, rgba(127, 172, 31, 0.26), transparent 30%),
-    linear-gradient(135deg, #20340a 0%, #3f5f12 38%, #789d22 100%);
-  z-index: 0;
-}
-
-.cmcsce_backdrop::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.28), transparent 48%),
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.045) 0,
-      rgba(255, 255, 255, 0.045) 1px,
-      transparent 1px,
-      transparent 18px
-    );
 }
 
 /* =========================
@@ -73,7 +56,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.16);
   border: 1px solid rgba(255, 255, 255, 0.24);
-  color: #ffffff;
+  color: #1e0e58;
   backdrop-filter: blur(10px);
   font-size: 0.8rem;
   font-weight: 900;
@@ -84,7 +67,7 @@
 .cmcsce_main_title {
   margin: 0 0 1rem;
   max-width: 680px;
-  color: #ffffff;
+  color: #1e0e58;
   font-size: clamp(2.4rem, 4.8vw, 4rem);
   line-height: 0.95;
   font-weight: 950;
@@ -95,9 +78,10 @@
 .cmcsce_subtitle {
   max-width: 620px;
   margin: 0 0 1.5rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: #1e0e58;
   font-size: 1.05rem;
   line-height: 1.8;
+  font-weight: 700;
 }
 
 /* =========================
@@ -117,7 +101,7 @@
   background: rgba(255, 255, 255, 0.13);
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(12px);
-  color: #ffffff;
+  color: #1e0e58;
 }
 
 .cmcsce_stat strong {
@@ -225,7 +209,10 @@
   font-size: 0.94rem;
   font-weight: 900;
   box-shadow: 0 1rem 2.2rem rgba(0, 0, 0, 0.18);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .btn_primary:hover {
@@ -240,7 +227,7 @@
 
 .btn_primary--ghost {
   background: rgba(255, 255, 255, 0.13);
-  color: #ffffff;
+  color: #1e0e58;
   border: 1px solid rgba(255, 255, 255, 0.26);
   box-shadow: none;
   backdrop-filter: blur(10px);
@@ -308,8 +295,7 @@
   min-height: 640px;
   padding: 1rem;
   border-radius: 1.3rem;
-  background:
-    linear-gradient(180deg, #f9fbf3, #eef6dc);
+  background: linear-gradient(180deg, #f9fbf3, #eef6dc);
   border: 1px solid #dce9bd;
   overflow: hidden;
   display: flex;
@@ -349,7 +335,9 @@
   color: #ffffff;
   font-weight: 900;
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
 }
 
 .pagination_controls button:hover:not(:disabled) {

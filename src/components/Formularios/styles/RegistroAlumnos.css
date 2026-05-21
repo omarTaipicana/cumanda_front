@@ -3,13 +3,17 @@
 ============================ */
 .registro_container {
   width: 100%;
-  min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at top right, rgba(128, 172, 31, 0.2), transparent 22%),
-    radial-gradient(circle at bottom left, rgba(86, 132, 22, 0.12), transparent 28%),
-    linear-gradient(180deg, #f8fbf1 0%, #eef6dc 100%);
+
+  background-image: url("/images/fondo.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+
+  /* importante para imagen vertical/larga */
+  background-size: 100% auto;
+
+  background-attachment: fixed;
 }
 
 /* ============================
@@ -21,22 +25,6 @@
   padding: 2.5rem 4.5rem 4rem;
 }
 
-.registro_landing_backdrop {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-}
-
-.registro_landing_backdrop::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 82% 18%, rgba(224, 236, 205, 0.34), transparent 18%),
-    linear-gradient(to bottom, transparent 40%, rgba(248, 251, 241, 0.98) 100%);
-}
 
 /* ============================
    INTRO LANDING
@@ -56,7 +44,7 @@
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(12px);
-  color: #ffffff;
+  color: #1e0e58;
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -68,7 +56,7 @@
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 0.95;
   margin: 0 0 1rem;
-  color: #ffffff;
+  color: #1e0e58;
   font-weight: 950;
   letter-spacing: -0.04em;
   text-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.28);
@@ -78,9 +66,10 @@
 .registro_landing_text {
   max-width: 42rem;
   margin: 0 0 1.5rem;
-  color: rgba(255, 255, 255, 0.94);
+  color: #1e0e58;
   font-size: 1.08rem;
   line-height: 1.8;
+  font-weight: 700;
 }
 
 /* ============================
@@ -346,22 +335,7 @@
   padding: 2.5rem 4.5rem 2rem;
 }
 
-.registro_form_scene_backdrop {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-}
 
-.registro_form_scene_backdrop::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 85% 18%, rgba(224, 236, 205, 0.28), transparent 18%),
-    linear-gradient(to bottom, transparent 46%, rgba(248, 251, 241, 0.98) 100%);
-}
 
 /* ============================
    LAYOUT FORMULARIO
@@ -406,9 +380,9 @@
     radial-gradient(circle at top right, rgba(224,236,205,0.2), transparent 20%),
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.04) 0%,
-      rgba(67, 102, 15, 0.22) 22%,
-      rgba(31, 52, 10, 0.88) 100%
+      rgba(255, 255, 255, 0.807) 0%,
+      rgba(210, 213, 207, 0.805) 22%,
+      rgba(239, 239, 239, 0.648) 100%
     );
 }
 
@@ -437,15 +411,10 @@
   font-weight: 900;
 }
 
-.registro_course_chip--light {
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(8px);
-}
 
 .registro_course_content {
   padding: 1.6rem 1.4rem 1.7rem;
-  color: #ffffff;
+  color: #1e0e58;
 }
 
 .registro_course_content h2 {
@@ -459,7 +428,8 @@
   margin: 0 0 1.2rem;
   font-size: 0.98rem;
   line-height: 1.72;
-  color: rgba(255, 255, 255, 0.95);
+  color: #1e0e58;
+  font-weight: 700;
 }
 
 .registro_course_features {
@@ -470,8 +440,8 @@
 .registro_course_feature {
   padding: 0.9rem 1rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(220, 212, 212, 0.13);
+  border: 1px solid rgba(246, 243, 243, 0.544);
   backdrop-filter: blur(8px);
 }
 

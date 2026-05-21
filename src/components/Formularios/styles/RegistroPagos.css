@@ -3,31 +3,20 @@
 ================================= */
 .pagos_scene {
   width: 100%;
-  min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(156, 205, 66, 0.28), transparent 24%),
-    radial-gradient(circle at 88% 10%, rgba(86, 132, 22, 0.22), transparent 22%),
-    linear-gradient(180deg, #f6faee 0%, #eef5df 48%, #f8fbf2 100%);
+
+  background-image: url("/images/fondo.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+
+  /* importante para imagen vertical/larga */
+  background-size: 100% auto;
+
+  background-attachment: fixed;
 }
 
-.pagos_scene_backdrop {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-}
 
-.pagos_scene_backdrop::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.24), transparent 18%),
-    linear-gradient(to bottom, rgba(31, 67, 16, 0.04) 0%, rgba(246, 250, 238, 0.98) 63%, #f8fbf2 100%);
-}
 
 /* ===============================
    HERO SUPERIOR
@@ -47,7 +36,7 @@
   background: rgba(224, 236, 205, 0.18);
   border: 1px solid rgba(224, 236, 205, 0.35);
   backdrop-filter: blur(12px);
-  color: #ffffff;
+  color: #1e0e58;
   font-size: 0.82rem;
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -59,7 +48,7 @@
   font-size: clamp(2.35rem, 4.8vw, 4.9rem);
   line-height: 0.96;
   margin: 0 0 1rem;
-  color: #ffffff;
+  color: #1e0e58;
   font-weight: 950;
   letter-spacing: -0.045em;
   text-shadow: 0 0.8rem 2rem rgba(24, 55, 11, 0.34);
@@ -69,9 +58,10 @@
 .pagos_hero_text {
   max-width: 41rem;
   margin: 0 0 1.6rem;
-  color: rgba(255, 255, 255, 0.95);
+  color: #1e0e58;
   font-size: 1.05rem;
   line-height: 1.85;
+  font-weight: 700;
 }
 
 .pagos_hero_stats {
@@ -88,7 +78,7 @@
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(224, 236, 205, 0.28);
   backdrop-filter: blur(12px);
-  color: #ffffff;
+  color: #1e0e58;
   box-shadow: 0 1rem 2rem rgba(31, 67, 16, 0.18);
 }
 
@@ -579,7 +569,7 @@
 .mensaje_curso_caja {
   width: 95%;
   max-width: 900px;
-  background: #ffffff;
+  background: #1e0e58;
   border-radius: 1.6rem;
   padding: 2.5rem;
   box-shadow: 0 1.2rem 2.8rem rgba(54, 87, 14, 0.14);
