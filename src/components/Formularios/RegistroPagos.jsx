@@ -46,6 +46,7 @@ export const RegistroPagos = () => {
     "sPolicial",
     "oProfesionales",
   ]);
+
   const [moneda, distintivo, sPolicial, oProfesionales] = watchAll;
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export const RegistroPagos = () => {
 
   useEffect(() => {
     let extrasCentavos = 0;
+
     if (moneda) extrasCentavos += 1500;
     if (distintivo) extrasCentavos += 1000;
 
@@ -108,6 +110,7 @@ export const RegistroPagos = () => {
     };
 
     const file = data.archivo[0];
+
     uploadPdf(PATH_PAGOS, body, file);
 
     reset();
@@ -118,6 +121,7 @@ export const RegistroPagos = () => {
   useEffect(() => {
     if (newUpload) {
       const extras = [];
+
       if (newUpload.moneda) extras.push("moneda");
       if (newUpload.distintivo) extras.push("distintivo");
 
@@ -149,10 +153,12 @@ export const RegistroPagos = () => {
 
         <div className="mensaje_curso_caja">
           <h2>❌ Curso no disponible</h2>
+
           <p>
             El curso con el código <strong>{code}</strong> no se encuentra
             disponible o no existe en nuestra base de datos.
           </p>
+
           <p>Por favor verifica el enlace o contacta con el administrador.</p>
         </div>
       </div>
@@ -166,10 +172,12 @@ export const RegistroPagos = () => {
 
         <div className="mensaje_curso_caja mensaje_curso_caja--finalizado">
           <h2>⏳ Oferta académica finalizada</h2>
+
           <p>
             La oferta académica del <strong>{cursoActivo?.nombre}</strong> ha
             finalizado.
           </p>
+
           <p>
             Si necesitas información, por favor contacta con el administrador o
             revisa nuestros cursos disponibles.
@@ -179,6 +187,7 @@ export const RegistroPagos = () => {
             <a className="mensaje_btn" href="/#/">
               Ir al inicio
             </a>
+
             <a
               className="mensaje_btn mensaje_btn--whatsapp"
               href="https://wa.me/593980773229"
@@ -195,7 +204,9 @@ export const RegistroPagos = () => {
 
   const onRegistrarNuevo = () => {
     setUsuario(newValidate?.user);
+
     const curso = courses?.find((c) => c.sigla === pagoExistente[0]?.curso);
+
     setCursoActual(curso);
     setPagoExistente(null);
     setCertificadoPagado(true);
@@ -221,76 +232,83 @@ export const RegistroPagos = () => {
       <div
         className="pagos_scene_backdrop"
         style={{
-          backgroundImage: `linear-gradient(100deg, rgba(8,26,63,0.94) 0%, rgba(15,42,99,0.84) 38%, rgba(15,42,99,0.46) 62%, rgba(15,42,99,0.12) 100%), url(/images/${code}.jpg)`,
+          backgroundImage: `linear-gradient(105deg, rgba(31,67,16,0.96) 0%, rgba(70,120,22,0.9) 42%, rgba(120,168,45,0.58) 68%, rgba(224,236,205,0.16) 100%), url(/images/${code}.jpg)`,
         }}
       />
 
-      <div className="pagos_hero_intro">
-        <span className="pagos_hero_badge">CUMANDA · Registro de pagos</span>
+      <section className="pagos_hero_intro">
+        <span className="pagos_hero_badge">CUMANDÁ · Registro de pagos</span>
 
         <h1 className="pagos_hero_title">
           {usuario ? "Completa tu registro de pago" : "Solicita tu certificado"}
         </h1>
 
         <p className="pagos_hero_text">
-          Verifica tu inscripción, registra tu comprobante y continúa con el
-          proceso para la emisión de tu certificado y reconocimientos
+          Verifica tu inscripción, sube tu comprobante y continúa el proceso
+          para la emisión de tu certificado oficial y reconocimientos
           adicionales.
         </p>
 
         <div className="pagos_hero_stats">
           <div className="pagos_hero_stat">
-            <strong>Digital</strong>
-            <span>Proceso</span>
+            <strong>01</strong>
+            <span>Validación</span>
           </div>
+
           <div className="pagos_hero_stat">
-            <strong>Seguro</strong>
-            <span>Registro</span>
+            <strong>02</strong>
+            <span>Comprobante</span>
           </div>
+
           <div className="pagos_hero_stat">
-            <strong>CUMANDA</strong>
+            <strong>03</strong>
             <span>Certificación</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="pagos_container">
+      <main className="pagos_container">
         <div className="pagos_wrapper pagos_medio_alto">
-          <div className="pagos_left pagos_animate_left">
+          <section className="pagos_left pagos_animate_left">
             {!usuario ? (
               <form
                 className="pagos_form_buscar"
                 onSubmit={handleSubmit(buscarCedula)}
               >
                 <div className="pagos_felicitacion">
-                  <h2>✅ ¿Ya culminaste tu curso?</h2>
+                  <span className="pagos_section_badge">Proceso académico</span>
+
+                  <h2>¿Ya culminaste tu curso?</h2>
+
                   <p>
-                    Si la respuesta es sí... ¡entonces déjanos felicitarte! 🎓
-                    Has demostrado disciplina, esfuerzo y determinación para
-                    llegar hasta aquí.
+                    Si la respuesta es sí... ¡entonces déjanos felicitarte! Has
+                    demostrado disciplina, esfuerzo y determinación para llegar
+                    hasta aquí.
                   </p>
+
                   <p>
-                    👏 ¡Felicidades por completar con éxito tu formación! Este
-                    logro representa mucho más que un certificado: es el reflejo
-                    de tu crecimiento personal y académico.
+                    Este logro representa mucho más que un certificado: es el
+                    reflejo de tu crecimiento personal, académico y profesional.
                   </p>
+
                   <p>
-                    Ahora estás listo para solicitar tu certificado oficial y,
-                    si lo deseas, adquirir reconocimientos adicionales. ¡Gracias
-                    por confiar en nosotros!
+                    Ahora puedes solicitar tu certificado oficial y, si lo
+                    deseas, adquirir reconocimientos adicionales.
                   </p>
                 </div>
 
                 <label className="pagos_label">
                   <div className="pagos_btn_row pagos_btn_row--buscar">
                     <span>Ingrese su cédula:</span>
+
                     <input
                       className="pagos_input_cedula"
                       required
                       {...register("cedula")}
                     />
+
                     <button className="pagos_btn" type="submit">
-                      🔍 Buscar
+                      Buscar inscripción
                     </button>
                   </div>
                 </label>
@@ -299,16 +317,22 @@ export const RegistroPagos = () => {
               <form className="pagos_form_dos" onSubmit={handleSubmit(submit)}>
                 <div>
                   <div className="pagos_datos_usuario">
-                    {cursoActual && <h2>🎓 {cursoActual.nombre}</h2>}
+                    <span className="pagos_section_badge">Datos del participante</span>
+
+                    {cursoActual && <h2>{cursoActual.nombre}</h2>}
+
                     <p>
                       <strong>Nombres:</strong> {usuario.firstName}
                     </p>
+
                     <p>
                       <strong>Apellidos:</strong> {usuario.lastName}
                     </p>
+
                     <p>
                       <strong>Email:</strong> {usuario.email}
                     </p>
+
                     <p>
                       <strong>Cédula:</strong> {usuario.cI}
                     </p>
@@ -326,7 +350,7 @@ export const RegistroPagos = () => {
                     </label>
 
                     <label className="pagos_label pagos_label_file">
-                      <span>Suba su comprobante (PDF o imagen):</span>
+                      <span>Suba su comprobante PDF o imagen:</span>
                       <input type="file" required {...register("archivo")} />
                     </label>
                   </div>
@@ -337,6 +361,7 @@ export const RegistroPagos = () => {
 
                   <label className="pagos_label">
                     <span>Valor depositado:</span>
+
                     <input
                       type="number"
                       step="0.01"
@@ -361,6 +386,7 @@ export const RegistroPagos = () => {
                         de requerir correcciones, contactar al equipo de
                         soporte.
                       </span>
+
                       <input
                         type="checkbox"
                         {...register("confirmacion", {
@@ -369,33 +395,37 @@ export const RegistroPagos = () => {
                         })}
                       />
                     </label>
+
                     {errors.confirmacion && (
-                      <p className="pagos_error">{errors.confirmacion.message}</p>
+                      <p className="pagos_error">
+                        {errors.confirmacion.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="pagos_btn_row">
                     <button className="pagos_btn" type="submit">
-                      Confirmar
+                      Confirmar pago
                     </button>
                   </div>
                 </div>
               </form>
             )}
-          </div>
+          </section>
 
-          <div className="pagos_right pagos_animate_right">
+          <aside className="pagos_right pagos_animate_right">
             <div className="pagos_panel solo_imagen">
               <div className="pagos_panel_badge">Guía de pago</div>
+
               <img
                 src="/images/pago_all2.png"
                 alt="Información de pago"
                 className="pagos_img_full"
               />
             </div>
-          </div>
+          </aside>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

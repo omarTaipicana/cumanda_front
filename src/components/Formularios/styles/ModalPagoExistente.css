@@ -1,117 +1,124 @@
 .modal_pago_overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(20, 48, 10, 0.72);
+  backdrop-filter: blur(6px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  padding: 1em; /* para que no toque bordes en móvil */
-  overflow-y: auto; /* scroll si hay muchos pagos */
+  padding: 1em;
+  overflow-y: auto;
 }
 
 .modal_pago_content {
-  background: #ffffff;
-  color: #003366;
+  background: linear-gradient(180deg, #ffffff 0%, #f6faee 100%);
+  color: #2f4f0f;
   width: 100%;
-  max-width: 600px; /* más ancho para aprovechar espacio */
-  max-height: 90vh; /* altura máxima para no tapar toda la pantalla */
+  max-width: 600px;
+  max-height: 90vh;
   padding: 2em;
-  border-radius: 12px;
+  border-radius: 18px;
   text-align: center;
-  box-shadow: 0 0 20px rgba(0, 140, 255, 0.4);
-  overflow-y: auto; /* scroll interno si hay muchos pagos */
+  box-shadow: 0 1.4rem 3rem rgba(54, 87, 14, 0.28);
+  border: 1px solid rgba(156, 205, 66, 0.35);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
 
 .modal_pago_content h2 {
   margin-bottom: 1em;
-  color: #0077cc;
+  color: #568416;
   font-size: 1.5em;
+  font-weight: 900;
   flex-shrink: 0;
 }
 
 .modal_pago_content p {
   font-size: 1em;
   margin-bottom: 0.7em;
+  color: #4b5c37;
 }
 
 .pago_item {
   text-align: left;
-  padding: 0.8em 1em;
-  border: 1px solid #0077cc33;
-  border-radius: 8px;
+  padding: 0.9em 1em;
+  border: 1px solid rgba(156, 205, 66, 0.35);
+  border-left: 5px solid #568416;
+  border-radius: 12px;
   margin-bottom: 1em;
-  background: #f0f8ff;
+  background: #fbfdf7;
+  box-shadow: 0 0.7rem 1.4rem rgba(54, 87, 14, 0.08);
 }
 
 .pago_item p {
   margin: 0.3em 0;
+  color: #3f4b31;
 }
 
 .modal_pago_ver_imagen {
   display: inline-block;
   margin-top: 0.6em;
-  background-color: #00aaff;
+  background: linear-gradient(135deg, #568416, #9ccd42);
   color: white;
-  padding: 0.4em 1em;
+  padding: 0.48em 1em;
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.3s ease;
+  border-radius: 10px;
+  font-weight: 800;
+  transition: transform 0.2s ease, filter 0.2s ease;
   font-size: 0.9em;
 }
 
 .modal_pago_ver_imagen:hover {
-  background-color: #008fcc;
+  transform: translateY(-2px);
+  filter: brightness(1.05);
 }
 
 .modal_pago_botones {
   display: flex;
   justify-content: center;
   gap: 1em;
-  margin-top: auto; /* pega abajo */
+  margin-top: auto;
   flex-wrap: wrap;
 }
 
 .modal_pago_cerrar,
 .modal_pago_nuevo {
-  padding: 0.5em 1.2em;
-  font-weight: 600;
-  border-radius: 8px;
+  padding: 0.65em 1.2em;
+  font-weight: 800;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: transform 0.2s ease, filter 0.2s ease;
   border: none;
   font-size: 1em;
-  flex: 1 1 140px; /* ancho mínimo, crece con espacio */
-  max-width: 180px; /* tamaño máximo */
+  flex: 1 1 140px;
+  max-width: 180px;
   white-space: nowrap;
   user-select: none;
 }
 
 .modal_pago_cerrar {
-  background-color: #cccccc;
-  color: #333333;
+  background-color: #e0eccd;
+  color: #2f4f0f;
 }
 
 .modal_pago_cerrar:hover {
-  background-color: #aaaaaa;
+  filter: brightness(0.96);
+  transform: translateY(-2px);
 }
 
 .modal_pago_nuevo {
-  background-color: #0077cc;
+  background: linear-gradient(135deg, #568416, #9ccd42);
   color: white;
 }
 
 .modal_pago_nuevo:hover {
-  background-color: #005fa3;
+  filter: brightness(1.05);
+  transform: translateY(-2px);
 }
-
-/* Responsive */
 
 @media (max-width: 480px) {
   .modal_pago_content {
@@ -119,6 +126,7 @@
     padding: 1.5em;
     font-size: 0.95em;
     max-height: 80vh;
+    border-radius: 15px;
   }
 
   .modal_pago_content h2 {
@@ -146,6 +154,6 @@
   }
 
   .pago_item {
-    padding: 0.7em 0.8em;
+    padding: 0.75em 0.85em;
   }
 }

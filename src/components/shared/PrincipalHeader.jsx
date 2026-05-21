@@ -28,7 +28,7 @@ const PrincipalHeader = () => {
     grado7: false,
   });
 
-  const onlyLogoRoutes = ["/register_discente", "/register_pago"];
+  const onlyLogoRoutes = ["/register_discente", "/register_pago", "/cmcsce"];
 
   const showOnlyLogo = onlyLogoRoutes.some((route) =>
     location.pathname.startsWith(route)
@@ -291,7 +291,7 @@ const PrincipalHeader = () => {
     <header className="header_nav">
       {showOnlyLogo ? (
         <nav className={`navbar ${showOnlyLogo ? "navbar--only-logo" : ""}`}>
-          <Link to="/" className="logo_link">
+          <Link to="/cmcsce" className="logo_link">
             <img
               src="/images/cumanda_sf.png"
               alt="Logo Eduka"

@@ -23,6 +23,7 @@ const RegistroAlumnos = () => {
 
   const [, , postInscripcion, , , error, isLoading2, newInscripcion] =
     useCrud();
+
   const [inscripcionExistente, setInscripcionExistente] = useState(null);
   const [userValidacion, setUserValidacion] = useState(null);
   const [userRegister, setUserRegister] = useState(null);
@@ -271,12 +272,14 @@ const RegistroAlumnos = () => {
           <div
             className="registro_landing_backdrop"
             style={{
-              backgroundImage: `linear-gradient(100deg, rgba(8,26,63,0.94) 0%, rgba(15,42,99,0.84) 38%, rgba(15,42,99,0.46) 62%, rgba(15,42,99,0.12) 100%), url(/images/${code}.jpg)`,
+              backgroundImage: `linear-gradient(115deg, rgba(31,52,10,0.94) 0%, rgba(67,102,15,0.84) 42%, rgba(128,172,31,0.42) 68%, rgba(224,236,205,0.18) 100%), url(/images/${code}.jpg)`,
             }}
           />
 
           <div className="registro_landing_intro">
-            <span className="registro_landing_badge">CUMANDA · Inscripción</span>
+            <span className="registro_landing_badge">
+              CUMANDÁ · Inscripción
+            </span>
 
             <h1 className="registro_landing_title">{cursoActivo?.nombre}</h1>
 
@@ -386,7 +389,7 @@ const RegistroAlumnos = () => {
           <div
             className="registro_form_scene_backdrop"
             style={{
-              backgroundImage: `linear-gradient(100deg, rgba(8,26,63,0.94) 0%, rgba(15,42,99,0.84) 38%, rgba(15,42,99,0.46) 62%, rgba(15,42,99,0.12) 100%), url(/images/${code}.jpg)`,
+              backgroundImage: `linear-gradient(115deg, rgba(31,52,10,0.94) 0%, rgba(67,102,15,0.82) 42%, rgba(128,172,31,0.40) 68%, rgba(224,236,205,0.18) 100%), url(/images/${code}.jpg)`,
             }}
           />
 
@@ -395,11 +398,13 @@ const RegistroAlumnos = () => {
               <div
                 className="registro_course_banner"
                 style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(12,25,58,0.16), rgba(12,25,58,0.88)), url(/images/${code}.jpg)`,
+                  backgroundImage: `linear-gradient(180deg, rgba(67,102,15,0.10), rgba(31,52,10,0.88)), url(/images/${code}.jpg)`,
                 }}
               >
                 <div className="registro_course_top">
-                  <span className="registro_course_chip">Oferta académica</span>
+                  <span className="registro_course_chip">
+                    Oferta académica
+                  </span>
                   <span className="registro_course_chip registro_course_chip--light">
                     {code?.toUpperCase()}
                   </span>

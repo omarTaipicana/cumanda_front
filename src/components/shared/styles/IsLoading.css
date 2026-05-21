@@ -1,56 +1,103 @@
-/* Overlay */
+/* ===============================
+   OVERLAY
+================================= */
 .isLoadingOverlay {
   position: fixed;
   inset: 0;
   z-index: 99999999;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(4px);
+  background: rgba(31, 67, 16, 0.32);
+  backdrop-filter: blur(7px);
 }
 
-/* Tarjeta estilo landing */
+/* ===============================
+   TARJETA LOADING CUMANDÁ
+================================= */
 .isLoadingCard {
   width: min(720px, 92%);
   min-height: 80vh;
-  border-radius: 1.4rem;
+  border-radius: 1.8rem;
   padding: 12rem 4rem;
-  background: rgba(255, 255, 255, 0.616);
-  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.12);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(246, 250, 238, 0.96) 100%
+    );
+
+  border: 1px solid rgba(156, 205, 66, 0.32);
+
+  box-shadow:
+    0 1.4rem 3rem rgba(54, 87, 14, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.1rem;
+  justify-content: center;
+  gap: 1.2rem;
+
   position: relative;
   overflow: hidden;
-
-  justify-content: center;
-
 }
 
-/* Marca de agua */
+/* ===============================
+   MARCA DE AGUA
+================================= */
 .isLoadingCard::before {
   content: "";
   position: absolute;
   inset: -20%;
+
   background-image: url("/images/cumanda_sf.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 50%;
+
   opacity: 0.06;
   pointer-events: none;
 }
 
-/* Spinner (azul EDUKA) */
-.edukaSpinner {
-  width: 90px;
-  height: 90px;
+/* Brillo decorativo */
+.isLoadingCard::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 280px;
+  height: 280px;
   border-radius: 999px;
-  border: 8px solid rgba(27, 50, 107, 0.15);
-  border-top-color: #1b326b;
-  border-right-color: rgba(27, 50, 107, 0.55);
-  animation: spin 0.95s linear infinite;
-  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.10);
+
+  background: radial-gradient(
+    circle,
+    rgba(156, 205, 66, 0.22) 0%,
+    transparent 70%
+  );
+
+  pointer-events: none;
+}
+
+/* ===============================
+   SPINNER VERDE
+================================= */
+.edukaSpinner {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+
+  border: 8px solid rgba(86, 132, 22, 0.16);
+
+  border-top-color: #568416;
+  border-right-color: rgba(156, 205, 66, 0.75);
+
+  animation: spin 0.9s linear infinite;
+
+  box-shadow:
+    0 0.8rem 1.8rem rgba(54, 87, 14, 0.18),
+    0 0 30px rgba(156, 205, 66, 0.15);
+
   z-index: 1;
 }
 
@@ -60,30 +107,41 @@
   }
 }
 
+/* ===============================
+   TEXTO
+================================= */
 .isLoadingText {
   margin: 0;
   z-index: 1;
+
   font-size: 1.15rem;
-  font-weight: 800;
-  color: #1b326b;
+  font-weight: 900;
   letter-spacing: 0.2px;
   text-align: center;
+
+  color: #2f4f0f;
+
+  text-shadow: 0 2px 12px rgba(156, 205, 66, 0.12);
 }
 
-/* Mobile */
+/* ===============================
+   MOBILE
+================================= */
 @media (max-width: 768px) {
   .isLoadingCard {
-    padding: 1.6rem 1.3rem;
-    border-radius: 1.1rem;
+    padding: 1.8rem 1.3rem;
+    border-radius: 1.25rem;
     min-height: 50vh;
+  }
 
-
+  .isLoadingCard::before {
+    background-size: 70%;
   }
 
   .edukaSpinner {
-    width: 64px;
-    height: 64px;
-    border-width: 8px;
+    width: 66px;
+    height: 66px;
+    border-width: 7px;
   }
 
   .isLoadingText {
@@ -91,7 +149,9 @@
   }
 }
 
-/* Accesibilidad: reduce motion */
+/* ===============================
+   ACCESIBILIDAD
+================================= */
 @media (prefers-reduced-motion: reduce) {
   .edukaSpinner {
     animation: none;
