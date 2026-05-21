@@ -76,7 +76,7 @@
 .navbar_links a,
 .nav-auth-link {
   text-decoration: none;
-  color: #ffffff;
+  color: #33048a;
   font-size: 0.85rem;
   letter-spacing: 0.5px;
   position: relative;
@@ -112,7 +112,7 @@
 .logout__button {
   border: 1px solid #ffffff;
   background: rgba(255,255,255,0.08);
-  color: #ffffff;
+  color: #070000;
   border-radius: 999px;
   padding: 0.45rem 1rem;
   font-size: 0.85rem;

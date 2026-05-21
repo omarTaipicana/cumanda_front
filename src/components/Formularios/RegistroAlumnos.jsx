@@ -47,7 +47,7 @@ const RegistroAlumnos = () => {
         showAlert({
           message: `⚠️ ${message}`,
           alertType: 1,
-        })
+        }),
       );
     }
   }, [error]);
@@ -58,7 +58,7 @@ const RegistroAlumnos = () => {
         showAlert({
           message: `⚠️ Estimad@ ${newInscripcion.user.firstName} ${newInscripcion.user.lastName}, se realizo tu inscripción correctamente`,
           alertType: 2,
-        })
+        }),
       );
     }
   }, [newInscripcion]);
@@ -120,7 +120,7 @@ const RegistroAlumnos = () => {
         showAlert({
           message: "⚠️ Ya estás inscrito en este curso.",
           alertType: 2,
-        })
+        }),
       );
     }
   }, [validate, dispatch]);
@@ -142,17 +142,38 @@ const RegistroAlumnos = () => {
     const celularLimpio = data.celular?.replace(/\D/g, "");
     const isValidCellular = /^09\d{8}$/.test(celularLimpio);
 
+    const nombresArray = nombreFormateado.trim().split(/\s+/);
+    const apellidosArray = apellidoFormateado.trim().split(/\s+/);
+
+    if (nombresArray.length < 2) {
+      return dispatch(
+        showAlert({
+          message: "⚠️ Debe ingresar mínimo dos nombres.",
+          alertType: 1,
+        }),
+      );
+    }
+
+    if (apellidosArray.length < 2) {
+      return dispatch(
+        showAlert({
+          message: "⚠️ Debe ingresar mínimo dos apellidos.",
+          alertType: 1,
+        }),
+      );
+    }
+
     if (!isValidCedula)
       return dispatch(
         showAlert({
           message: "⚠️ La cédula ingresada es incorrecta.",
           alertType: 1,
-        })
+        }),
       );
 
     if (!isValidEmail)
       return dispatch(
-        showAlert({ message: "⚠️ El email es incorrecto.", alertType: 1 })
+        showAlert({ message: "⚠️ El email es incorrecto.", alertType: 1 }),
       );
 
     if (!userRegister && emailFormateado !== confirmEmailFormateado) {
@@ -160,7 +181,7 @@ const RegistroAlumnos = () => {
         showAlert({
           message: "⚠️ Su correo no coincide con el correo de validación.",
           alertType: 1,
-        })
+        }),
       );
     }
 
@@ -170,7 +191,7 @@ const RegistroAlumnos = () => {
           message:
             "⚠️ Celular inválido. Debe empezar con 09 y tener 10 dígitos.",
           alertType: 1,
-        })
+        }),
       );
 
     const body = {
@@ -402,9 +423,7 @@ const RegistroAlumnos = () => {
                 }}
               >
                 <div className="registro_course_top">
-                  <span className="registro_course_chip">
-                    Oferta académica
-                  </span>
+                  <span className="registro_course_chip">Oferta académica</span>
                   <span className="registro_course_chip registro_course_chip--light">
                     {code?.toUpperCase()}
                   </span>
@@ -536,7 +555,7 @@ const RegistroAlumnos = () => {
                             <option value="">Seleccione una opción</option>
                             {[
                               ...new Set(
-                                variables.map((v) => v.grado).filter(Boolean)
+                                variables.map((v) => v.grado).filter(Boolean),
                               ),
                             ].map((grado, i) => (
                               <option key={i} value={grado}>
@@ -644,7 +663,7 @@ const RegistroAlumnos = () => {
                           <option value="">Seleccione una opción</option>
                           {[
                             ...new Set(
-                              variables.map((v) => v.grado).filter(Boolean)
+                              variables.map((v) => v.grado).filter(Boolean),
                             ),
                           ].map((grado, i) => (
                             <option key={i} value={grado}>
@@ -693,7 +712,7 @@ const RegistroAlumnos = () => {
                               ...new Set(
                                 variables
                                   .map((v) => v.subsistema)
-                                  .filter(Boolean)
+                                  .filter(Boolean),
                               ),
                             ].map((s, i) => (
                               <option key={i} value={s}>
@@ -725,7 +744,7 @@ const RegistroAlumnos = () => {
                             ...new Set(
                               variables
                                 .map((v) => v.subsistema)
-                                .filter(Boolean)
+                                .filter(Boolean),
                             ),
                           ].map((s, i) => (
                             <option key={i} value={s}>
