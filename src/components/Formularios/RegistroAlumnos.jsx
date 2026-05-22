@@ -363,7 +363,7 @@ const RegistroAlumnos = () => {
             >
               <div className="registro_val_field">
                 <label htmlFor="email" className="registro_label">
-                  Email
+                  Email:
                 </label>
 
                 <div className="registro_val_row">

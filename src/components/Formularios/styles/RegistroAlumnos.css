@@ -137,18 +137,19 @@
 }
 
 .registro_intro_title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 950;
-  color: #31480f;
+  color: #171717;
   margin-bottom: 1rem;
   line-height: 1.1;
 }
 
 .registro_intro_text {
   font-size: 1.04rem;
-  color: #4d5f32;
+  color: #0a0a0a;
   margin-bottom: 1rem;
   line-height: 1.75;
+  font-weight: 600;
 }
 
 .registro_intro_list {
@@ -167,8 +168,9 @@
   background: linear-gradient(180deg, #fbfdf7, #eef6dc);
   border: 1px solid #dbe9bd;
   border-radius: 1rem;
-  color: #405224;
+  color: #1d1e1b;
   line-height: 1.65;
+  font-weight: 600;
 }
 
 .registro_intro_list li::before {
@@ -190,7 +192,7 @@
 
 .registro_intro_highlight {
   font-weight: 900;
-  color: #43660f;
+  color: #1d2f02;
   margin-top: 0.2rem;
 }
 
@@ -214,6 +216,7 @@
   font-weight: 800;
   color: #31480f;
   margin-bottom: 0.25rem;
+  font-size: 1.5rem;
 }
 
 .registro_val_row {

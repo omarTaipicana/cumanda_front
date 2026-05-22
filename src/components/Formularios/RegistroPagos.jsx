@@ -276,24 +276,31 @@ export const RegistroPagos = () => {
                 onSubmit={handleSubmit(buscarCedula)}
               >
                 <div className="pagos_felicitacion">
-                  <span className="pagos_section_badge">Proceso académico</span>
+                  <span className="pagos_section_badge">
+                    🎉 ¡Felicitaciones por culminar tu curso!
+                  </span>
 
-                  <h2>¿Ya culminaste tu curso?</h2>
+                  <h2>🥳 ¡Lo lograste!</h2>
 
                   <p>
-                    Si la respuesta es sí... ¡entonces déjanos felicitarte! Has
-                    demostrado disciplina, esfuerzo y determinación para llegar
-                    hasta aquí.
+                    🎓 Has demostrado disciplina, esfuerzo y compromiso para llegar
+                    hasta aquí. Completar este proceso académico es un gran logro y
+                    queremos felicitarte por ello.
                   </p>
 
                   <p>
-                    Este logro representa mucho más que un certificado: es el
-                    reflejo de tu crecimiento personal, académico y profesional.
+                    ✨ Este certificado representa mucho más que un documento: es el
+                    reflejo de tu crecimiento personal, profesional y académico.
                   </p>
 
                   <p>
-                    Ahora puedes solicitar tu certificado oficial y, si lo
-                    deseas, adquirir reconocimientos adicionales.
+                    🚀 Ahora ya puedes solicitar tu certificado oficial y, si lo deseas,
+                    adquirir reconocimientos adicionales para destacar aún más tu logro.
+                  </p>
+
+                  <p>
+                    🎊 ¡Gracias por confiar en CUMANDÁ y ser parte de esta experiencia
+                    formativa!
                   </p>
                 </div>
 
@@ -381,7 +388,7 @@ export const RegistroPagos = () => {
                   <div className="pagos_check_container">
                     <label className="pagos_check_legal">
                       <span>
-                        Confirmo que la información mostrada es verídica y
+                        ⚠️ <strong>IMPORTANTE:</strong>  <hr />📝  Confirmo que la información mostrada es verídica y
                         autorizo su uso para la emisión del certificado. En caso
                         de requerir correcciones, contactar al equipo de
                         soporte.
