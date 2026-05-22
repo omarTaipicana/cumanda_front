@@ -424,32 +424,32 @@ export const RegistroPagos = () => {
             <div className="pagos_panel solo_imagen">
 
               <div className="pagos_panel_badge">
-  💳 Guía de pago
-</div>
+                💳 Guía de pago
+              </div>
 
-<img
-  src="/images/pago_all5.jpeg"
-  alt="Información de pago"
-  className="pagos_img_full"
-/>
+              <img
+                src="/images/pago_all5.jpeg"
+                alt="Información de pago"
+                className="pagos_img_full"
+              />
 
-<button
-  type="button"
-  className="btn_copiar_cuenta"
-  onClick={(e) => {
-    navigator.clipboard.writeText("2214723388");
+              <button
+                type="button"
+                className="btn_copiar_cuenta"
+                onClick={(e) => {
+                  navigator.clipboard.writeText("2214723388");
 
-    const btn = e.target;
-    btn.innerText = "✅ ¡Copiado!";
+                  const btn = e.target;
+                  btn.innerText = "✅ ¡Copiado!";
 
-    setTimeout(() => {
-      btn.innerText = "📋 Copiar cuenta";
-    }, 2000);
-  }}
->
-  📋 Copiar cuenta
-</button>
-              
+                  setTimeout(() => {
+                    btn.innerText = "📋 Copiar cuenta";
+                  }, 2000);
+                }}
+              >
+                📋 Copiar cuenta
+              </button>
+
             </div>
           </aside>
         </div>

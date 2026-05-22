@@ -527,7 +527,7 @@
   max-height: 100%;
   object-fit: contain;
   border-radius: 1.05rem;
-  box-shadow: 0 1rem 2rem rgba(54, 87, 14, 0.18);
+  box-shadow: 0 1rem 2rem #36570e2e;
   background: #ffffff;
 }
 
@@ -544,9 +544,9 @@
 
   background:
     linear-gradient(135deg,
-      #b8e124 0%,
-      #7fab26 45%,
-      #9ccd42 100%);
+      #0e1b02 0%,
+      #1e3905 45%,
+      #1e3905 100%);
 
   color: #ffffff;
 

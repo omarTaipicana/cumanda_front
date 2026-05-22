@@ -499,11 +499,11 @@ const RegistroAlumnos = () => {
                         missing.grado ||
                         missing.subsistema ||
                         missing.celular) && (
-                        <p className="mensaje_inscripcion">
-                          Tu perfil está incompleto. Completa los campos
-                          faltantes para continuar con la inscripción.
-                        </p>
-                      )}
+                          <p className="mensaje_inscripcion">
+                            Tu perfil está incompleto. Completa los campos
+                            faltantes para continuar con la inscripción.
+                          </p>
+                        )}
                     </div>
                   )}
 
@@ -758,11 +758,17 @@ const RegistroAlumnos = () => {
 
                   <div className="form_check_container">
                     <label className="form_check_label">
-                      Acepto recibir correos electrónicos con información sobre
-                      los cursos y otros contenidos relacionados. Entiendo que
-                      mis datos serán tratados de acuerdo con la política de
-                      privacidad y que puedo dejar de recibirlos en cualquier
-                      momento.
+                      <span>
+                        ⚠️ <strong>IMPORTANTE:</strong> <hr />Verifica cuidadosamente que tus
+                        nombres, apellidos y demás datos sean correctos, ya que esta
+                        información será utilizada para la generación del certificado
+                        correspondiente.
+                        <br />
+                        <br />
+                        📩 Asi mismo acepto recibir información sobre cursos, contenidos y
+                        comunicaciones académicas relacionadas.
+                      </span>
+
                       <input
                         type="checkbox"
                         {...register("aceptacion", {

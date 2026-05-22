@@ -54,7 +54,6 @@ const Cmcsce = () => {
 
         <div className="cmcsce_layout">
           <aside className="cmcsce_sidebar">
-            <span className="cmcsce_label">CUMANDÁ · Curso Internacional</span>
 
             <h1 className="cmcsce_main_title">
               Curso de Manejo de Conflictos Sociales y Crisis Emocionales
@@ -68,8 +67,8 @@ const Cmcsce = () => {
 
             <div className="cmcsce_stats">
               <div className="cmcsce_stat">
-                <strong>8</strong>
-                <span>Semanas</span>
+                <strong>Certificación</strong>
+                <span>Oficial</span>
               </div>
 
               <div className="cmcsce_stat">
