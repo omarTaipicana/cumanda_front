@@ -705,6 +705,127 @@
   }
 }
 
+
+
+.registro_modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 1rem;
+
+  background: rgba(20, 35, 8, 0.72);
+
+  backdrop-filter: blur(6px);
+}
+
+.registro_modal_aviso {
+  width: 100%;
+  max-width: 560px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f8fbf2 100%
+    );
+
+  border-radius: 1.8rem;
+
+  padding: 2rem 1.8rem;
+
+  border: 1px solid rgba(156, 205, 66, 0.24);
+  border-top: 6px solid #568416;
+
+  text-align: center;
+
+  box-shadow:
+    0 1.5rem 3rem rgba(54, 87, 14, 0.24);
+
+  animation: modalFadeCumanda 0.28s ease;
+}
+
+.registro_modal_icon {
+  font-size: 3rem;
+  margin-bottom: 0.8rem;
+}
+
+.registro_modal_aviso h2 {
+  margin: 0 0 1rem;
+
+  color: #2f4f0f;
+
+  font-size: 2rem;
+  font-weight: 950;
+}
+
+.registro_modal_aviso p {
+  margin: 0 0 1rem;
+
+  color: #42512d;
+
+  line-height: 1.8;
+
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.registro_modal_btn {
+  margin-top: 0.6rem;
+
+  min-height: 54px;
+
+  padding: 0 1.6rem;
+
+  border: none;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #568416 0%,
+      #7fab26 48%,
+      #9ccd42 100%
+    );
+
+  color: #ffffff;
+
+  font-size: 1rem;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 1rem 2rem rgba(86, 132, 22, 0.24);
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+.registro_modal_btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
+
+@keyframes modalFadeCumanda {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+
 /* ============================
    RESPONSIVE
 ============================ */
@@ -843,5 +964,69 @@
 
   .btn_cerrar_existente {
     width: 100%;
+  }
+  
+}
+
+@media (max-width: 768px) {
+  .registro_modal_overlay {
+    align-items: flex-start;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .registro_modal_aviso {
+    margin-top: 2rem;
+    max-width: 100%;
+    padding: 1.6rem 1.2rem;
+    border-radius: 1.35rem;
+  }
+
+  .registro_modal_icon {
+    font-size: 2.4rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .registro_modal_aviso h2 {
+    font-size: 1.55rem;
+  }
+
+  .registro_modal_aviso p {
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
+
+  .registro_modal_btn {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .registro_modal_overlay {
+    padding: 0.75rem;
+  }
+
+  .registro_modal_aviso {
+    margin-top: 1.2rem;
+    padding: 1.35rem 1rem;
+    border-radius: 1.15rem;
+  }
+
+  .registro_modal_icon {
+    font-size: 2.1rem;
+  }
+
+  .registro_modal_aviso h2 {
+    font-size: 1.35rem;
+  }
+
+  .registro_modal_aviso p {
+    font-size: 0.9rem;
+  }
+
+  .registro_modal_btn {
+    font-size: 0.95rem;
   }
 }

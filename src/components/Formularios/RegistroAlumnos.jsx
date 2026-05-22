@@ -27,6 +27,7 @@ const RegistroAlumnos = () => {
   const [inscripcionExistente, setInscripcionExistente] = useState(null);
   const [userValidacion, setUserValidacion] = useState(null);
   const [userRegister, setUserRegister] = useState(null);
+  const [showAvisoRegistro, setShowAvisoRegistro] = useState(false);
 
   const {
     register,
@@ -106,9 +107,11 @@ const RegistroAlumnos = () => {
   };
 
   useEffect(() => {
-    if (validate) {
-      setUserValidacion(validate);
+    if (validate && !validate?.enrolled) {
       setUserRegister(validate.user);
+
+      // abre modal primero
+      setShowAvisoRegistro(true);
     }
   }, [validate]);
 
@@ -287,6 +290,40 @@ const RegistroAlumnos = () => {
   return (
     <div className="registro_container">
       {isLoading2 && <IsLoading />}
+
+      {showAvisoRegistro && (
+        <div className="registro_modal_overlay">
+          <div className="registro_modal_aviso">
+            <div className="registro_modal_icon">🎓📩</div>
+
+            <h2>¡Antes de continuar!</h2>
+
+            <p>
+              🔑 Las claves de acceso a la plataforma educativa llegan
+              automáticamente al correo electrónico registrado durante la
+              inscripción.
+            </p>
+
+            <p>✅ Revisa también la bandeja de spam o correo no deseado.</p>
+
+            <p>
+              ⚠️ Verifica cuidadosamente tus nombres, apellidos y correo
+              electrónico, ya que estos datos serán utilizados para tu
+              inscripción y generación del certificado.
+            </p>
+
+            <button
+              className="registro_modal_btn"
+              onClick={() => {
+                setShowAvisoRegistro(false);
+                setUserValidacion(validate);
+              }}
+            >
+              Entendido, continuar
+            </button>
+          </div>
+        </div>
+      )}
 
       {!userValidacion ? (
         <section className="registro_landing">
@@ -499,11 +536,11 @@ const RegistroAlumnos = () => {
                         missing.grado ||
                         missing.subsistema ||
                         missing.celular) && (
-                          <p className="mensaje_inscripcion">
-                            Tu perfil está incompleto. Completa los campos
-                            faltantes para continuar con la inscripción.
-                          </p>
-                        )}
+                        <p className="mensaje_inscripcion">
+                          Tu perfil está incompleto. Completa los campos
+                          faltantes para continuar con la inscripción.
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -759,14 +796,12 @@ const RegistroAlumnos = () => {
                   <div className="form_check_container">
                     <label className="form_check_label">
                       <span>
-                        ⚠️ <strong>IMPORTANTE:</strong> <hr />Verifica cuidadosamente que tus
-                        nombres, apellidos y demás datos sean correctos, ya que esta
-                        información será utilizada para la generación del certificado
-                        correspondiente.
-                        <br />
-                        <br />
-                        📩 Asi mismo acepto recibir información sobre cursos, contenidos y
-                        comunicaciones académicas relacionadas.
+                        ⚠️ <strong>IMPORTANTE:</strong> <hr />
+                        Acepto recibir correos electrónicos con información
+                        sobre los cursos y otros contenidos relacionados.
+                        Entiendo que mis datos serán tratados de acuerdo con la
+                        política de privacidad y que puedo dejar de recibirlos
+                        en cualquier momento.
                       </span>
 
                       <input

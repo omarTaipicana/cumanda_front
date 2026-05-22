@@ -88,7 +88,7 @@ export const RegistroPagos = () => {
           showAlert({
             message: newValidate?.message,
             alertType: 2,
-          })
+          }),
         );
       }
     }
@@ -132,7 +132,7 @@ export const RegistroPagos = () => {
         showAlert({
           message: `✅ Estimado/a ${usuario?.firstName} ${usuario?.lastName}, se registró tu pago de $${newUpload.valorDepositado} por el certificado${extrasTexto}.`,
           alertType: 2,
-        })
+        }),
       );
 
       setUsuario(null);
@@ -236,35 +236,45 @@ export const RegistroPagos = () => {
         }}
       />
 
-      <section className="pagos_hero_intro">
-        <span className="pagos_hero_badge">CUMANDÁ · Registro de pagos</span>
+      <section className="content_pagos_hero">
+        <section className="pagos_hero_intro">
+          <span className="pagos_hero_badge">CUMANDÁ · Registro de pagos</span>
 
-        <h1 className="pagos_hero_title">
-          {usuario ? "Completa tu registro de pago" : "Solicita tu certificado"}
-        </h1>
+          <h1 className="pagos_hero_title">
+            {usuario
+              ? "Completa tu registro de pago"
+              : "Solicita tu certificado"}
+          </h1>
 
-        <p className="pagos_hero_text">
-          Verifica tu inscripción, sube tu comprobante y continúa el proceso
-          para la emisión de tu certificado oficial y reconocimientos
-          adicionales.
-        </p>
+          <p className="pagos_hero_text">
+            Verifica tu inscripción, sube tu comprobante y continúa el proceso
+            para la emisión de tu certificado oficial y reconocimientos
+            adicionales.
+          </p>
 
-        <div className="pagos_hero_stats">
-          <div className="pagos_hero_stat">
-            <strong>01</strong>
-            <span>Validación</span>
+          <div className="pagos_hero_stats">
+            <div className="pagos_hero_stat">
+              <strong>01</strong>
+              <span>Validación</span>
+            </div>
+
+            <div className="pagos_hero_stat">
+              <strong>02</strong>
+              <span>Comprobante</span>
+            </div>
+
+            <div className="pagos_hero_stat">
+              <strong>03</strong>
+              <span>Certificación</span>
+            </div>
           </div>
+        </section>
 
-          <div className="pagos_hero_stat">
-            <strong>02</strong>
-            <span>Comprobante</span>
-          </div>
-
-          <div className="pagos_hero_stat">
-            <strong>03</strong>
-            <span>Certificación</span>
-          </div>
-        </div>
+        <img
+          src="/images/cert.jpeg"
+          alt="Información de pago"
+          className="cert_img"
+        />
       </section>
 
       <main className="pagos_container">
@@ -283,24 +293,26 @@ export const RegistroPagos = () => {
                   <h2>🥳 ¡Lo lograste!</h2>
 
                   <p>
-                    🎓 Has demostrado disciplina, esfuerzo y compromiso para llegar
-                    hasta aquí. Completar este proceso académico es un gran logro y
-                    queremos felicitarte por ello.
+                    🎓 Has demostrado disciplina, esfuerzo y compromiso para
+                    llegar hasta aquí. Completar este proceso académico es un
+                    gran logro y queremos felicitarte por ello.
                   </p>
 
                   <p>
-                    ✨ Este certificado representa mucho más que un documento: es el
-                    reflejo de tu crecimiento personal, profesional y académico.
+                    ✨ Este certificado representa mucho más que un documento:
+                    es el reflejo de tu crecimiento personal, profesional y
+                    académico.
                   </p>
 
                   <p>
-                    🚀 Ahora ya puedes solicitar tu certificado oficial y, si lo deseas,
-                    adquirir reconocimientos adicionales para destacar aún más tu logro.
+                    🚀 Ahora ya puedes solicitar tu certificado oficial y, si lo
+                    deseas, adquirir reconocimientos adicionales para destacar
+                    aún más tu logro.
                   </p>
 
                   <p>
-                    🎊 ¡Gracias por confiar en CUMANDÁ y ser parte de esta experiencia
-                    formativa!
+                    🎊 ¡Gracias por confiar en CUMANDÁ y ser parte de esta
+                    experiencia formativa!
                   </p>
                 </div>
 
@@ -324,7 +336,9 @@ export const RegistroPagos = () => {
               <form className="pagos_form_dos" onSubmit={handleSubmit(submit)}>
                 <div>
                   <div className="pagos_datos_usuario">
-                    <span className="pagos_section_badge">Datos del participante</span>
+                    <span className="pagos_section_badge">
+                      Datos del participante
+                    </span>
 
                     {cursoActual && <h2>{cursoActual.nombre}</h2>}
 
@@ -388,7 +402,8 @@ export const RegistroPagos = () => {
                   <div className="pagos_check_container">
                     <label className="pagos_check_legal">
                       <span>
-                        ⚠️ <strong>IMPORTANTE:</strong>  <hr />📝  Confirmo que la información mostrada es verídica y
+                        ⚠️ <strong>IMPORTANTE:</strong> <hr />
+                        📝 Confirmo que la información mostrada es verídica y
                         autorizo su uso para la emisión del certificado. En caso
                         de requerir correcciones, contactar al equipo de
                         soporte.
@@ -422,10 +437,7 @@ export const RegistroPagos = () => {
 
           <aside className="pagos_right pagos_animate_right">
             <div className="pagos_panel solo_imagen">
-
-              <div className="pagos_panel_badge">
-                💳 Guía de pago
-              </div>
+              <div className="pagos_panel_badge">💳 Guía de pago</div>
 
               <img
                 src="/images/pago_all5.jpeg"
@@ -449,7 +461,6 @@ export const RegistroPagos = () => {
               >
                 📋 Copiar cuenta
               </button>
-
             </div>
           </aside>
         </div>
