@@ -271,7 +271,7 @@ export const RegistroPagos = () => {
         </section>
 
         <img
-          src="/images/cert.jpeg"
+          src="/images/cert.jpg"
           alt="Información de pago"
           className="cert_img"
         />
