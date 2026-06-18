@@ -58,11 +58,10 @@ const Secretaria = () => {
 
     cargaTimeoutRef.current = setTimeout(() => {
       getUsers(
-        `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&page=${pagina}&limit=${limite}`
+        `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&page=${pagina}&limit=${limite}`,
       );
     }, 2000); // 2 segundos de espera
   };
-
 
   const PATH_INSCRIPCIONES = "/inscripcion";
   const PATH_COURSES = "/courses";
@@ -116,7 +115,7 @@ const Secretaria = () => {
     const actualizarUsuarios = () => {
       const f = filtrosRef.current; // usamos los valores actuales de los filtros
       getUsers(
-        `/users?cedula=${f.cedula}&search=${f.nombre}&notaFinal=${f.notaFinal}&acces=${f.acces}&pagos=${f.pagos}&certificado=${f.certificado}&curso=${f.curso}&page=${f.page}`
+        `/users?cedula=${f.cedula}&search=${f.nombre}&notaFinal=${f.notaFinal}&acces=${f.acces}&pagos=${f.pagos}&certificado=${f.certificado}&curso=${f.curso}&page=${f.page}`,
       );
     };
 
@@ -139,7 +138,7 @@ const Secretaria = () => {
 
   useEffect(() => {
     getUsers(
-      `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&page=${paginaActual}`
+      `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&page=${paginaActual}`,
     );
   }, [
     cedulaBuscada,
@@ -166,13 +165,13 @@ const Secretaria = () => {
 
   const users = usersAll
     ? {
-      ...usersAll,
-      data: usersAll.data
-        ? usersAll.data
-          .slice()
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        : [],
-    }
+        ...usersAll,
+        data: usersAll.data
+          ? usersAll.data
+              .slice()
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          : [],
+      }
     : { total: 0, page: 1, limit: 10, totalPages: 1, data: [] };
 
   const [
@@ -212,7 +211,8 @@ const Secretaria = () => {
         const u = i.user;
         if (!u?.cI) return;
 
-        const fullName = `${u.firstName || ""} ${u.lastName || ""}`.toLowerCase();
+        const fullName =
+          `${u.firstName || ""} ${u.lastName || ""}`.toLowerCase();
         const ci = String(u.cI);
 
         // match por nombre o por cédula
@@ -226,10 +226,6 @@ const Secretaria = () => {
 
       setSugerencias(Array.from(mapaUnicos.values()).slice(0, 10));
     }, 300);
-
-
-
-
   }, [inputNombreDiferido, inscripciones]);
 
   const handleSelect = (section) => {
@@ -283,7 +279,8 @@ const Secretaria = () => {
 
   // Al seleccionar sugerencia llenamos input y vaciamos sugerencias
   const seleccionarSugerencia = (sug) => {
-    const nombre = `${sug.user?.firstName || ""} ${sug.user?.lastName || ""}`.trim();
+    const nombre =
+      `${sug.user?.firstName || ""} ${sug.user?.lastName || ""}`.trim();
     const ci = sug.user?.cI || "";
 
     // 1) llenar inputs visibles (opcional pero recomendado)
@@ -303,8 +300,6 @@ const Secretaria = () => {
     // 5) ✅ opcional: reset a página 1
     setPaginaActual(1);
   };
-
-
 
   const handleBuscar = () => {
     setCedulaBuscada(inputCedula);
@@ -375,7 +370,7 @@ const Secretaria = () => {
     const sugerencias = certificados.filter((c) =>
       `${c.nombres} ${c.apellidos}`
         .toLowerCase()
-        .includes(nombreCertificado.toLowerCase())
+        .includes(nombreCertificado.toLowerCase()),
     );
     setSugerenciasCertificados(sugerencias.slice(0, 5)); // máx 5 sugerencias
   }, [nombreCertificado, certificados]);
@@ -402,8 +397,9 @@ const Secretaria = () => {
       <div className="secretaria_container secShell">
         <button
           ref={hamburgerRef}
-          className={`secretaria_hamburger secHamburger ${menuOpen ? "is-open" : ""
-            }`}
+          className={`secretaria_hamburger secHamburger ${
+            menuOpen ? "is-open" : ""
+          }`}
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
@@ -418,13 +414,18 @@ const Secretaria = () => {
           ref={menuRef}
         >
           <div className="secMenuHeader">
-            <img src="/images/cumanda_sf.png" alt="Eduka" className="secMenuLogo" />
+            <img
+              src="/images/cumanda_sf.png"
+              alt="Eduka"
+              className="secMenuLogo"
+            />
             <p className="secMenuSubtitle">Panel Secretaría</p>
           </div>
 
           <button
-            className={`menu-btn secMenuBtn ${activeSection === "inscripciones" ? "active" : ""
-              }`}
+            className={`menu-btn secMenuBtn ${
+              activeSection === "inscripciones" ? "active" : ""
+            }`}
             onClick={() => handleSelect("inscripciones")}
           >
             🔎 Buscador
@@ -438,8 +439,9 @@ const Secretaria = () => {
           </button>
 
           <button
-            className={`menu-btn secMenuBtn ${activeSection === "certificados" ? "active" : ""
-              }`}
+            className={`menu-btn secMenuBtn ${
+              activeSection === "certificados" ? "active" : ""
+            }`}
             onClick={() => handleSelect("certificados")}
           >
             🎓 Certificados
@@ -484,18 +486,25 @@ const Secretaria = () => {
                           className="sugerencia_item secSuggestItem"
                           role="option"
                         >
-                          {sug.user?.firstName} {sug.user?.lastName} — {sug.user?.cI}
+                          {sug.user?.firstName} {sug.user?.lastName} —{" "}
+                          {sug.user?.cI}
                         </li>
                       ))}
                     </ul>
                   )}
                 </div>
 
-                <button className="btn_buscar secBtnPrimary" onClick={handleBuscar}>
+                <button
+                  className="btn_buscar secBtnPrimary"
+                  onClick={handleBuscar}
+                >
                   🔍 Buscar
                 </button>
 
-                <button className="btn_limpiar_filtros secBtnDanger" onClick={limpiarFiltros}>
+                <button
+                  className="btn_limpiar_filtros secBtnDanger"
+                  onClick={limpiarFiltros}
+                >
                   ❌ Borrar filtros
                 </button>
               </div>
@@ -529,42 +538,45 @@ const Secretaria = () => {
                           <strong>Cursos Inscrito:</strong> <br />
                           {i.courses && i.courses.length > 0
                             ? i.courses.map((curso) => (
-                              <div key={curso.id} style={{ marginBottom: "8px" }}>
-                                <hr />
-                                <span>✅ {curso.fullname}</span>
-                                <br />
-                                <span>
-                                  <strong>Fecha de inscripción:</strong>{" "}
-                                  {curso.createdAt
-                                    ? new Date(curso.createdAt)
-                                      .toLocaleString("es-EC", {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        second: "2-digit",
-                                        hour12: false,
-                                        timeZone: "America/Guayaquil",
-                                      })
-                                      .replace(",", "")
-                                    : "No encontrado"}
-                                </span>
-                                <br />
-                                <span>
-                                  <strong>Matricula:</strong>{" "}
-                                  {curso.matriculado
-                                    ? "Matriculado en Acadex"
-                                    : "Aun no registra matricula"}
-                                </span>
-                                <br />
-                                <span>
-                                  <strong>Calificación:</strong>{" "}
-                                  {curso.grades["Nota Final"]}
-                                </span>
-                                <hr />
-                              </div>
-                            ))
+                                <div
+                                  key={curso.id}
+                                  style={{ marginBottom: "8px" }}
+                                >
+                                  <hr />
+                                  <span>✅ {curso.fullname}</span>
+                                  <br />
+                                  <span>
+                                    <strong>Fecha de inscripción:</strong>{" "}
+                                    {curso.createdAt
+                                      ? new Date(curso.createdAt)
+                                          .toLocaleString("es-EC", {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            second: "2-digit",
+                                            hour12: false,
+                                            timeZone: "America/Guayaquil",
+                                          })
+                                          .replace(",", "")
+                                      : "No encontrado"}
+                                  </span>
+                                  <br />
+                                  <span>
+                                    <strong>Matricula:</strong>{" "}
+                                    {curso.matriculado
+                                      ? "Matriculado en Acadex"
+                                      : "Aun no registra matricula"}
+                                  </span>
+                                  <br />
+                                  <span>
+                                    <strong>Calificación:</strong>{" "}
+                                    {curso.grades["Nota Final"]}
+                                  </span>
+                                  <hr />
+                                </div>
+                              ))
                             : "No encontrado"}
                         </article>
                       </div>
@@ -585,10 +597,14 @@ const Secretaria = () => {
                                       </p>
                                       <p>Monto: ${pago.valorDepositado}</p>
                                       {pago.moneda && <p>💰 Incluye moneda</p>}
-                                      {pago.distintivo && <p>🎖️ Incluye distintivo</p>}
+                                      {pago.distintivo && (
+                                        <p>🎖️ Incluye distintivo</p>
+                                      )}
                                       <p>
                                         Estado:{" "}
-                                        {pago.verificado ? "✅ Verificado" : "⏳ Por verificar"}
+                                        {pago.verificado
+                                          ? "✅ Verificado"
+                                          : "⏳ Por verificar"}
                                       </p>
 
                                       {pago.pagoUrl && (
@@ -605,7 +621,9 @@ const Secretaria = () => {
                                     </div>
                                   ))
                                 ) : (
-                                  <p className="secMuted">Sin pagos registrados.</p>
+                                  <p className="secMuted">
+                                    Sin pagos registrados.
+                                  </p>
                                 )}
                               </div>
                             </div>
@@ -781,7 +799,7 @@ const Secretaria = () => {
                       (n) =>
                         n === 1 ||
                         n === totalPaginas ||
-                        (n >= paginaActual - 2 && n <= paginaActual + 2)
+                        (n >= paginaActual - 2 && n <= paginaActual + 2),
                     )
                     .map((n, idx, arr) => (
                       <React.Fragment key={n}>
@@ -879,7 +897,9 @@ const Secretaria = () => {
                               </td>
                               <td rowSpan={cursos.length}>
                                 {(() => {
-                                  const celular = String(usuario.cellular || "").replace(/\D/g, "");
+                                  const celular = String(
+                                    usuario.cellular || "",
+                                  ).replace(/\D/g, "");
 
                                   if (!celular || celular.length < 9) {
                                     return usuario.cellular || "";
@@ -906,29 +926,40 @@ const Secretaria = () => {
                                     </a>
                                   );
                                 })()}
-                              </td>                            </>
+                              </td>{" "}
+                            </>
                           )}
 
                           <td className="col-curso">{curso.fullname}</td>
-                          <td>{curso.grades?.["Nota Final"] ?? "Sin calificación"}</td>
+                          <td>
+                            {curso.grades?.["Nota Final"] ?? "Sin calificación"}
+                          </td>
                           <td>{curso.matriculado ? "✅" : "❌"}</td>
                           <td>{curso.acces ? "✅" : "❌"}</td>
 
                           <td>
                             {curso.pagos?.length
                               ? curso.pagos.map((pago, i) => (
-                                <div key={pago.id}>
-                                  <a href={pago.pagoUrl} target="_blank" rel="noopener noreferrer">
-                                    Pago {i + 1}
-                                  </a>
-                                </div>
-                              ))
+                                  <div key={pago.id}>
+                                    <a
+                                      href={pago.pagoUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      Pago {i + 1}
+                                    </a>
+                                  </div>
+                                ))
                               : "----"}
                           </td>
 
                           <td>
                             {curso.certificado?.url ? (
-                              <a href={curso.certificado.url} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={curso.certificado.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 Ver
                               </a>
                             ) : (
@@ -936,7 +967,9 @@ const Secretaria = () => {
                             )}
                           </td>
 
-                          <td className="celda-observacion">
+                          {console.log(curso)}
+
+                          <td className="celda-observacion tooltip-observacion">
                             {editInscripcionId === curso.id ? (
                               <input
                                 type="text"
@@ -945,7 +978,23 @@ const Secretaria = () => {
                                 className="vp-input"
                               />
                             ) : curso.observacion ? (
-                              curso.observacion
+                              <>
+                                {curso.observacion}
+                                <span className="tooltip-text">
+                                  Registrado el:{" "}
+                                  {new Date(curso.updatedAt).toLocaleString(
+                                    "es-EC",
+                                    {
+                                      timeZone: "America/Guayaquil",
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
+                                </span>
+                              </>
                             ) : (
                               "👍"
                             )}
@@ -960,7 +1009,10 @@ const Secretaria = () => {
                                 >
                                   Guardar
                                 </button>
-                                <button onClick={cancelarEdicion} className="vp-btn-cancel">
+                                <button
+                                  onClick={cancelarEdicion}
+                                  className="vp-btn-cancel"
+                                >
                                   Cancelar
                                 </button>
                               </>
@@ -1027,17 +1079,24 @@ const Secretaria = () => {
                   )}
                 </div>
 
-                <button className="btn_buscar secBtnPrimary" onClick={handleBuscarCertificados}>
+                <button
+                  className="btn_buscar secBtnPrimary"
+                  onClick={handleBuscarCertificados}
+                >
                   🔍 Buscar
                 </button>
 
-                <button className="btn_limpiar_filtros secBtnDanger" onClick={limpiarFiltrosCertificados}>
+                <button
+                  className="btn_limpiar_filtros secBtnDanger"
+                  onClick={limpiarFiltrosCertificados}
+                >
                   ❌ Borrar filtros
                 </button>
               </div>
 
               {certificadosFiltrados.length === 0 ? (
-                nombreCertificado.trim() === "" && cedulaCertificado.trim() === "" ? (
+                nombreCertificado.trim() === "" &&
+                cedulaCertificado.trim() === "" ? (
                   <p className="mensaje_sin_resultados secEmpty">
                     ✍️ Por favor, ingrese un criterio de búsqueda para comenzar.
                   </p>
@@ -1063,9 +1122,13 @@ const Secretaria = () => {
                         <strong>Curso:</strong>{" "}
                         {(() => {
                           const cursoEncontrado = courses.find(
-                            (course) => course.sigla.toLowerCase() === c.curso.toLowerCase()
+                            (course) =>
+                              course.sigla.toLowerCase() ===
+                              c.curso.toLowerCase(),
                           );
-                          return cursoEncontrado ? cursoEncontrado.nombre : c.curso;
+                          return cursoEncontrado
+                            ? cursoEncontrado.nombre
+                            : c.curso;
                         })()}
                       </p>
 
@@ -1080,7 +1143,9 @@ const Secretaria = () => {
                       </p>
 
                       {c.urlDeposito === "EXTERNO" ? (
-                        <p className="pendiente_certificado">🌐 Comprobante externo</p>
+                        <p className="pendiente_certificado">
+                          🌐 Comprobante externo
+                        </p>
                       ) : (
                         <a
                           className="btn_ver_comprobante secBtnLink"
@@ -1104,7 +1169,9 @@ const Secretaria = () => {
                           🎓 Ver certificado
                         </a>
                       ) : (
-                        <p className="pendiente_certificado">📌 Por certificar</p>
+                        <p className="pendiente_certificado">
+                          📌 Por certificar
+                        </p>
                       )}
                     </div>
                   ))}
