@@ -21,6 +21,7 @@ const Secretaria = () => {
   const [nombreBuscado, setNombreBuscado] = useState("");
   const [filtroPago, setFiltroPago] = useState("");
   const [filtroCertificado, setFiltroCertificado] = useState("");
+  const [filtroObservacion, setFiltroObservacion] = useState("");
   const [filtroDetalle, setFiltroDetalle] = useState("");
   const [filtroUltimoAcceso, setFiltroUltimoAcceso] = useState("");
   const [filtroCurso, setFiltroCurso] = useState("");
@@ -58,7 +59,7 @@ const Secretaria = () => {
 
     cargaTimeoutRef.current = setTimeout(() => {
       getUsers(
-        `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&page=${pagina}&limit=${limite}`,
+        `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&observacion=${filtroObservacion}&page=${pagina}&limit=${limite}`,
       );
     }, 2000); // 2 segundos de espera
   };
@@ -82,6 +83,7 @@ const Secretaria = () => {
     pagos: "",
     certificado: "",
     curso: "",
+    observacion: "",
     page: 1,
   });
 
@@ -95,6 +97,7 @@ const Secretaria = () => {
       pagos: filtroPago,
       certificado: filtroCertificado,
       curso: filtroCurso,
+      observacion: filtroObservacion,
       page: paginaActual,
     };
   }, [
@@ -105,6 +108,7 @@ const Secretaria = () => {
     filtroPago,
     filtroCertificado,
     filtroCurso,
+    filtroObservacion,
     paginaActual,
   ]);
 
@@ -115,7 +119,7 @@ const Secretaria = () => {
     const actualizarUsuarios = () => {
       const f = filtrosRef.current; // usamos los valores actuales de los filtros
       getUsers(
-        `/users?cedula=${f.cedula}&search=${f.nombre}&notaFinal=${f.notaFinal}&acces=${f.acces}&pagos=${f.pagos}&certificado=${f.certificado}&curso=${f.curso}&page=${f.page}`,
+        `/users?cedula=${f.cedula}&search=${f.nombre}&notaFinal=${f.notaFinal}&acces=${f.acces}&pagos=${f.pagos}&certificado=${f.certificado}&curso=${f.curso}&observacion=${f.observacion}&page=${f.page}`,
       );
     };
 
@@ -138,8 +142,7 @@ const Secretaria = () => {
 
   useEffect(() => {
     getUsers(
-      `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&page=${paginaActual}`,
-    );
+      `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&observacion=${filtroObservacion}&page=${paginaActual}`);
   }, [
     cedulaBuscada,
     nombreBuscado,
@@ -147,8 +150,10 @@ const Secretaria = () => {
     filtroPago,
     filtroCertificado,
     filtroCurso,
+    filtroObservacion,
     paginaActual,
     filtroUltimoAcceso,
+    filtroObservacion,
   ]);
 
   useEffect(() => {
@@ -160,18 +165,22 @@ const Secretaria = () => {
     filtroPago,
     filtroCertificado,
     filtroCurso,
+    filtroObservacion,
     filtroUltimoAcceso,
+    filtroObservacion,
   ]);
+
+
 
   const users = usersAll
     ? {
-        ...usersAll,
-        data: usersAll.data
-          ? usersAll.data
-              .slice()
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          : [],
-      }
+      ...usersAll,
+      data: usersAll.data
+        ? usersAll.data
+          .slice()
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        : [],
+    }
     : { total: 0, page: 1, limit: 10, totalPages: 1, data: [] };
 
   const [
@@ -234,6 +243,7 @@ const Secretaria = () => {
     limpiarFiltros();
   };
 
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -271,6 +281,7 @@ const Secretaria = () => {
     setFiltroPago("");
     setFiltroCertificado("");
     setFiltroCurso("");
+    setFiltroObservacion("");
     setFiltroDetalle("");
     setFiltroUltimoAcceso("");
     setBusquedaRealizada(false);
@@ -397,9 +408,8 @@ const Secretaria = () => {
       <div className="secretaria_container secShell">
         <button
           ref={hamburgerRef}
-          className={`secretaria_hamburger secHamburger ${
-            menuOpen ? "is-open" : ""
-          }`}
+          className={`secretaria_hamburger secHamburger ${menuOpen ? "is-open" : ""
+            }`}
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
@@ -423,9 +433,8 @@ const Secretaria = () => {
           </div>
 
           <button
-            className={`menu-btn secMenuBtn ${
-              activeSection === "inscripciones" ? "active" : ""
-            }`}
+            className={`menu-btn secMenuBtn ${activeSection === "inscripciones" ? "active" : ""
+              }`}
             onClick={() => handleSelect("inscripciones")}
           >
             🔎 Buscador
@@ -439,9 +448,8 @@ const Secretaria = () => {
           </button>
 
           <button
-            className={`menu-btn secMenuBtn ${
-              activeSection === "certificados" ? "active" : ""
-            }`}
+            className={`menu-btn secMenuBtn ${activeSection === "certificados" ? "active" : ""
+              }`}
             onClick={() => handleSelect("certificados")}
           >
             🎓 Certificados
@@ -538,45 +546,45 @@ const Secretaria = () => {
                           <strong>Cursos Inscrito:</strong> <br />
                           {i.courses && i.courses.length > 0
                             ? i.courses.map((curso) => (
-                                <div
-                                  key={curso.id}
-                                  style={{ marginBottom: "8px" }}
-                                >
-                                  <hr />
-                                  <span>✅ {curso.fullname}</span>
-                                  <br />
-                                  <span>
-                                    <strong>Fecha de inscripción:</strong>{" "}
-                                    {curso.createdAt
-                                      ? new Date(curso.createdAt)
-                                          .toLocaleString("es-EC", {
-                                            year: "numeric",
-                                            month: "2-digit",
-                                            day: "2-digit",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            second: "2-digit",
-                                            hour12: false,
-                                            timeZone: "America/Guayaquil",
-                                          })
-                                          .replace(",", "")
-                                      : "No encontrado"}
-                                  </span>
-                                  <br />
-                                  <span>
-                                    <strong>Matricula:</strong>{" "}
-                                    {curso.matriculado
-                                      ? "Matriculado en Acadex"
-                                      : "Aun no registra matricula"}
-                                  </span>
-                                  <br />
-                                  <span>
-                                    <strong>Calificación:</strong>{" "}
-                                    {curso.grades["Nota Final"]}
-                                  </span>
-                                  <hr />
-                                </div>
-                              ))
+                              <div
+                                key={curso.id}
+                                style={{ marginBottom: "8px" }}
+                              >
+                                <hr />
+                                <span>✅ {curso.fullname}</span>
+                                <br />
+                                <span>
+                                  <strong>Fecha de inscripción:</strong>{" "}
+                                  {curso.createdAt
+                                    ? new Date(curso.createdAt)
+                                      .toLocaleString("es-EC", {
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        second: "2-digit",
+                                        hour12: false,
+                                        timeZone: "America/Guayaquil",
+                                      })
+                                      .replace(",", "")
+                                    : "No encontrado"}
+                                </span>
+                                <br />
+                                <span>
+                                  <strong>Matricula:</strong>{" "}
+                                  {curso.matriculado
+                                    ? "Matriculado en Acadex"
+                                    : "Aun no registra matricula"}
+                                </span>
+                                <br />
+                                <span>
+                                  <strong>Calificación:</strong>{" "}
+                                  {curso.grades["Nota Final"]}
+                                </span>
+                                <hr />
+                              </div>
+                            ))
                             : "No encontrado"}
                         </article>
                       </div>
@@ -739,6 +747,19 @@ const Secretaria = () => {
                 </div>
 
                 <div className="input_group secInputGroup">
+                  <select
+                    value={filtroObservacion}
+                    onChange={(e) => setFiltroObservacion(e.target.value)}
+                    className="buscador_input secInput"
+                  >
+                    <option value="">Observación</option>
+                    <option value="true">Con observación</option>
+                    <option value="false">Sin observación</option>
+                  </select>
+                </div>
+
+
+                <div className="input_group secInputGroup">
                   <button
                     className="btn_buscar secBtnPrimary"
                     onClick={() => {
@@ -761,6 +782,7 @@ const Secretaria = () => {
                       setFiltroPago("");
                       setFiltroCertificado("");
                       setFiltroCurso("");
+                      setFiltroObservacion("");
                       setFiltroDetalle("");
                       setFiltroUltimoAcceso("");
                     }}
@@ -886,6 +908,8 @@ const Secretaria = () => {
                         );
                       }
 
+
+
                       return cursos.map((curso, idx) => (
                         <tr key={`${usuario.id}-${curso.id}`}>
                           {idx === 0 && (
@@ -940,16 +964,16 @@ const Secretaria = () => {
                           <td>
                             {curso.pagos?.length
                               ? curso.pagos.map((pago, i) => (
-                                  <div key={pago.id}>
-                                    <a
-                                      href={pago.pagoUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      Pago {i + 1}
-                                    </a>
-                                  </div>
-                                ))
+                                <div key={pago.id}>
+                                  <a
+                                    href={pago.pagoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    Pago {i + 1}
+                                  </a>
+                                </div>
+                              ))
                               : "----"}
                           </td>
 
@@ -966,8 +990,6 @@ const Secretaria = () => {
                               "----"
                             )}
                           </td>
-
-                          {console.log(curso)}
 
                           <td className="celda-observacion tooltip-observacion">
                             {editInscripcionId === curso.id ? (
@@ -1096,7 +1118,7 @@ const Secretaria = () => {
 
               {certificadosFiltrados.length === 0 ? (
                 nombreCertificado.trim() === "" &&
-                cedulaCertificado.trim() === "" ? (
+                  cedulaCertificado.trim() === "" ? (
                   <p className="mensaje_sin_resultados secEmpty">
                     ✍️ Por favor, ingrese un criterio de búsqueda para comenzar.
                   </p>
