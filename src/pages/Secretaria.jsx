@@ -40,6 +40,38 @@ const Secretaria = () => {
   const [certificadosFiltrados, setCertificadosFiltrados] = useState([]);
   const [usersData, setUsersData] = useState([]);
 
+  const [showSeguimientoModal, setShowSeguimientoModal] = useState(false);
+
+  const [seguimientoActual, setSeguimientoActual] = useState(null);
+
+  const [seguimientos, setSeguimientos] = useState([]);
+
+  const [resultadoSeguimiento, setResultadoSeguimiento] = useState("");
+
+  const [observacionSeguimiento, setObservacionSeguimiento] = useState("");
+
+  const [proximoContacto, setProximoContacto] = useState("");
+
+
+  const [modalSeguimientoAbierto, setModalSeguimientoAbierto] = useState(false);
+  const [cursoSeguimiento, setCursoSeguimiento] = useState(null);
+  const [usuarioSeguimiento, setUsuarioSeguimiento] = useState(null);
+  const [historialSeguimiento, setHistorialSeguimiento] = useState(null);
+  const [cargandoSeguimiento, setCargandoSeguimiento] = useState(false);
+  const [errorSeguimiento, setErrorSeguimiento] = useState("");
+
+  const [mostrarFormularioSeguimiento, setMostrarFormularioSeguimiento] =
+    useState(false);
+
+  const [proximoContactoSeguimiento, setProximoContactoSeguimiento] =
+    useState("");
+
+  const [guardandoSeguimiento, setGuardandoSeguimiento] = useState(false);
+  const [errorGuardarSeguimiento, setErrorGuardarSeguimiento] = useState("");
+  const [mensajeSeguimiento, setMensajeSeguimiento] = useState("");
+
+
+
   // Debajo de tus useState, define:
   const cargaTimeoutRef = useRef(null);
 
@@ -71,8 +103,172 @@ const Secretaria = () => {
 
   const [courses, getCourses] = useCrud();
   const [usersAll, getUsers, , , , , isLoading] = useCrud();
+  const [
+    seguimientoData,
+    getSeguimientos,
+    createSeguimiento,
+  ] = useCrud();
+
+
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
+
+  const abrirSeguimiento = async (curso) => {
+    setSeguimientoActual(curso);
+
+    await getSeguimientos(
+      `/seguimiento_inscripcion/${curso.id}`
+    );
+
+    setShowSeguimientoModal(true);
+  };
+
+  const abrirModalSeguimiento = async (usuario, curso) => {
+    setUsuarioSeguimiento(usuario);
+    setCursoSeguimiento(curso);
+    setModalSeguimientoAbierto(true);
+
+    setHistorialSeguimiento(null);
+    setMostrarFormularioSeguimiento(false);
+    setResultadoSeguimiento("");
+    setObservacionSeguimiento("");
+    setProximoContactoSeguimiento("");
+    setErrorGuardarSeguimiento("");
+    setMensajeSeguimiento("");
+
+    await cargarHistorialSeguimiento(curso.id);
+  };
+
+  const cerrarModalSeguimiento = () => {
+    if (guardandoSeguimiento) return;
+
+    setModalSeguimientoAbierto(false);
+    setCursoSeguimiento(null);
+    setUsuarioSeguimiento(null);
+    setHistorialSeguimiento(null);
+
+    setMostrarFormularioSeguimiento(false);
+    setResultadoSeguimiento("");
+    setObservacionSeguimiento("");
+    setProximoContactoSeguimiento("");
+
+    setErrorSeguimiento("");
+    setErrorGuardarSeguimiento("");
+    setMensajeSeguimiento("");
+  };
+
+
+  const cargarHistorialSeguimiento = async (inscripcionId) => {
+    setCargandoSeguimiento(true);
+    setErrorSeguimiento("");
+
+    try {
+      const response = await fetch(
+        `${BASEURL}/seguimiento_inscripcion/${inscripcionId}`,
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+
+        throw new Error(
+          errorData?.message ||
+          "No se pudo obtener el historial de seguimiento.",
+        );
+      }
+
+      const data = await response.json();
+      setHistorialSeguimiento(data);
+    } catch (error) {
+      console.error("Error al cargar seguimiento:", error);
+
+      setErrorSeguimiento(
+        error.message || "No se pudo cargar el historial.",
+      );
+    } finally {
+      setCargandoSeguimiento(false);
+    }
+  };
+
+  const registrarSeguimiento = async (event) => {
+    event.preventDefault();
+
+    setErrorGuardarSeguimiento("");
+    setMensajeSeguimiento("");
+
+    if (!cursoSeguimiento?.id) {
+      setErrorGuardarSeguimiento(
+        "No se encontró la inscripción seleccionada.",
+      );
+      return;
+    }
+
+    if (!resultadoSeguimiento) {
+      setErrorGuardarSeguimiento(
+        "Selecciona el resultado de la llamada.",
+      );
+      return;
+    }
+
+    if (!observacionSeguimiento.trim()) {
+      setErrorGuardarSeguimiento(
+        "Escribe lo que indicó el cliente.",
+      );
+      return;
+    }
+
+    setGuardandoSeguimiento(true);
+
+    try {
+      await createSeguimiento("/seguimiento", {
+        inscripcionId: cursoSeguimiento.id,
+        usuarioEdicion:
+          user?.email || "Usuario no identificado",
+        resultado: resultadoSeguimiento,
+        observacion: observacionSeguimiento.trim(),
+        proximoContacto:
+          proximoContactoSeguimiento || null,
+      });
+
+      setResultadoSeguimiento("");
+      setObservacionSeguimiento("");
+      setProximoContactoSeguimiento("");
+      setMostrarFormularioSeguimiento(false);
+
+      setMensajeSeguimiento(
+        "✅ La llamada fue registrada correctamente.",
+      );
+
+      await cargarHistorialSeguimiento(cursoSeguimiento.id);
+
+      await getUsers(
+        `/users?cedula=${cedulaBuscada}&search=${nombreBuscado}&notaFinal=${filtroDetalle}&acces=${filtroUltimoAcceso}&pagos=${filtroPago}&certificado=${filtroCertificado}&curso=${filtroCurso}&seguimiento=${filtroObservacion}&page=${paginaActual}`,
+      );
+    } catch (error) {
+      console.error("Error al registrar seguimiento:", error);
+
+      setErrorGuardarSeguimiento(
+        error?.response?.data?.message ||
+        error?.message ||
+        "No se pudo registrar la llamada.",
+      );
+    } finally {
+      setGuardandoSeguimiento(false);
+    }
+  };
+
+  useEffect(() => {
+    const cerrarConEscape = (event) => {
+      if (event.key === "Escape" && modalSeguimientoAbierto) {
+        cerrarModalSeguimiento();
+      }
+    };
+
+    document.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      document.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [modalSeguimientoAbierto]);
 
   // Refs para mantener los filtros y la página actual
   const filtrosRef = useRef({
@@ -128,13 +324,21 @@ const Secretaria = () => {
     socket.on("inscripcionCreada", actualizarUsuarios);
     socket.on("pagoCreado", actualizarUsuarios);
 
+    socket.on("seguimientoCreado", actualizarUsuarios);
+    socket.on("seguimientoActualizado", actualizarUsuarios);
+    socket.on("seguimientoEliminado", actualizarUsuarios);
+
     // Carga inicial
     actualizarUsuarios();
 
     return () => {
       socket.off("inscripcionActualizada", actualizarUsuarios);
       socket.off("inscripcionCreada", actualizarUsuarios);
-      socket.on("pagoCreado", actualizarUsuarios);
+      socket.off("pagoCreado", actualizarUsuarios);
+
+      socket.off("seguimientoCreado", actualizarUsuarios);
+      socket.off("seguimientoActualizado", actualizarUsuarios);
+      socket.off("seguimientoEliminado", actualizarUsuarios);
 
       socket.disconnect();
     };
@@ -396,6 +600,470 @@ const Secretaria = () => {
 
   return (
     <div className="secPage">
+
+
+      {modalSeguimientoAbierto && (
+        <div
+          className="segModalOverlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              cerrarModalSeguimiento();
+            }
+          }}
+        >
+          <section
+            className="segModal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="segModalTitulo"
+          >
+            <header className="segModalHeader">
+              <div>
+                <span className="segModalEyebrow">
+                  Gestión comercial
+                </span>
+
+                <h2 id="segModalTitulo">
+                  📞 Seguimiento de llamadas
+                </h2>
+
+                <p>
+                  Historial de contactos realizados para esta
+                  inscripción.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="segModalClose"
+                onClick={cerrarModalSeguimiento}
+                aria-label="Cerrar ventana"
+              >
+                ×
+              </button>
+            </header>
+
+            <div className="segModalBody">
+              <div className="segClienteCard">
+                <div className="segClienteAvatar">
+                  {usuarioSeguimiento?.firstName?.charAt(0) || "U"}
+                  {usuarioSeguimiento?.lastName?.charAt(0) || ""}
+                </div>
+
+                <div className="segClienteInfo">
+                  <h3>
+                    {usuarioSeguimiento?.firstName || ""}{" "}
+                    {usuarioSeguimiento?.lastName || ""}
+                  </h3>
+
+                  <p>
+                    <strong>Cédula:</strong>{" "}
+                    {usuarioSeguimiento?.cI || "No disponible"}
+                  </p>
+
+                  <p>
+                    <strong>Celular:</strong>{" "}
+                    {usuarioSeguimiento?.cellular || "No disponible"}
+                  </p>
+
+                  <p>
+                    <strong>Curso:</strong>{" "}
+                    {cursoSeguimiento?.fullname ||
+                      cursoSeguimiento?.curso ||
+                      "No disponible"}
+                  </p>
+                </div>
+              </div>
+
+              {cargandoSeguimiento ? (
+                <div className="segModalLoading">
+                  <span className="segSpinner"></span>
+                  <p>Cargando historial de llamadas...</p>
+                </div>
+              ) : errorSeguimiento ? (
+                <div className="segModalError">
+                  <strong>⚠️ No se pudo cargar el seguimiento</strong>
+                  <p>{errorSeguimiento}</p>
+
+                  <button
+                    type="button"
+                    className="segBtnRetry"
+                    onClick={() =>
+                      abrirModalSeguimiento(
+                        usuarioSeguimiento,
+                        cursoSeguimiento,
+                      )
+                    }
+                  >
+                    Intentar nuevamente
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="segResumenGrid">
+                    <article className="segResumenCard">
+                      <span className="segResumenIcon">📞</span>
+
+                      <div>
+                        <span>Total de llamadas</span>
+                        <strong>
+                          {historialSeguimiento?.totalSeguimientos || 0}
+                        </strong>
+                      </div>
+                    </article>
+
+                    <article
+                      className={`segResumenCard ${historialSeguimiento?.tienePago
+                          ? "segCompraConfirmada"
+                          : "segCompraPendiente"
+                        }`}
+                    >
+                      <span className="segResumenIcon">
+                        {historialSeguimiento?.tienePago ? "✅" : "⏳"}
+                      </span>
+
+                      <div>
+                        <span>Estado de pago</span>
+                        <strong>
+                          {historialSeguimiento?.tienePago
+                            ? "Pago confirmado"
+                            : "Sin pago confirmado"}
+                        </strong>
+                      </div>
+                    </article>
+
+                    <article className="segResumenCard">
+                      <span className="segResumenIcon">💵</span>
+
+                      <div>
+                        <span>Monto confirmado</span>
+                        <strong>
+                          $
+                          {Number(
+                            historialSeguimiento?.montoTotalPagado || 0
+                          ).toFixed(2)}
+                        </strong>
+                      </div>
+                    </article>
+
+                    <article className="segResumenCard">
+                      <span className="segResumenIcon">
+                        {historialSeguimiento?.tieneCompraPorSeguimiento
+                          ? "🎯"
+                          : "➖"}
+                      </span>
+
+                      <div>
+                        <span>Conversión por seguimiento</span>
+                        <strong>
+                          {historialSeguimiento?.tieneCompraPorSeguimiento
+                            ? "Sí"
+                            : "No atribuida"}
+                        </strong>
+                      </div>
+                    </article>
+                  </div>
+
+                  {mensajeSeguimiento && (
+                    <div className="segMensajeExito">
+                      {mensajeSeguimiento}
+                    </div>
+                  )}
+
+                  {mostrarFormularioSeguimiento && (
+                    <form
+                      className="segForm"
+                      onSubmit={registrarSeguimiento}
+                    >
+                      <div className="segFormHeader">
+                        <div>
+                          <span className="segFormEyebrow">
+                            Nuevo contacto
+                          </span>
+
+                          <h3>📞 Registrar llamada</h3>
+
+                          <p>
+                            Registra el resultado y la información proporcionada
+                            por el cliente.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="segFormClose"
+                          onClick={() => {
+                            if (guardandoSeguimiento) return;
+
+                            setMostrarFormularioSeguimiento(false);
+                            setResultadoSeguimiento("");
+                            setObservacionSeguimiento("");
+                            setProximoContactoSeguimiento("");
+                            setErrorGuardarSeguimiento("");
+                          }}
+                          aria-label="Cerrar formulario"
+                        >
+                          ×
+                        </button>
+                      </div>
+
+                      {errorGuardarSeguimiento && (
+                        <div className="segFormError">
+                          ⚠️ {errorGuardarSeguimiento}
+                        </div>
+                      )}
+
+                      <div className="segFormGrid">
+                        <div className="segFormGroup">
+                          <label htmlFor="resultadoSeguimiento">
+                            Resultado de la llamada
+                            <span aria-hidden="true"> *</span>
+                          </label>
+
+                          <select
+                            id="resultadoSeguimiento"
+                            value={resultadoSeguimiento}
+                            onChange={(event) =>
+                              setResultadoSeguimiento(event.target.value)
+                            }
+                            disabled={guardandoSeguimiento}
+                            required
+                          >
+                            <option value="">
+                              Selecciona un resultado
+                            </option>
+
+                            <option value="sin_respuesta">
+                              📵 Sin respuesta
+                            </option>
+
+                            <option value="numero_incorrecto">
+                              ❌ Número incorrecto
+                            </option>
+
+                            <option value="interesado">
+                              ✅ Interesado
+                            </option>
+
+                            <option value="no_interesado">
+                              🚫 No interesado
+                            </option>
+
+                            <option value="volver_llamar">
+                              📞 Volver a llamar
+                            </option>
+
+                            <option value="pago_pendiente">
+                              💳 Pago pendiente
+                            </option>
+                          </select>
+                        </div>
+
+                        <div className="segFormGroup">
+                          <label htmlFor="proximoContactoSeguimiento">
+                            Próximo contacto
+                          </label>
+
+                          <input
+                            id="proximoContactoSeguimiento"
+                            type="datetime-local"
+                            value={proximoContactoSeguimiento}
+                            onChange={(event) =>
+                              setProximoContactoSeguimiento(event.target.value)
+                            }
+                            disabled={guardandoSeguimiento}
+                          />
+
+                          <small>
+                            Déjalo vacío cuando no sea necesario volver a contactar.
+                          </small>
+                        </div>
+
+                        <div className="segFormGroup segFormGroupFull">
+                          <label htmlFor="observacionSeguimiento">
+                            ¿Qué indicó el cliente?
+                            <span aria-hidden="true"> *</span>
+                          </label>
+
+                          <textarea
+                            id="observacionSeguimiento"
+                            value={observacionSeguimiento}
+                            onChange={(event) =>
+                              setObservacionSeguimiento(event.target.value)
+                            }
+                            placeholder="Ejemplo: El cliente solicita información sobre el valor, formas de pago y fecha de inicio..."
+                            rows={5}
+                            maxLength={1500}
+                            disabled={guardandoSeguimiento}
+                            required
+                          />
+
+                          <div className="segTextareaFooter">
+                            <small>
+                              Registra información clara y útil para el siguiente contacto.
+                            </small>
+
+                            <span>
+                              {observacionSeguimiento.length}/1500
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="segFormActions">
+                        <button
+                          type="button"
+                          className="segBtnCancelarForm"
+                          disabled={guardandoSeguimiento}
+                          onClick={() => {
+                            setMostrarFormularioSeguimiento(false);
+                            setResultadoSeguimiento("");
+                            setObservacionSeguimiento("");
+                            setProximoContactoSeguimiento("");
+                            setErrorGuardarSeguimiento("");
+                          }}
+                        >
+                          Cancelar
+                        </button>
+
+                        <button
+                          type="submit"
+                          className="segBtnGuardar"
+                          disabled={guardandoSeguimiento}
+                        >
+                          {guardandoSeguimiento
+                            ? "Guardando..."
+                            : "💾 Registrar llamada"}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  <div className="segHistorialHeader">
+                    <div>
+                      <h3>Historial de contactos</h3>
+                      <p>
+                        Registro cronológico de las llamadas realizadas.
+                      </p>
+                    </div>
+                  </div>
+
+                  {historialSeguimiento?.seguimientos?.length > 0 ? (
+                    <div className="segTimeline">
+                      {historialSeguimiento.seguimientos.map(
+                        (seguimiento, index) => (
+                          <article
+                            key={seguimiento.id}
+                            className="segTimelineItem"
+                          >
+                            <div className="segTimelineMarker">
+                              <span>{index + 1}</span>
+                            </div>
+
+                            <div className="segTimelineContent">
+                              <div className="segTimelineTop">
+                                <span className="segResultadoBadge">
+                                  {String(
+                                    seguimiento.resultado || "Sin resultado",
+                                  )
+                                    .replaceAll("_", " ")
+                                    .replace(/\b\w/g, (letra) =>
+                                      letra.toUpperCase(),
+                                    )}
+                                </span>
+
+                                <time>
+                                  {seguimiento.createdAt
+                                    ? new Date(
+                                      seguimiento.createdAt,
+                                    ).toLocaleString("es-EC", {
+                                      timeZone:
+                                        "America/Guayaquil",
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
+                                    : "Fecha no disponible"}
+                                </time>
+                              </div>
+
+                              <p className="segObservacionTexto">
+                                {seguimiento.observacion}
+                              </p>
+
+                              <div className="segTimelineMeta">
+                                <span>
+                                  👤{" "}
+                                  {seguimiento.usuarioEdicion ||
+                                    "Usuario no identificado"}
+                                </span>
+
+                                {seguimiento.proximoContacto && (
+                                  <span>
+                                    📅 Próximo contacto:{" "}
+                                    {new Date(
+                                      seguimiento.proximoContacto,
+                                    ).toLocaleString("es-EC", {
+                                      timeZone:
+                                        "America/Guayaquil",
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </article>
+                        ),
+                      )}
+                    </div>
+                  ) : (
+                    <div className="segHistorialVacio">
+                      <div className="segHistorialVacioIcon">📞</div>
+                      <h3>Sin llamadas registradas</h3>
+                      <p>
+                        Todavía no se ha registrado ningún seguimiento
+                        para este usuario y curso.
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <footer className="segModalFooter">
+              <button
+                type="button"
+                className="segBtnCerrar"
+                onClick={cerrarModalSeguimiento}
+              >
+                Cerrar
+              </button>
+
+              {!mostrarFormularioSeguimiento && (
+                <button
+                  type="button"
+                  className="segBtnNuevo"
+                  disabled={guardandoSeguimiento}
+                  onClick={() => {
+                    setMostrarFormularioSeguimiento(true);
+                    setMensajeSeguimiento("");
+                    setErrorGuardarSeguimiento("");
+                  }}
+                >
+                  ＋ Registrar llamada
+                </button>
+              )}
+            </footer>
+          </section>
+        </div>
+      )}
+
       {(isLoadingI || (isLoading && busquedaRealizada)) && <IsLoading />}
 
       {/* Overlay para mobile */}
@@ -883,7 +1551,7 @@ const Secretaria = () => {
                       <th>Ingresa a Acadex</th>
                       <th>Pagos</th>
                       <th>Certificado</th>
-                      <th>Observacion</th>
+                      <th>Seguimiento</th>
                       <th>Acción</th>
                     </tr>
                   </thead>
@@ -991,61 +1659,43 @@ const Secretaria = () => {
                             )}
                           </td>
 
-                          <td className="celda-observacion tooltip-observacion">
-                            {editInscripcionId === curso.id ? (
-                              <input
-                                type="text"
-                                defaultValue={curso.observacion || ""}
-                                ref={observacionRef}
-                                className="vp-input"
-                              />
-                            ) : curso.observacion ? (
-                              <>
-                                {curso.observacion}
-                                <span className="tooltip-text">
-                                  Registrado el:{" "}
-                                  {new Date(curso.updatedAt).toLocaleString(
-                                    "es-EC",
-                                    {
-                                      timeZone: "America/Guayaquil",
-                                      day: "2-digit",
-                                      month: "2-digit",
-                                      year: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    },
-                                  )}
+                          <td className="celda-seguimiento">
+                            {curso.tieneSeguimiento ? (
+                              <div className="seguimiento-resumen">
+                                <span className="seguimiento-contador">
+                                  📞 {curso.totalSeguimientos || 0}
                                 </span>
-                              </>
+
+                                <span className="seguimiento-estado">
+                                  {curso.totalSeguimientos === 1
+                                    ? "llamada registrada"
+                                    : "llamadas registradas"}
+                                </span>
+
+                                {curso.ultimoSeguimiento?.resultado && (
+                                  <span className="seguimiento-ultimo-resultado">
+                                    Último:{" "}
+                                    {String(curso.ultimoSeguimiento.resultado)
+                                      .replaceAll("_", " ")
+                                      .replace(/\b\w/g, (letra) => letra.toUpperCase())}
+                                  </span>
+                                )}
+                              </div>
                             ) : (
-                              "👍"
+                              <span className="seguimiento-sin-registros">
+                                Sin llamadas
+                              </span>
                             )}
                           </td>
 
                           <td>
-                            {editInscripcionId === curso.id ? (
-                              <>
-                                <button
-                                  onClick={() => guardarEdicion(curso.id)}
-                                  className="vp-btn-save"
-                                >
-                                  Guardar
-                                </button>
-                                <button
-                                  onClick={cancelarEdicion}
-                                  className="vp-btn-cancel"
-                                >
-                                  Cancelar
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                onClick={() => iniciarEdicion(curso)}
-                                className="vp-btn-edit"
-                              >
-                                Reg. Observación
-                              </button>
-                            )}
+                            <button
+                              type="button"
+                              onClick={() => abrirModalSeguimiento(usuario, curso)}
+                              className="vp-btn-edit"
+                            >
+                              📞 Seguimiento
+                            </button>
                           </td>
                         </tr>
                       ));

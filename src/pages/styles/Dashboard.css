@@ -8,7 +8,8 @@
   --edukaBlue2: #0f2a63;
   --edukaAccent: #ffb703;
   --edukaDanger: #c0392b;
-  --headerOffset: 9rem; /* ajusta si tu header es más alto */
+  --headerOffset: 9rem;
+  /* ajusta si tu header es más alto */
 }
 
 .dashPage {
@@ -45,7 +46,7 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 0.7rem;
 }
@@ -120,10 +121,858 @@
   overflow: visible;
 }
 
+
+
+@media (max-width: 992px) {
+  .dashSummaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   MODAL DE SEGUIMIENTO
+========================================================= */
+
+.segModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 15000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(20, 35, 12, 0.68);
+  backdrop-filter: blur(7px);
+  animation: segOverlayIn 0.2s ease;
+}
+
+.segModal {
+  width: min(920px, 100%);
+  max-height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(86, 132, 22, 0.25);
+  border-radius: 1.4rem;
+  box-shadow:
+    0 28px 80px rgba(20, 45, 8, 0.32),
+    0 8px 25px rgba(0, 0, 0, 0.16);
+  animation: segModalIn 0.24s ease;
+}
+
+.segModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.7rem;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top right,
+      rgba(255, 255, 255, 0.23),
+      transparent 38%),
+    linear-gradient(135deg, #486f13, #6f9f25 55%, #93be3d);
+}
+
+.segModalHeader h2 {
+  margin: 0.25rem 0 0.35rem;
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.segModalHeader p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.94rem;
+}
+
+.segModalEyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #efffd7;
+}
+
+.segModalClose {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 1.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.segModalClose:hover {
+  transform: rotate(6deg) scale(1.05);
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.segModalBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1.7rem;
+  background: linear-gradient(180deg, #fbfdf8, #ffffff);
+}
+
+.segClienteCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #dbe8c9;
+  border-radius: 1rem;
+  background: #f7fbed;
+}
+
+.segClienteAvatar {
+  width: 4.3rem;
+  height: 4.3rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, #568416, #90bb37);
+  box-shadow: 0 8px 18px rgba(86, 132, 22, 0.24);
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.segClienteInfo h3 {
+  margin: 0 0 0.45rem;
+  color: #2d4610;
+  font-size: 1.15rem;
+}
+
+.segClienteInfo p {
+  margin: 0.18rem 0;
+  color: #536147;
+  font-size: 0.9rem;
+}
+
+.segResumenGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.segResumenCard {
+  min-height: 5.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid #e3ead9;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 7px 18px rgba(41, 62, 23, 0.07);
+}
+
+.segResumenCard div {
+  min-width: 0;
+}
+
+.segResumenCard span:not(.segResumenIcon) {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #718065;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.segResumenCard strong {
+  display: block;
+  color: #2c3f1c;
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+
+.segResumenIcon {
+  font-size: 1.75rem;
+}
+
+.segCompraConfirmada {
+  border-color: #b8dfc1;
+  background: #f1fbf3;
+}
+
+.segCompraPendiente {
+  border-color: #f0dca0;
+  background: #fffaf0;
+}
+
+.segHistorialHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 1rem;
+}
+
+.segHistorialHeader h3 {
+  margin: 0;
+  color: #31451f;
+}
+
+.segHistorialHeader p {
+  margin: 0.25rem 0 0;
+  color: #77816f;
+  font-size: 0.85rem;
+}
+
+.segTimeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.segTimelineItem {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.8rem;
+}
+
+.segTimelineMarker {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.segTimelineMarker::after {
+  content: "";
+  position: absolute;
+  top: 2.35rem;
+  bottom: -1.2rem;
+  width: 2px;
+  background: #dce8cd;
+}
+
+.segTimelineItem:last-child .segTimelineMarker::after {
+  display: none;
+}
+
+.segTimelineMarker span {
+  position: relative;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #6d9828;
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 5px 13px rgba(86, 132, 22, 0.25);
+}
+
+.segTimelineContent {
+  padding: 1rem;
+  border: 1px solid #e1e9d8;
+  border-radius: 0.95rem;
+  background: #ffffff;
+}
+
+.segTimelineTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.segTimelineTop time {
+  color: #788071;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.segResultadoBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.34rem 0.65rem;
+  border-radius: 999px;
+  color: #476b16;
+  background: #eaf4db;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.segObservacionTexto {
+  margin: 0;
+  color: #3e4837;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.segTimelineMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1.1rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #dde5d5;
+  color: #727b6a;
+  font-size: 0.78rem;
+}
+
+.segHistorialVacio,
+.segModalLoading,
+.segModalError {
+  padding: 2.3rem 1rem;
+  text-align: center;
+  border: 1px dashed #cad9b7;
+  border-radius: 1rem;
+  background: #fafcf6;
+}
+
+.segHistorialVacioIcon {
+  margin-bottom: 0.5rem;
+  font-size: 2.4rem;
+}
+
+.segHistorialVacio h3,
+.segModalError strong {
+  color: #405825;
+}
+
+.segHistorialVacio p,
+.segModalLoading p,
+.segModalError p {
+  margin: 0.45rem 0 0;
+  color: #737e69;
+}
+
+.segSpinner {
+  width: 2.3rem;
+  height: 2.3rem;
+  display: inline-block;
+  border: 4px solid #dbe8ca;
+  border-top-color: #628e20;
+  border-radius: 50%;
+  animation: segSpin 0.75s linear infinite;
+}
+
+.segModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.7rem;
+  border-top: 1px solid #e2e9da;
+  background: #ffffff;
+}
+
+.segBtnCerrar,
+.segBtnNuevo,
+.segBtnRetry {
+  min-height: 2.7rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.segBtnCerrar {
+  border: 1px solid #cbd5c0;
+  color: #435238;
+  background: #ffffff;
+}
+
+.segBtnNuevo,
+.segBtnRetry {
+  border: none;
+  color: #ffffff;
+  background: linear-gradient(135deg, #568416, #82ad31);
+  box-shadow: 0 7px 15px rgba(86, 132, 22, 0.2);
+}
+
+.segBtnNuevo:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.segBtnRetry {
+  margin-top: 0.9rem;
+}
+
+.celda-seguimiento {
+  min-width: 10rem;
+}
+
+.seguimiento-resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.seguimiento-contador {
+  color: #486c17;
+  font-weight: 900;
+}
+
+.seguimiento-estado,
+.seguimiento-ultimo-resultado {
+  color: #737d6b;
+  font-size: 0.73rem;
+}
+
+.seguimiento-sin-registros {
+  display: inline-flex;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  color: #846813;
+  background: #fff5d5;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+@keyframes segOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes segModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes segSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .segModalOverlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .segModal {
+    width: 100%;
+    max-height: 94vh;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+
+  .segModalHeader,
+  .segModalBody,
+  .segModalFooter {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .segResumenGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .segClienteCard {
+    align-items: flex-start;
+  }
+
+  .segClienteAvatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .segTimelineTop {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .segTimelineTop time {
+    white-space: normal;
+  }
+
+  .segModalFooter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .segClienteCard {
+    flex-direction: column;
+  }
+
+  .segModalFooter {
+    grid-template-columns: 1fr;
+  }
+
+  .segTimelineItem {
+    grid-template-columns: 2rem 1fr;
+  }
+
+  .segTimelineMarker span {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
+
+
+
+/* =========================================================
+   FORMULARIO DE NUEVO SEGUIMIENTO
+========================================================= */
+
+.segForm {
+  margin-bottom: 1.5rem;
+  padding: 1.2rem;
+  border: 1px solid #cfe0b8;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right,
+      rgba(153, 195, 74, 0.13),
+      transparent 34%),
+    linear-gradient(180deg, #f9fcef, #ffffff);
+  box-shadow: 0 10px 24px rgba(64, 95, 26, 0.08);
+  animation: segFormIn 0.22s ease;
+}
+
+.segFormHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.segFormHeader h3 {
+  margin: 0.2rem 0 0.3rem;
+  color: #365317;
+  font-size: 1.15rem;
+}
+
+.segFormHeader p {
+  margin: 0;
+  color: #738066;
+  font-size: 0.86rem;
+}
+
+.segFormEyebrow {
+  color: #6b942d;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.segFormClose {
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #ccd9bc;
+  border-radius: 50%;
+  color: #5c6e4b;
+  background: #ffffff;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.segFormClose:hover {
+  color: #ffffff;
+  border-color: #d65c5c;
+  background: #d65c5c;
+}
+
+.segFormError,
+.segMensajeExito {
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.segFormError {
+  border: 1px solid #efbaba;
+  color: #9c2525;
+  background: #fff1f1;
+}
+
+.segMensajeExito {
+  border: 1px solid #b8dfbd;
+  color: #286a34;
+  background: #effaf1;
+}
+
+.segFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.segFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.segFormGroupFull {
+  grid-column: 1 / -1;
+}
+
+.segFormGroup label {
+  color: #40572b;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.segFormGroup label span {
+  color: #c73e3e;
+}
+
+.segFormGroup select,
+.segFormGroup input,
+.segFormGroup textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cbd8bc;
+  border-radius: 0.75rem;
+  outline: none;
+  color: #344229;
+  background: #ffffff;
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.segFormGroup select,
+.segFormGroup input {
+  min-height: 2.9rem;
+  padding: 0.7rem 0.8rem;
+}
+
+.segFormGroup textarea {
+  min-height: 7.5rem;
+  padding: 0.8rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.segFormGroup select:focus,
+.segFormGroup input:focus,
+.segFormGroup textarea:focus {
+  border-color: #75a32e;
+  box-shadow: 0 0 0 3px rgba(117, 163, 46, 0.14);
+}
+
+.segFormGroup select:disabled,
+.segFormGroup input:disabled,
+.segFormGroup textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  background: #f2f4ef;
+}
+
+.segFormGroup small {
+  color: #7c8674;
+  font-size: 0.73rem;
+}
+
+.segTextareaFooter {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.segTextareaFooter span {
+  flex: 0 0 auto;
+  color: #75816c;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.segFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #d4dfc7;
+}
+
+.segBtnCancelarForm,
+.segBtnGuardar {
+  min-height: 2.7rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.segBtnCancelarForm {
+  border: 1px solid #cbd6c0;
+  color: #536148;
+  background: #ffffff;
+}
+
+.segBtnGuardar {
+  border: none;
+  color: #ffffff;
+  background: linear-gradient(135deg, #568416, #88b234);
+  box-shadow: 0 7px 16px rgba(86, 132, 22, 0.22);
+}
+
+.segBtnCancelarForm:disabled,
+.segBtnGuardar:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+/* ===============================
+   TABLA DASHBOARD DE SEGUIMIENTOS
+================================ */
+
+.dashTableWrap {
+  width: 100%;
+  margin-top: 1.25rem;
+  overflow-x: auto;
+  border: 1px solid #dce7cf;
+  border-radius: 0.9rem;
+  background: #ffffff;
+}
+
+.dashDataTable {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.dashDataTable th,
+.dashDataTable td {
+  padding: 0.85rem 0.9rem;
+  border-bottom: 1px solid #e6ede0;
+  text-align: left;
+  font-size: 0.84rem;
+}
+
+.dashDataTable th {
+  color: #ffffff;
+  background: linear-gradient(135deg, #568416, #7da62f);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.dashDataTable tbody tr:hover {
+  background: #f5faed;
+}
+
+.dashDataTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+
+@media (max-width: 760px) {
+  .dashSummaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashDataTable th,
+  .dashDataTable td {
+    padding: 0.7rem;
+    font-size: 0.78rem;
+  }
+}
+
+@keyframes segFormIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 680px) {
+  .segFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .segFormGroupFull {
+    grid-column: auto;
+  }
+
+  .segFormActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .segBtnCancelarForm,
+  .segBtnGuardar {
+    width: 100%;
+  }
+}
+
+
+/* Dashboard Seguimiento */
+.dashSummaryGridSeguimiento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.dashSummaryGridSeguimiento .dashSummaryCard {
+  min-height: 120px;
+}
+
+@media (max-width: 992px) {
+  .dashSummaryGridSeguimiento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashSummaryGridSeguimiento {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ============================
    RESPONSIVE
    ============================ */
 @media (max-width: 768px) {
+
   /* reusamos el responsive de Secretaria, pero por si acaso: */
   .dashSummary2 {
     flex-direction: column;

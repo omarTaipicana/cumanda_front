@@ -43,6 +43,8 @@ const Dashboard = () => {
   const [usuarioEdicion, setusUarioEdicion] = useState("todos");
   const [cursoFiltroObservaciones, setCursoFiltroObservaciones] =
     useState("todos");
+  const [resultadoSeguimientoFiltro, setResultadoSeguimientoFiltro] =
+    useState("todos");
   const [fechaDesdeObservaciones, setFechaDesdeObservaciones] = useState("");
   const [fechaHastaObservaciones, setFechaHastaObservaciones] = useState("");
 
@@ -54,6 +56,8 @@ const Dashboard = () => {
   const [cursoFiltroInscripciones, setCursoFiltroInscripciones] = useState("todos");
   const [fechaDesdeInscripciones, setFechaDesdeInscripciones] = useState("");
   const [fechaHastaInscripciones, setFechaHastaInscripciones] = useState("");
+
+
 
   const menuRef = useRef(null);
   const hamburgerRef = useRef(null);
@@ -72,13 +76,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     getInscipcionDashboardObservacion(
-      `/inscripcion_dashboard_observacion?desde=${fechaDesdeObservaciones}&hasta=${fechaHastaObservaciones}&curso=${cursoFiltroObservaciones}&usuarioEdicion=${usuarioEdicion}`
+      `/seguimiento_dashboard?desde=${fechaDesdeObservaciones}&hasta=${fechaHastaObservaciones}&curso=${cursoFiltroObservaciones}&usuarioEdicion=${usuarioEdicion}&resultado=${resultadoSeguimientoFiltro}`
     );
   }, [
     fechaDesdeObservaciones,
     fechaHastaObservaciones,
     cursoFiltroObservaciones,
     usuarioEdicion,
+    resultadoSeguimientoFiltro,
   ]);
 
   useEffect(() => {
@@ -121,6 +126,7 @@ const Dashboard = () => {
     setCursoFiltroObservaciones("todos");
     setFechaDesdeObservaciones("");
     setFechaHastaObservaciones("");
+    setResultadoSeguimientoFiltro("todos");
   };
 
   const cursosUnicos = inscripcionDashboard?.inscritosPorCurso?.map((c) => c.curso) || [];
@@ -523,92 +529,178 @@ const Dashboard = () => {
         );
       }
 
+
+
+
+
+
+
+
+
+
       case "calificaciones": {
-        const observacionesPorDiaChart = (
-          inscripcionDashboardObservacion?.observacionesPorDiaOrdenado || []
-        ).map((o) => ({
-          fecha: o.cantidad.fecha,
-          cantidad: o.cantidad.cantidad,
-        }));
+        const llamadasPorDia =
+          inscripcionDashboardObservacion?.llamadasPorDia || [];
 
-        const observacionesPorFranjaChart = (
-          inscripcionDashboardObservacion?.observacionesPorFranjaHoraria || []
-        ).map((f) => ({
-          label: f.label,
-          value: f.value,
-        }));
+        const llamadasPorFranja =
+          inscripcionDashboardObservacion?.llamadasPorFranja || [];
 
-        const observacionesPorUsuarioChart = (
-          inscripcionDashboardObservacion?.observacionesPorUsuario || []
-        ).map((u) => ({
-          usuario: u.usuario,
-          cantidad: u.cantidad,
-        }));
+        const llamadasPorResultado =
+          inscripcionDashboardObservacion?.llamadasPorResultado || [];
 
-        const totalObservaciones =
-          inscripcionDashboardObservacion?.totalObservaciones || 0;
+        const conversionPorUsuario =
+          inscripcionDashboardObservacion?.conversionPorUsuario || [];
 
-        const usuariosUnicos =
-          inscripcionDashboardObservacion?.observacionesPorUsuario?.map(
-            (u) => u.usuario
-          ) || [];
+        const conversionPorCurso =
+          inscripcionDashboardObservacion?.conversionPorCurso || [];
+
+        const totalLlamadas =
+          inscripcionDashboardObservacion?.totalLlamadas || 0;
+
+        const totalContactados =
+          inscripcionDashboardObservacion?.totalContactados || 0;
+
+        const totalCompras =
+          inscripcionDashboardObservacion?.totalCompras || 0;
+
+        const montoVentas =
+          inscripcionDashboardObservacion?.montoVentas || 0;
+
+        const tasaConversion =
+          inscripcionDashboardObservacion?.tasaConversion || 0;
+
+        const promedioLlamadasPorCompra =
+          inscripcionDashboardObservacion?.promedioLlamadasPorCompra || 0;
+
+        const usuariosUnicos = [
+          ...new Set(
+            conversionPorUsuario
+              .map((item) => item.usuario)
+              .filter(Boolean)
+          ),
+        ];
+
+        const formatearResultado = (resultado) =>
+          String(resultado || "")
+            .replaceAll("_", " ")
+            .replace(/\b\w/g, (letra) => letra.toUpperCase());
 
         return (
           <section className="secCard dashCard">
             <div className="secCardHeader">
-              <h2 className="secTitle">📝 Llamadas</h2>
+              <h2 className="secTitle">
+                📞 Seguimiento de llamadas y conversión
+              </h2>
             </div>
 
             <div className="secFilters dashFilters">
               <div className="secInputGroup">
-                <label className="dashLabel">Filtrar por curso:</label>
+                <label className="dashLabel">
+                  Filtrar por curso:
+                </label>
+
                 <select
                   className="secInput"
                   value={cursoFiltroObservaciones}
-                  onChange={(e) => setCursoFiltroObservaciones(e.target.value)}
+                  onChange={(e) =>
+                    setCursoFiltroObservaciones(e.target.value)
+                  }
                 >
                   <option value="todos">Todos</option>
-                  {courses?.map((c) => (
-                    <option key={c.id} value={c.sigla}>
-                      {c.sigla}
+
+                  {courses?.map((curso) => (
+                    <option
+                      key={curso.id}
+                      value={curso.sigla}
+                    >
+                      {curso.sigla}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="secInputGroup">
-                <label className="dashLabel">Usuario edición:</label>
+                <label className="dashLabel">
+                  Usuario responsable:
+                </label>
+
                 <select
                   className="secInput"
                   value={usuarioEdicion}
-                  onChange={(e) => setusUarioEdicion(e.target.value)}
+                  onChange={(e) =>
+                    setusUarioEdicion(e.target.value)
+                  }
                 >
                   <option value="todos">Todos</option>
-                  {usuariosUnicos.map((u, index) => (
-                    <option key={index} value={u}>
-                      {u}
+
+                  {usuariosUnicos.map((usuario) => (
+                    <option
+                      key={usuario}
+                      value={usuario}
+                    >
+                      {usuario}
                     </option>
                   ))}
+                </select>
+              </div>
+
+              <div className="secInputGroup">
+                <label className="dashLabel">
+                  Resultado:
+                </label>
+
+                <select
+                  className="secInput"
+                  value={resultadoSeguimientoFiltro}
+                  onChange={(e) =>
+                    setResultadoSeguimientoFiltro(e.target.value)
+                  }
+                >
+                  <option value="todos">Todos</option>
+                  <option value="sin_respuesta">
+                    Sin respuesta
+                  </option>
+                  <option value="numero_incorrecto">
+                    Número incorrecto
+                  </option>
+                  <option value="interesado">
+                    Interesado
+                  </option>
+                  <option value="no_interesado">
+                    No interesado
+                  </option>
+                  <option value="volver_llamar">
+                    Volver a llamar
+                  </option>
+                  <option value="pago_pendiente">
+                    Pago pendiente
+                  </option>
                 </select>
               </div>
 
               <div className="secInputGroup">
                 <label className="dashLabel">Desde:</label>
+
                 <input
                   className="secInput"
                   type="date"
                   value={fechaDesdeObservaciones}
-                  onChange={(e) => setFechaDesdeObservaciones(e.target.value)}
+                  onChange={(e) =>
+                    setFechaDesdeObservaciones(e.target.value)
+                  }
                 />
               </div>
 
               <div className="secInputGroup">
                 <label className="dashLabel">Hasta:</label>
+
                 <input
                   className="secInput"
                   type="date"
                   value={fechaHastaObservaciones}
-                  onChange={(e) => setFechaHastaObservaciones(e.target.value)}
+                  onChange={(e) =>
+                    setFechaHastaObservaciones(e.target.value)
+                  }
                 />
               </div>
 
@@ -618,6 +710,7 @@ const Dashboard = () => {
                 onClick={() => {
                   setusUarioEdicion("todos");
                   setCursoFiltroObservaciones("todos");
+                  setResultadoSeguimientoFiltro("todos");
                   setFechaDesdeObservaciones("");
                   setFechaHastaObservaciones("");
                 }}
@@ -628,25 +721,73 @@ const Dashboard = () => {
 
             <div className="dashSummaryGrid">
               <div className="dashSummaryCard">
-                <h3>Total de observaciones</h3>
-                <p className="dashBigNumber">{totalObservaciones}</p>
+                <h3>Total de llamadas</h3>
+                <p className="dashBigNumber">
+                  {totalLlamadas}
+                </p>
+              </div>
+
+              <div className="dashSummaryCard">
+                <h3>Personas contactadas</h3>
+                <p className="dashBigNumber">
+                  {totalContactados}
+                </p>
+              </div>
+
+              <div className="dashSummaryCard">
+                <h3>Compras generadas</h3>
+                <p className="dashBigNumber">
+                  {totalCompras}
+                </p>
+              </div>
+
+              <div className="dashSummaryCard">
+                <h3>Tasa de conversión</h3>
+                <p className="dashBigNumber">
+                  {Number(tasaConversion).toFixed(2)}%
+                </p>
+              </div>
+
+              <div className="dashSummaryCard">
+                <h3>Monto vendido</h3>
+                <p className="dashBigNumber">
+                  ${Number(montoVentas).toFixed(2)}
+                </p>
+              </div>
+
+              <div className="dashSummaryCard">
+                <h3>Llamadas por compra</h3>
+                <p className="dashBigNumber">
+                  {Number(promedioLlamadasPorCompra).toFixed(2)}
+                </p>
               </div>
             </div>
 
             <div className="dashChartBox">
-              <h4 className="dashChartTitle">Evolutivo diario de observaciones</h4>
+              <h4 className="dashChartTitle">
+                Evolutivo diario de llamadas
+              </h4>
+
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart
-                  data={observacionesPorDiaChart}
-                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                  data={llamadasPorDia}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 0,
+                    bottom: 5,
+                  }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="fecha" />
-                  <YAxis />
+                  <YAxis allowDecimals={false} />
                   <Tooltip />
+                  <Legend />
+
                   <Line
                     type="monotone"
                     dataKey="cantidad"
+                    name="Llamadas"
                     stroke="#0f2a63"
                     strokeWidth={2}
                     dot={{ r: 4 }}
@@ -656,11 +797,14 @@ const Dashboard = () => {
             </div>
 
             <div className="dashChartBox">
-              <h4 className="dashChartTitle">Franja horaria de observaciones</h4>
+              <h4 className="dashChartTitle">
+                Llamadas por franja horaria
+              </h4>
+
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie
-                    data={observacionesPorFranjaChart}
+                    data={llamadasPorFranja}
                     dataKey="value"
                     nameKey="label"
                     cx="50%"
@@ -668,9 +812,9 @@ const Dashboard = () => {
                     outerRadius={90}
                     label
                   >
-                    {observacionesPorFranjaChart.map((entry, index) => (
+                    {llamadasPorFranja.map((item, index) => (
                       <Cell
-                        key={index}
+                        key={`${item.label}-${index}`}
                         fill={
                           [
                             "#0f2a63",
@@ -684,25 +828,188 @@ const Dashboard = () => {
                       />
                     ))}
                   </Pie>
+
                   <Tooltip />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
             <div className="dashChartBox">
-              <h4 className="dashChartTitle">Observaciones por usuario edición</h4>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={observacionesPorUsuarioChart}>
-                  <XAxis dataKey="usuario" />
-                  <YAxis />
+              <h4 className="dashChartTitle">
+                Resultados de las llamadas
+              </h4>
+
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={llamadasPorResultado}>
+                  <CartesianGrid strokeDasharray="3 3" />
+
+                  <XAxis
+                    dataKey="resultado"
+                    tickFormatter={formatearResultado}
+                  />
+
+                  <YAxis allowDecimals={false} />
+
+                  <Tooltip
+                    labelFormatter={formatearResultado}
+                  />
+
+                  <Bar
+                    dataKey="cantidad"
+                    name="Llamadas"
+                    fill="#568416"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="dashChartBox">
+              <h4 className="dashChartTitle">
+                Rendimiento por usuario
+              </h4>
+
+              <ResponsiveContainer width="100%" height={330}>
+                <BarChart data={conversionPorUsuario}>
+                  <CartesianGrid strokeDasharray="3 3" />
+
+                  <XAxis
+                    dataKey="usuario"
+                    interval={0}
+                    angle={-15}
+                    textAnchor="end"
+                    height={75}
+                  />
+
+                  <YAxis allowDecimals={false} />
+
+                  <Tooltip
+                    formatter={(value, name) => {
+                      if (name === "Monto vendido") {
+                        return [
+                          `$${Number(value).toFixed(2)}`,
+                          name,
+                        ];
+                      }
+
+                      if (name === "Conversión") {
+                        return [
+                          `${Number(value).toFixed(2)}%`,
+                          name,
+                        ];
+                      }
+
+                      return [value, name];
+                    }}
+                  />
+
+                  <Legend />
+
+                  <Bar
+                    dataKey="llamadas"
+                    name="Llamadas"
+                    fill="#0f2a63"
+                  />
+
+                  <Bar
+                    dataKey="contactados"
+                    name="Contactados"
+                    fill="#00a8e8"
+                  />
+
+                  <Bar
+                    dataKey="compras"
+                    name="Compras"
+                    fill="#568416"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+
+              {conversionPorUsuario.length > 0 && (
+                <div className="dashTableWrap">
+                  <table className="dashDataTable">
+                    <thead>
+                      <tr>
+                        <th>Usuario</th>
+                        <th>Llamadas</th>
+                        <th>Contactados</th>
+                        <th>Compras</th>
+                        <th>Conversión</th>
+                        <th>Monto</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {conversionPorUsuario.map((item) => (
+                        <tr key={item.usuario}>
+                          <td>{item.usuario}</td>
+                          <td>{item.llamadas}</td>
+                          <td>{item.contactados}</td>
+                          <td>{item.compras}</td>
+                          <td>
+                            {Number(
+                              item.tasaConversion || 0
+                            ).toFixed(2)}
+                            %
+                          </td>
+                          <td>
+                            $
+                            {Number(
+                              item.monto || 0
+                            ).toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            <div className="dashChartBox">
+              <h4 className="dashChartTitle">
+                Conversión por curso
+              </h4>
+
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart data={conversionPorCurso}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="curso" />
+                  <YAxis allowDecimals={false} />
                   <Tooltip />
-                  <Bar dataKey="cantidad" fill="#0f2a63" />
+                  <Legend />
+
+                  <Bar
+                    dataKey="llamadas"
+                    name="Llamadas"
+                    fill="#0f2a63"
+                  />
+
+                  <Bar
+                    dataKey="contactados"
+                    name="Contactados"
+                    fill="#00a8e8"
+                  />
+
+                  <Bar
+                    dataKey="compras"
+                    name="Compras"
+                    fill="#568416"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </section>
         );
       }
+
+
+
+
+
+
+
+
 
       case "progreso":
         return (
