@@ -17,6 +17,7 @@ export const RegistroPagos = () => {
   const { code } = useParams();
 
   const [courses, getCourse, , , , , isLoading3] = useCrud();
+  const [coursesLoaded, setCoursesLoaded] = useState(false);
   const [, , postVlidate, , , , , newValidate] = useCrud();
 
   const [usuario, setUsuario] = useState(null);
@@ -26,10 +27,17 @@ export const RegistroPagos = () => {
   const [certificadoPagado, setCertificadoPagado] = useState(false);
   const [total, setTotal] = useState(0);
 
-  const [resUploads, getUpload, , , , , isLoading, , , , uploadPdf, newUpload] =
-    useCrud();
+  const [, , , , , , isLoading, , , , uploadPdf, newUpload] = useCrud();
 
-  const resUpload = resUploads.filter((p) => p.confirmacion === true);
+  /*
+   * El endpoint puede devolver un arreglo tradicional o una respuesta paginada:
+   * { total, page, limit, totalPages, data: [] }.
+   */
+  const coursesData = Array.isArray(courses)
+    ? courses
+    : Array.isArray(courses?.data)
+      ? courses.data
+      : [];
 
   const {
     register,
@@ -50,9 +58,16 @@ export const RegistroPagos = () => {
   const [moneda, distintivo, sPolicial, oProfesionales] = watchAll;
 
   useEffect(() => {
-    getCourse(PATH_COURSES);
-    getUpload(PATH_PAGOS);
-  }, [inscrito]);
+    const cargarCursos = async () => {
+      try {
+        await getCourse(PATH_COURSES);
+      } finally {
+        setCoursesLoaded(true);
+      }
+    };
+
+    cargarCursos();
+  }, [code]);
 
   useEffect(() => {
     let extrasCentavos = 0;
@@ -72,7 +87,7 @@ export const RegistroPagos = () => {
     setTotal((baseCentavos + extrasCentavos) / 100);
   }, [moneda, distintivo, sPolicial, oProfesionales, certificadoPagado]);
 
-  const cursoActivo = courses.find((c) => c.sigla === code);
+  const cursoActivo = coursesData.find((c) => c.sigla === code);
 
   useEffect(() => {
     if (newValidate) {
@@ -97,7 +112,7 @@ export const RegistroPagos = () => {
   const buscarCedula = (data) => {
     const cedula = data?.cedula.trim();
     const body = { cedula, code };
-    const curso = courses?.find((c) => c.sigla === code);
+    const curso = coursesData.find((c) => c.sigla === code);
     setCursoActual(curso);
     postVlidate(PATH_PAGOSVALIDATE, body);
   };
@@ -145,6 +160,14 @@ export const RegistroPagos = () => {
       setValue("valorDepositado", total);
     }
   }, [total, setValue]);
+
+  if (!coursesLoaded || isLoading3) {
+    return (
+      <div className="registro_container curso_no_encontrado">
+        <IsLoading />
+      </div>
+    );
+  }
 
   if (!cursoActivo) {
     return (
@@ -205,7 +228,7 @@ export const RegistroPagos = () => {
   const onRegistrarNuevo = () => {
     setUsuario(newValidate?.user);
 
-    const curso = courses?.find((c) => c.sigla === pagoExistente[0]?.curso);
+    const curso = coursesData.find((c) => c.sigla === pagoExistente?.[0]?.curso);
 
     setCursoActual(curso);
     setPagoExistente(null);
@@ -219,7 +242,7 @@ export const RegistroPagos = () => {
 
       {pagoExistente && (
         <ModalPagoExistente
-          pagos={resUpload}
+          pagos={pagoExistente || []}
           onRegistrarNuevo={onRegistrarNuevo}
           onClose={() => {
             setPagoExistente(null);
