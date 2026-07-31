@@ -1,12 +1,12 @@
 /* ============================
-   VALIDACION PAGO - EDUKA STYLE
+   VALIDACIÓN PAGO - CUMANDÁ
    (MISMO LOOK que Secretaria.css)
    ============================ */
 
 :root {
-  --edukaBlue: #1b326b;
-  --edukaBlue2: #0f2a63;
-  --edukaAccent: #ffb703;
+  --edukaBlue: #568416;
+  --edukaBlue2: #3f6810;
+  --edukaAccent: #a4c639;
   --edukaDanger: #c0392b;
   --headerOffset: 9rem;
 }
@@ -49,7 +49,7 @@
 
 .secMenuHeader {
   padding: 1.4rem 1.2rem 1rem;
-  background: linear-gradient(180deg, rgba(27, 50, 107, 0.08), transparent);
+  background: linear-gradient(180deg, rgba(86, 132, 22, 0.08), transparent);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   text-align: center;
 }
@@ -84,12 +84,12 @@
 }
 
 .secMenuBtn:hover {
-  background-color: rgba(27, 50, 107, 0.08);
+  background-color: rgba(86, 132, 22, 0.08);
   color: var(--edukaBlue);
 }
 
 .secMenuBtn.active {
-  background-color: rgba(27, 50, 107, 0.12);
+  background-color: rgba(86, 132, 22, 0.12);
   color: var(--edukaBlue);
   border-left-color: var(--edukaAccent);
 }
@@ -163,7 +163,7 @@
   content: "";
   position: absolute;
   inset: -30%;
-  background-image: url("/images/eduka_sf.png");
+  background-image: url("/images/cumanda_sf.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 55%;
@@ -212,7 +212,7 @@
 }
 
 .vpFiltersRow {
-  background: rgba(27, 50, 107, 0.06);
+  background: rgba(86, 132, 22, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.08);
   padding: 0.9rem;
   border-radius: 1rem;
@@ -236,7 +236,7 @@
 .secInput {
   width: 100%;
   padding: 0.6rem 0.85rem;
-  border: 2px solid rgba(27, 50, 107, 0.65);
+  border: 2px solid rgba(86, 132, 22, 0.65);
   border-radius: 0.9rem;
   font-size: 0.95rem;
   outline: none;
@@ -247,7 +247,7 @@
 
 .secInput:focus {
   border-color: var(--edukaAccent);
-  box-shadow: 0 0 0 4px rgba(255, 183, 3, 0.18);
+  box-shadow: 0 0 0 4px rgba(164, 198, 57, 0.18);
 }
 .td-btn {
   display: flex;
@@ -273,7 +273,7 @@
 }
 
 .secBtnPrimary:hover {
-  background: #081a3f;
+  background: #294708;
   transform: translateY(-2px);
 }
 
@@ -363,7 +363,7 @@
 }
 
 .secTableWrap::-webkit-scrollbar-thumb:hover {
-  background: #081a3f;
+  background: #294708;
 }
 
 .secTable {
@@ -408,21 +408,21 @@
 }
 
 .vpLink {
-  color: #0a58ca;
+  color: #568416;
   font-weight: 900;
   text-decoration: underline;
   font-size: 0.78rem;
 }
 .vpLink:hover {
   text-decoration: none;
-  color: #073f93;
+  color: #3f6810;
 }
 
 .vpMiniInput {
   width: 100%;
   padding: 0.5rem 0.7rem;
   border-radius: 0.8rem;
-  border: 2px solid rgba(27, 50, 107, 0.35);
+  border: 2px solid rgba(86, 132, 22, 0.35);
   outline: none;
   font-weight: 800;
   font-size: 0.85rem;
@@ -430,7 +430,7 @@
 
 .vpMiniInput:focus {
   border-color: var(--edukaAccent);
-  box-shadow: 0 0 0 4px rgba(255, 183, 3, 0.18);
+  box-shadow: 0 0 0 4px rgba(164, 198, 57, 0.18);
 }
 
 .vpMiniSelect {
@@ -457,7 +457,7 @@
   color: #fff;
 }
 .vp-btn-edit:hover {
-  background: #081a3f;
+  background: #294708;
   transform: translateY(-1px);
 }
 
@@ -675,5 +675,143 @@
 
   .vpResumenGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================
+   PAGINACIÓN
+   ============================ */
+
+.paginacion {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border: 1px solid rgba(86, 132, 22, 0.16);
+  border-radius: 1rem;
+  background: rgba(244, 249, 238, 0.92);
+  box-shadow: 0 0.55rem 1.35rem rgba(63, 104, 16, 0.08);
+}
+
+.paginacion-flechas {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.paginacion-flechas.derecha {
+  justify-content: flex-end;
+}
+
+.paginacion-numeros {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.paginacion button {
+  min-width: 2.45rem;
+  height: 2.45rem;
+  padding: 0 0.7rem;
+  border: 1px solid rgba(86, 132, 22, 0.22);
+  border-radius: 0.7rem;
+  background: #ffffff;
+  color: var(--edukaBlue2);
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.paginacion button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--edukaAccent);
+  background: rgba(164, 198, 57, 0.14);
+  box-shadow: 0 0.45rem 1rem rgba(63, 104, 16, 0.13);
+}
+
+.paginacion button.pagina-actual {
+  border-color: var(--edukaBlue2);
+  background: linear-gradient(
+    135deg,
+    var(--edukaBlue2),
+    var(--edukaBlue)
+  );
+  color: #ffffff;
+  box-shadow: 0 0.55rem 1.1rem rgba(63, 104, 16, 0.24);
+}
+
+.paginacion button:disabled {
+  border-color: #d7dfcf;
+  background: #eef1eb;
+  color: #98a390;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.paginacion .puntos {
+  padding: 0 0.2rem;
+  color: #75856b;
+  font-weight: 900;
+}
+
+.numero-registros,
+.secCount {
+  position: relative;
+  z-index: 2;
+  margin: 0.65rem 0 1rem;
+  text-align: center;
+  color: var(--edukaBlue2);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+@media (max-width: 640px) {
+  .paginacion {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .paginacion-numeros {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .paginacion-flechas.izquierda {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+
+  .paginacion-flechas.derecha {
+    grid-column: 2;
+    grid-row: 2;
+    justify-content: flex-end;
+  }
+
+  .paginacion button {
+    min-width: 2.2rem;
+    height: 2.2rem;
+    padding: 0 0.55rem;
+    font-size: 0.82rem;
+  }
+
+  .numero-registros,
+  .secCount {
+    font-size: 0.8rem;
+    line-height: 1.5;
   }
 }

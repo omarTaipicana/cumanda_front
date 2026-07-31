@@ -1,0 +1,1204 @@
+/* ========================================
+   VARIABLES
+======================================== */
+
+.cebtspidpc_page {
+  --territorio-navy: #102d46;
+  --territorio-blue: #145b82;
+  --territorio-blue-light: #2582a8;
+
+  --territorio-green-dark: #254d2b;
+  --territorio-green: #4f7c3d;
+  --territorio-green-light: #eaf3df;
+
+  --territorio-gold: #d5a52e;
+  --territorio-gold-light: #f7e7b7;
+
+  --territorio-white: #ffffff;
+  --territorio-white-soft: rgba(
+    255,
+    255,
+    255,
+    0.93
+  );
+
+  --territorio-text: #183044;
+  --territorio-muted: #516778;
+
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(239, 247, 231, 0.28),
+      rgba(255, 255, 255, 0.06)
+    ),
+    url("/images/fondo.jpg");
+
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: 100% auto;
+  background-attachment: fixed;
+}
+
+/* ========================================
+   HERO
+======================================== */
+
+.cebtspidpc_hero {
+  position: relative;
+  min-height: 100vh;
+  padding: 3rem 4.5rem 4rem;
+}
+
+.cebtspidpc_backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(255, 255, 255, 0.42),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(213, 165, 46, 0.14),
+      transparent 28%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1),
+      transparent 55%
+    );
+}
+
+/* ========================================
+   LAYOUT
+======================================== */
+
+.cebtspidpc_layout {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  grid-template-columns:
+    minmax(420px, 1.05fr)
+    minmax(400px, 0.78fr);
+
+  gap: clamp(2rem, 4vw, 4.5rem);
+  align-items: start;
+
+  width: min(100%, 1500px);
+  margin: 0 auto;
+}
+
+.cebtspidpc_sidebar {
+  max-width: 760px;
+  padding-top: 0.6rem;
+}
+
+.cebtspidpc_pdf_area {
+  display: flex;
+  justify-content: center;
+
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* ========================================
+   ENCABEZADO
+======================================== */
+
+.cebtspidpc_label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin-bottom: 1.15rem;
+  padding: 0.55rem 1rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.68);
+  border-radius: 999px;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.82
+  );
+
+  color: var(--territorio-blue);
+
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  box-shadow:
+    0 0.8rem 2rem
+    rgba(32, 70, 37, 0.14);
+
+  backdrop-filter: blur(14px);
+}
+
+.cebtspidpc_label::before {
+  content: "";
+
+  width: 0.56rem;
+  height: 0.56rem;
+
+  border-radius: 50%;
+
+  background: var(--territorio-gold);
+
+  box-shadow:
+    0 0 0 0.25rem
+    rgba(213, 165, 46, 0.2);
+}
+
+.cebtspidpc_main_title {
+  max-width: 720px;
+  margin: 0;
+
+  color: var(--territorio-navy);
+
+  font-size: clamp(
+    3rem,
+    6vw,
+    5.4rem
+  );
+
+  line-height: 0.91;
+  font-weight: 1000;
+  letter-spacing: -0.065em;
+
+  text-shadow:
+    0 0.2rem 0
+      rgba(255, 255, 255, 0.65),
+    0 1rem 2.8rem
+      rgba(20, 49, 25, 0.16);
+}
+
+.cebtspidpc_course_name {
+  max-width: 690px;
+  margin: 1rem 0 0;
+
+  color: var(--territorio-blue);
+
+  font-size: clamp(
+    1.35rem,
+    2.5vw,
+    2.05rem
+  );
+
+  line-height: 1.14;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+
+  text-shadow:
+    0 1px 0
+    rgba(255, 255, 255, 0.7);
+}
+
+.cebtspidpc_slogan {
+  display: inline-flex;
+
+  margin: 1rem 0 0;
+  padding: 0.65rem 0.95rem;
+
+  border-left: 4px solid
+    var(--territorio-gold);
+  border-radius: 0 0.7rem 0.7rem 0;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.76
+  );
+
+  color: #7b5710;
+
+  font-size: 0.95rem;
+  line-height: 1.45;
+  font-weight: 950;
+  font-style: italic;
+
+  box-shadow:
+    0 0.7rem 1.8rem
+    rgba(31, 67, 35, 0.1);
+
+  backdrop-filter: blur(10px);
+}
+
+.cebtspidpc_subtitle {
+  max-width: 690px;
+  margin: 1.2rem 0 1.5rem;
+
+  padding: 1rem 1.1rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.69
+  );
+
+  color: var(--territorio-text);
+
+  font-size: 1.03rem;
+  line-height: 1.75;
+  font-weight: 700;
+
+  box-shadow:
+    0 0.8rem 2rem
+    rgba(25, 61, 30, 0.1);
+
+  backdrop-filter: blur(12px);
+}
+
+/* ========================================
+   ESTADÍSTICAS
+======================================== */
+
+.cebtspidpc_stats {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(105px, 1fr));
+
+  gap: 0.8rem;
+  max-width: 720px;
+  margin: 1.5rem 0;
+}
+
+.cebtspidpc_stat {
+  position: relative;
+  overflow: hidden;
+
+  min-height: 112px;
+  padding: 1rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.74);
+  border-radius: 1.2rem;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(240, 247, 235, 0.92)
+    );
+
+  box-shadow:
+    0 1rem 2.3rem
+    rgba(33, 72, 38, 0.14);
+
+  backdrop-filter: blur(14px);
+}
+
+.cebtspidpc_stat::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 4px;
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--territorio-blue),
+      var(--territorio-gold)
+    );
+}
+
+.cebtspidpc_stat::after {
+  content: "";
+
+  position: absolute;
+  right: -1.5rem;
+  bottom: -2rem;
+
+  width: 5rem;
+  height: 5rem;
+
+  border-radius: 50%;
+
+  background:
+    rgba(37, 130, 168, 0.1);
+}
+
+.cebtspidpc_stat strong {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+  margin-bottom: 0.35rem;
+
+  color: var(--territorio-blue);
+
+  font-size: 1.45rem;
+  line-height: 1;
+  font-weight: 1000;
+}
+
+.cebtspidpc_stat span {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+
+  color: var(--territorio-muted);
+
+  font-size: 0.78rem;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+/* ========================================
+   PANEL DE INFORMACIÓN
+======================================== */
+
+.cebtspidpc_info_panel {
+  max-width: 720px;
+  margin-top: 1.4rem;
+  padding: 1.45rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.76);
+  border-radius: 1.6rem;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(244, 249, 240, 0.95)
+    );
+
+  box-shadow:
+    0 1.4rem 3.4rem
+    rgba(27, 62, 31, 0.18);
+
+  backdrop-filter: blur(16px);
+}
+
+.cebtspidpc_mini_badge {
+  display: inline-flex;
+
+  margin-bottom: 0.8rem;
+  padding: 0.42rem 0.85rem;
+
+  border-radius: 999px;
+
+  background: var(
+    --territorio-gold-light
+  );
+
+  color: #6e4d0b;
+
+  font-size: 0.74rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+}
+
+.cebtspidpc_title {
+  margin: 0 0 0.8rem;
+
+  color: var(--territorio-navy);
+
+  font-size: clamp(
+    1.35rem,
+    2vw,
+    1.9rem
+  );
+
+  line-height: 1.14;
+  font-weight: 1000;
+  letter-spacing: -0.025em;
+}
+
+.cebtspidpc_description {
+  margin: 0 0 1.15rem;
+
+  color: var(--territorio-muted);
+
+  font-size: 0.96rem;
+  line-height: 1.72;
+}
+
+.cebtspidpc_feature_list {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 0.75rem;
+}
+
+.cebtspidpc_feature_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+
+  min-height: 112px;
+  padding: 0.95rem;
+
+  border: 1px solid
+    rgba(20, 91, 130, 0.14);
+  border-radius: 1rem;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f0f6eb
+    );
+
+  box-shadow:
+    0 0.5rem 1.4rem
+    rgba(32, 72, 37, 0.07);
+}
+
+.cebtspidpc_feature_icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 2rem;
+  height: 2rem;
+
+  border-radius: 0.7rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--territorio-blue),
+      var(--territorio-blue-light)
+    );
+
+  color: #ffffff;
+
+  font-size: 0.8rem;
+  font-weight: 1000;
+
+  box-shadow:
+    0 0.5rem 1.1rem
+    rgba(20, 91, 130, 0.24);
+}
+
+.cebtspidpc_feature_item strong {
+  display: block;
+  margin-bottom: 0.28rem;
+
+  color: var(--territorio-blue);
+
+  font-size: 0.79rem;
+  line-height: 1.3;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+}
+
+.cebtspidpc_feature_item div > span {
+  display: block;
+
+  color: var(--territorio-muted);
+
+  font-size: 0.82rem;
+  line-height: 1.42;
+  font-weight: 650;
+}
+
+/* ========================================
+   DISTRIBUCIÓN ACADÉMICA
+======================================== */
+
+.cebtspidpc_distribution {
+  max-width: 720px;
+  margin-top: 1.25rem;
+  padding: 1.3rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.18);
+  border-radius: 1.4rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 45, 70, 0.97),
+      rgba(20, 91, 130, 0.95)
+    );
+
+  box-shadow:
+    0 1.3rem 3rem
+    rgba(25, 59, 29, 0.22);
+}
+
+.cebtspidpc_section_heading span {
+  display: block;
+  margin-bottom: 0.25rem;
+
+  color: #f4cf68;
+
+  font-size: 0.71rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cebtspidpc_section_heading h3 {
+  margin: 0 0 1rem;
+
+  color: #ffffff;
+
+  font-size: 1.2rem;
+  font-weight: 950;
+}
+
+.cebtspidpc_distribution_grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 0.7rem;
+}
+
+.cebtspidpc_distribution_item {
+  min-height: 92px;
+  padding: 0.85rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.15);
+  border-radius: 0.9rem;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.09
+  );
+}
+
+.cebtspidpc_distribution_item strong {
+  display: block;
+  margin-bottom: 0.3rem;
+
+  color: #f4cf68;
+
+  font-size: 1.2rem;
+  line-height: 1;
+  font-weight: 1000;
+}
+
+.cebtspidpc_distribution_item span {
+  display: block;
+
+  color: rgba(
+    255,
+    255,
+    255,
+    0.87
+  );
+
+  font-size: 0.73rem;
+  line-height: 1.38;
+  font-weight: 700;
+}
+
+/* ========================================
+   BOTONES
+======================================== */
+
+.button_group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.button_group--hero {
+  max-width: 720px;
+  margin-top: 1.3rem;
+}
+
+.btn_primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+
+  min-height: 54px;
+  padding: 0 1.35rem;
+
+  border: 1px solid transparent;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--territorio-navy),
+      var(--territorio-blue)
+    );
+
+  color: #ffffff;
+
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 950;
+
+  box-shadow:
+    0 1rem 2.2rem
+    rgba(24, 58, 29, 0.22);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.btn_primary:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 1.3rem 2.7rem
+    rgba(22, 55, 27, 0.29);
+
+  filter: brightness(1.06);
+}
+
+.btn_primary--secondary {
+  background:
+    linear-gradient(
+      135deg,
+      #e5bc4a,
+      #c98c1d
+    );
+
+  color: #273344;
+}
+
+.btn_primary--ghost {
+  border-color:
+    rgba(255, 255, 255, 0.72);
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.82
+  );
+
+  color: var(--territorio-blue);
+
+  box-shadow:
+    0 0.8rem 1.8rem
+    rgba(26, 62, 30, 0.14);
+
+  backdrop-filter: blur(12px);
+}
+
+.btn_primary--ghost:hover {
+  background: #ffffff;
+}
+
+/* ========================================
+   PANEL PDF
+======================================== */
+
+.cebtspidpc_pdf_panel {
+  width: min(100%, 530px);
+  padding: 1rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.78);
+  border-radius: 1.8rem;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.96
+  );
+
+  box-shadow:
+    0 1.7rem 4.2rem
+    rgba(26, 61, 30, 0.28);
+
+  backdrop-filter: blur(18px);
+}
+
+.cebtspidpc_panel_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 0.5rem 0.55rem 1rem;
+}
+
+.cebtspidpc_panel_kicker {
+  display: block;
+
+  color: #9b6b10;
+
+  font-size: 0.72rem;
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: 0.085em;
+}
+
+.cebtspidpc_panel_head h2 {
+  margin: 0.22rem 0 0;
+
+  color: var(--territorio-navy);
+
+  font-size: 1.18rem;
+  line-height: 1.2;
+  font-weight: 1000;
+}
+
+.cebtspidpc_panel_dots {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.4rem;
+}
+
+.cebtspidpc_panel_dots span {
+  display: block;
+
+  width: 0.62rem;
+  height: 0.62rem;
+
+  border-radius: 50%;
+
+  background:
+    var(--territorio-blue);
+}
+
+.cebtspidpc_panel_dots span:nth-child(2) {
+  background:
+    var(--territorio-gold);
+}
+
+.cebtspidpc_panel_dots span:nth-child(3) {
+  background:
+    var(--territorio-green);
+}
+
+/* ========================================
+   VISOR PDF
+======================================== */
+
+.cebtspidpc_pdf_viewer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  min-height: 610px;
+  padding: 1rem;
+  overflow: hidden;
+
+  border: 1px solid
+    rgba(20, 91, 130, 0.13);
+  border-radius: 1.3rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f5f8f2,
+      #e9f1e3
+    );
+}
+
+.cebtspidpc_pdf {
+  display: flex;
+  justify-content: center;
+}
+
+.cebtspidpc_pdf canvas {
+  max-width: 100%;
+  height: auto !important;
+
+  border-radius: 0.7rem;
+
+  box-shadow:
+    0 1rem 2.4rem
+    rgba(32, 65, 35, 0.2);
+}
+
+.cebtspidpc_pdf_loading {
+  display: grid;
+  place-items: center;
+
+  min-height: 560px;
+
+  color: var(--territorio-blue);
+
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.cebtspidpc_pdf_error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 560px;
+  padding: 2rem;
+
+  text-align: center;
+}
+
+.cebtspidpc_pdf_error > span {
+  display: grid;
+  place-items: center;
+
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: 1rem;
+
+  border-radius: 50%;
+
+  background: #f8edcc;
+  color: #9b6b10;
+
+  font-size: 1.8rem;
+  font-weight: 1000;
+}
+
+.cebtspidpc_pdf_error h3 {
+  margin: 0 0 0.6rem;
+
+  color: var(--territorio-navy);
+}
+
+.cebtspidpc_pdf_error p {
+  margin: 0 0 0.6rem;
+
+  color: var(--territorio-muted);
+}
+
+.cebtspidpc_pdf_error code {
+  display: block;
+
+  max-width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+
+  overflow-wrap: anywhere;
+
+  border-radius: 0.6rem;
+
+  background: #eef4e9;
+  color: var(--territorio-green-dark);
+}
+
+.cebtspidpc_pdf_error a {
+  color: var(--territorio-blue);
+  font-weight: 900;
+}
+
+/* ========================================
+   PAGINACIÓN
+======================================== */
+
+.pagination_controls {
+  display: grid;
+  grid-template-columns:
+    1fr auto 1fr;
+
+  gap: 0.75rem;
+  align-items: center;
+
+  margin-top: 1rem;
+}
+
+.pagination_controls button {
+  min-height: 44px;
+  padding: 0 1rem;
+
+  border: none;
+  border-radius: 999px;
+
+  background:
+    var(--territorio-navy);
+
+  color: #ffffff;
+
+  font-size: 0.82rem;
+  font-weight: 950;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.pagination_controls button:last-child {
+  background:
+    var(--territorio-blue);
+}
+
+.pagination_controls button:hover:not(
+    :disabled
+  ) {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.pagination_controls button:disabled {
+  background: #cad3c5;
+  color: #71806d;
+
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.pagination_controls span {
+  color: var(--territorio-muted);
+
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pagination_controls span strong {
+  color: var(--territorio-blue);
+}
+
+/* ========================================
+   TARJETA PROYECTO FINAL
+======================================== */
+
+.cebtspidpc_project_card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+
+  border-radius: 1rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--territorio-navy),
+      var(--territorio-blue)
+    );
+
+  box-shadow:
+    0 0.8rem 1.8rem
+    rgba(26, 61, 30, 0.18);
+}
+
+.cebtspidpc_project_icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  width: 3rem;
+  height: 3rem;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.19);
+  border-radius: 0.9rem;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.1
+  );
+
+  color: #f4cf68;
+
+  font-size: 0.87rem;
+  font-weight: 1000;
+}
+
+.cebtspidpc_project_card strong {
+  display: block;
+  margin-bottom: 0.2rem;
+
+  color: #ffffff;
+
+  font-size: 0.83rem;
+  font-weight: 950;
+}
+
+.cebtspidpc_project_card p {
+  margin: 0;
+
+  color: rgba(
+    255,
+    255,
+    255,
+    0.82
+  );
+
+  font-size: 0.76rem;
+  line-height: 1.42;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1240px) {
+  .cebtspidpc_hero {
+    padding: 2.3rem 1.7rem 3rem;
+  }
+
+  .cebtspidpc_layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cebtspidpc_sidebar {
+    max-width: 100%;
+  }
+
+  .cebtspidpc_pdf_area {
+    position: static;
+    justify-content: flex-start;
+  }
+
+  .cebtspidpc_pdf_panel {
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 820px) {
+  .cebtspidpc_stats {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .cebtspidpc_distribution_grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .cebtspidpc_page {
+    background-attachment: scroll;
+    background-size: cover;
+  }
+
+  .cebtspidpc_hero {
+    padding: 1rem 0.85rem 2rem;
+  }
+
+  .cebtspidpc_layout {
+    gap: 1.4rem;
+  }
+
+  .cebtspidpc_main_title {
+    font-size: clamp(
+      2.55rem,
+      15vw,
+      3.65rem
+    );
+  }
+
+  .cebtspidpc_course_name {
+    font-size: 1.3rem;
+  }
+
+  .cebtspidpc_subtitle {
+    font-size: 0.93rem;
+    line-height: 1.65;
+  }
+
+  .cebtspidpc_stats {
+    gap: 0.6rem;
+  }
+
+  .cebtspidpc_stat {
+    min-height: 100px;
+    padding: 0.85rem;
+  }
+
+  .cebtspidpc_feature_list {
+    grid-template-columns: 1fr;
+  }
+
+  .cebtspidpc_distribution_grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .button_group {
+    flex-direction: column;
+  }
+
+  .btn_primary {
+    width: 100%;
+  }
+
+  .cebtspidpc_pdf_panel {
+    width: 100%;
+    padding: 0.65rem;
+    border-radius: 1.25rem;
+  }
+
+  .cebtspidpc_panel_head {
+    align-items: flex-start;
+  }
+
+  .cebtspidpc_panel_head h2 {
+    font-size: 1rem;
+  }
+
+  .cebtspidpc_pdf_viewer {
+    min-height: 480px;
+    padding: 0.55rem;
+  }
+
+  .cebtspidpc_pdf_loading,
+  .cebtspidpc_pdf_error {
+    min-height: 440px;
+  }
+
+  .pagination_controls {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .pagination_controls span {
+    grid-column: 1 / -1;
+    grid-row: 1;
+
+    text-align: center;
+  }
+
+  .cebtspidpc_project_card {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 390px) {
+  .cebtspidpc_stats,
+  .cebtspidpc_distribution_grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cebtspidpc_stat,
+  .cebtspidpc_distribution_item {
+    min-height: auto;
+  }
+}

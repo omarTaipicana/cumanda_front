@@ -27,6 +27,7 @@ import UserEdit from "./pages/UserEdit";
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import Cmcsce from "./components/Cursos/Cmcsce";
+import Cebtspidpc from "./components/Cursos/Cebtspidpc";
 
 const App = () => {
   const location = useLocation();
@@ -69,6 +70,9 @@ const App = () => {
         <Route path="/register_pago/:code" element={<RegistroPagos />} />
 
         <Route path="/cmcsce" element={<Cmcsce />} />
+
+        <Route path="/cebtspidpc" element={<Cebtspidpc />} />
+
 
         <Route path="/login" element={<Login />} />
 

@@ -1,5 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { io } from "socket.io-client";
 import "./styles/ValidacionPago.css";
 import useCrud from "../hooks/useCrud";
@@ -17,6 +24,8 @@ const urlBase = import.meta.env.VITE_API_URL;
 
 const PATH_PAGOS = "/pagos";
 const PATH_VARIABLES = "/variables";
+const PATH_COURSES = "/courses";
+const REGISTROS_POR_PAGINA = 15;
 // guarda posición
 
 const ValidacionPago = () => {
@@ -28,6 +37,8 @@ const ValidacionPago = () => {
   const scrollPosRef = useRef(0);
   const lastClickedRef = useRef(null);
   const hamburgerRef = useRef();
+  const activeSectionRef = useRef(activeSection);
+  const cargarPagosRef = useRef(null);
   const dispatch = useDispatch();
 
   const { register, handleSubmit, reset } = useForm();
@@ -36,11 +47,22 @@ const ValidacionPago = () => {
   const [pagoDashboard, getPagoDashboard] = useCrud();
   const [inscripcion, getInscripcion] = useCrud();
   const [variables, getVariables] = useCrud();
+  const [courses, getCourses] = useCrud();
 
   const [showDelete, setShowDelete] = useState(false);
   const [pagoIdDelete, setPagoIdDelete] = useState(null);
 
   const [showRestaurar, setShowRestaurar] = useState(false);
+  const [
+    showConfirmarCertificado,
+    setShowConfirmarCertificado,
+  ] = useState(false);
+
+  const [
+    datosPendientesGuardar,
+    setDatosPendientesGuardar,
+  ] = useState(null);
+
   const [pagoIdRestaurar, setPagoIdRestaurar] = useState(null);
   const [isEmitiendoFactura, setIsEmitiendoFactura] = useState(false);
   const [facturandoPagoId, setFacturandoPagoId] = useState(null);
@@ -71,6 +93,19 @@ const ValidacionPago = () => {
   const [filtroCertificado, setFiltroCertificado] = useState("");
 
   const [ordenFechaDesc, setOrdenFechaDesc] = useState(true);
+
+  const [paginaActual, setPaginaActual] = useState(1);
+  const limit = REGISTROS_POR_PAGINA;
+
+  /*
+   * Se utiliza para evitar que el primer render
+   * dispare consultas antes de conocer la sección.
+   */
+  const [componenteInicializado, setComponenteInicializado] =
+    useState(false);
+
+
+
 
   const getScroller = () => {
     const el = contentRef.current;
@@ -114,21 +149,438 @@ const ValidacionPago = () => {
   }, [generaFactura]);
 
   useEffect(() => {
-    if (error) {
-      const message = error.response?.data?.message ?? "Error inesperado";
-      dispatch(
-        showAlert({
-          message: `⚠️ ${message}`,
-          alertType: 1,
-        }),
-      );
+    if (!error) return;
+
+    console.error(
+      "ERROR COMPLETO DE PAGOS:",
+      error,
+    );
+
+    console.error(
+      "RESPUESTA DEL BACKEND:",
+      error?.response?.data,
+    );
+
+    const responseData =
+      error?.response?.data;
+
+    let message =
+      responseData?.message ||
+      responseData?.error ||
+      responseData?.errors?.[0]?.message ||
+      responseData?.errors?.[0]?.msg ||
+      error?.message ||
+      "No se pudo completar la operación.";
+
+    /*
+     * Cuando Express responde HTML, por ejemplo:
+     * Cannot PUT /pagos/123
+     */
+    if (
+      typeof responseData === "string"
+    ) {
+      message = responseData
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
     }
-  }, [error]);
+
+    dispatch(
+      showAlert({
+        message: `⚠️ ${message}`,
+        alertType: 1,
+      }),
+    );
+  }, [error, dispatch]);
 
   useEffect(() => {
-    const handler = setTimeout(() => setFiltroGrado(inputValue), 2000);
+    const handler = setTimeout(() => {
+      setFiltroGrado(inputValue.trim());
+      setPaginaActual(1);
+    }, 600);
+
     return () => clearTimeout(handler);
   }, [inputValue]);
+
+
+  /*
+   * =========================================================
+   * DATOS DEVUELTOS POR EL ENDPOINT PAGINADO
+   * =========================================================
+   */
+
+  const pagosData = useMemo(() => {
+    if (Array.isArray(pago)) {
+      return pago;
+    }
+
+    return Array.isArray(pago?.data)
+      ? pago.data
+      : [];
+  }, [pago]);
+
+  const totalRegistros =
+    Number(pago?.total) || 0;
+
+  const totalPaginas =
+    Math.max(
+      Number(pago?.totalPages) || 1,
+      1,
+    );
+
+  const registroDesde =
+    Number(pago?.from) || 0;
+
+  const registroHasta =
+    Number(pago?.to) || 0;
+
+  const pagosMostrados = pagosData;
+
+  /*
+   * =========================================================
+   * CONSTRUIR CONSULTA SEGÚN LA SECCIÓN ACTIVA
+   * =========================================================
+   */
+
+  const construirQueryPagos = useCallback(() => {
+    const params =
+      new URLSearchParams();
+
+    params.set(
+      "page",
+      String(paginaActual),
+    );
+
+    params.set(
+      "limit",
+      String(limit),
+    );
+
+    params.set(
+      "order",
+      ordenFechaDesc
+        ? "DESC"
+        : "ASC",
+    );
+
+    /*
+     * Todas estas pantallas trabajan con pagos activos,
+     * excepto cuando el usuario abre la papelera.
+     */
+    if (
+      activeSection === "validarPagos"
+    ) {
+      params.set(
+        "confirmacion",
+        papelera ? "false" : "true",
+      );
+    }
+
+    if (
+      activeSection === "registrarEntregas"
+    ) {
+      params.set(
+        "confirmacion",
+        "true",
+      );
+
+      params.set(
+        "reconocimiento",
+        "true",
+      );
+    }
+
+    if (
+      activeSection === "listaPagos"
+    ) {
+      params.set(
+        "confirmacion",
+        "true",
+      );
+    }
+
+    if (filtroCurso) {
+      params.set(
+        "curso",
+        filtroCurso,
+      );
+    }
+
+    if (filtroVerificado) {
+      params.set(
+        "verificado",
+        filtroVerificado,
+      );
+    }
+
+    if (filtroMoneda) {
+      params.set(
+        "moneda",
+        filtroMoneda,
+      );
+    }
+
+    if (filtroDistintivo) {
+      params.set(
+        "distintivo",
+        filtroDistintivo,
+      );
+    }
+
+    if (
+      activeSection ===
+      "registrarEntregas" &&
+      filtroEntregado
+    ) {
+      params.set(
+        "entregado",
+        filtroEntregado,
+      );
+    }
+
+    if (filtroCertificado) {
+      params.set(
+        "certificado",
+        filtroCertificado,
+      );
+    }
+
+    if (filtroGrado) {
+      params.set(
+        "busqueda",
+        filtroGrado,
+      );
+    }
+
+    if (filtroFechaInicio) {
+      params.set(
+        "fechaInicio",
+        filtroFechaInicio,
+      );
+    }
+
+    if (filtroFechaFin) {
+      params.set(
+        "fechaFin",
+        filtroFechaFin,
+      );
+    }
+
+    return `/pagos?${params.toString()}`;
+  }, [
+    activeSection,
+    paginaActual,
+    limit,
+    ordenFechaDesc,
+    papelera,
+    filtroCurso,
+    filtroVerificado,
+    filtroMoneda,
+    filtroDistintivo,
+    filtroEntregado,
+    filtroCertificado,
+    filtroGrado,
+    filtroFechaInicio,
+    filtroFechaFin,
+  ]);
+
+
+
+  const cargarPagosActuales =
+    useCallback(async () => {
+      const seccionUsaPagos = [
+        "validarPagos",
+        "registrarEntregas",
+        "listaPagos",
+      ].includes(activeSection);
+
+      if (!seccionUsaPagos) {
+        return;
+      }
+
+      await getPago(
+        construirQueryPagos(),
+      );
+    }, [
+      activeSection,
+      construirQueryPagos,
+    ]);
+
+
+
+
+  /*
+   * =========================================================
+   * SINCRONIZAR REFERENCIAS PARA SOCKET
+   * =========================================================
+   */
+
+  useEffect(() => {
+    activeSectionRef.current = activeSection;
+  }, [activeSection]);
+
+  useEffect(() => {
+    cargarPagosRef.current = cargarPagosActuales;
+  }, [cargarPagosActuales]);
+
+  /*
+   * =========================================================
+   * CARGAR DATOS AUXILIARES SEGÚN LA SECCIÓN
+   * =========================================================
+   */
+
+  useEffect(() => {
+    if (!componenteInicializado) {
+      return;
+    }
+
+    if (activeSection === "resumen") {
+      getPagoDashboard("/pagos_dashboard");
+      return;
+    }
+
+    if (
+      activeSection === "validarPagos" ||
+      activeSection === "registrarEntregas"
+    ) {
+      const cursosCargados =
+        Array.isArray(courses)
+          ? courses.length > 0
+          : Array.isArray(courses?.data)
+            ? courses.data.length > 0
+            : Array.isArray(courses?.results)
+              ? courses.results.length > 0
+              : false;
+
+      if (!cursosCargados) {
+        getCourses(PATH_COURSES);
+      }
+    }
+
+    if (activeSection === "validarPagos") {
+      const variablesCargadas =
+        Array.isArray(variables)
+          ? variables.length > 0
+          : Array.isArray(variables?.data)
+            ? variables.data.length > 0
+            : false;
+
+      if (!variablesCargadas) {
+        getVariables(PATH_VARIABLES);
+      }
+    }
+  }, [
+    componenteInicializado,
+    activeSection,
+  ]);
+
+  /*
+   * =========================================================
+   * CARGAR PAGOS PAGINADOS
+   * =========================================================
+   */
+
+  useEffect(() => {
+    if (!componenteInicializado) {
+      return;
+    }
+
+    const seccionUsaPagos = [
+      "validarPagos",
+      "registrarEntregas",
+      "listaPagos",
+    ].includes(activeSection);
+
+    if (!seccionUsaPagos) {
+      return;
+    }
+
+    cargarPagosActuales();
+  }, [
+    componenteInicializado,
+    activeSection,
+    cargarPagosActuales,
+  ]);
+
+  useEffect(() => {
+    const socket = io(BASEURL, {
+      transports: ["polling", "websocket"],
+      upgrade: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
+
+    const actualizarPantallaActual =
+      () => {
+        const seccionActual =
+          activeSectionRef.current;
+
+        if (
+          [
+            "validarPagos",
+            "registrarEntregas",
+            "listaPagos",
+          ].includes(seccionActual)
+        ) {
+          cargarPagosRef.current?.();
+        }
+
+        if (
+          seccionActual === "resumen"
+        ) {
+          getPagoDashboard(
+            "/pagos_dashboard",
+          );
+        }
+      };
+
+    socket.on(
+      "pagoCreado",
+      actualizarPantallaActual,
+    );
+
+    socket.on(
+      "pagoActualizado",
+      actualizarPantallaActual,
+    );
+
+    return () => {
+      socket.off(
+        "pagoCreado",
+        actualizarPantallaActual,
+      );
+
+      socket.off(
+        "pagoActualizado",
+        actualizarPantallaActual,
+      );
+
+      socket.disconnect();
+    };
+  }, []);
+
+
+
+  useEffect(() => {
+    setPaginaActual(1);
+    cancelarEdicion();
+    setEditingEntregaId(null);
+  }, [
+    activeSection,
+    papelera,
+    filtroCurso,
+    filtroVerificado,
+    filtroMoneda,
+    filtroDistintivo,
+    filtroEntregado,
+    filtroCertificado,
+    filtroFechaInicio,
+    filtroFechaFin,
+    ordenFechaDesc,
+  ]);
+
+
 
   useLayoutEffect(() => {
     if (editPagoId == null) return;
@@ -149,46 +601,16 @@ const ValidacionPago = () => {
     });
   }, [editPagoId]);
 
-  useEffect(() => {
-    getPago(
-      `/pagos?curso=${filtroCurso}&verificado=${filtroVerificado}&moneda=${filtroMoneda}&distintivo=${filtroDistintivo}&entregado=${filtroEntregado}&certificado=${filtroCertificado}&busqueda=${filtroGrado}&fechaInicio=${filtroFechaInicio}&fechaFin=${filtroFechaFin}`,
-    );
 
-    const socket = io(BASEURL);
-    socket.on("pagoActualizado", () => getPago(PATH_PAGOS));
 
-    return () => socket.disconnect();
-  }, [
-    filtroCurso,
-    filtroVerificado,
-    filtroMoneda,
-    filtroDistintivo,
-    filtroGrado,
-    filtroFechaInicio,
-    filtroFechaFin,
-    filtroEntregado,
-    filtroCertificado,
-  ]);
 
-  const pagosActivos = [];
-  const pagosEliminados = [];
-  const pagosDistintivos = [];
 
-  for (const pagoItem of pago) {
-    if (pagoItem.confirmacion) pagosActivos.push(pagoItem);
-    else pagosEliminados.push(pagoItem);
 
-    if (pagoItem.confirmacion && (pagoItem.distintivo || pagoItem.moneda)) {
-      pagosDistintivos.push(pagoItem);
-    }
-  }
+
 
   useEffect(() => {
-    getPago(PATH_PAGOS);
-    getVariables(PATH_VARIABLES);
-    getInscripcion("/inscripcion");
     loggedUser();
-    getPagoDashboard(`/pagos_dashboard`);
+    setComponenteInicializado(true);
   }, []);
 
   const iniciarEdicion = (p, e) => {
@@ -215,33 +637,136 @@ const ValidacionPago = () => {
     setEditVerificado(false);
   };
 
-  const guardarEdicion = async (pagoId, data) => {
-    try {
-      // ✅ Confirmación SOLO si BD era false y ahora el input viene true
-      if (verificadoOriginal === false && data.verificado === true) {
-        const ok = window.confirm(
-          "⚠️ Al marcar este pago como VERIFICADO se emitirá el certificado.\n\n¿Deseas continuar?",
-        );
-        if (!ok) return; // ❌ no actualiza nada
-      }
 
-      await updatePago(PATH_PAGOS, pagoId, {
-        ...data,
-        valorDepositado: parseFloat(data.valorDepositado),
-        usuarioEdicion: user.email,
+  const guardarEdicion = (
+    pagoId,
+    data,
+  ) => {
+    if (
+      verificadoOriginal === false &&
+      data.verificado === true
+    ) {
+      setDatosPendientesGuardar({
+        pagoId,
+        data,
       });
 
-      await getPago(PATH_PAGOS);
+      setShowConfirmarCertificado(
+        true,
+      );
+
+      return;
+    }
+
+    guardarEdicionConfirmada(
+      pagoId,
+      data,
+    );
+  };
+
+
+  const guardarEdicionConfirmada = async (
+    pagoId,
+    data,
+  ) => {
+    try {
+
+
+
+
+
+
+
+      const valorDepositado =
+        Number.parseFloat(
+          data.valorDepositado,
+        );
+
+      if (
+        !Number.isFinite(
+          valorDepositado,
+        )
+      ) {
+        dispatch(
+          showAlert({
+            message:
+              "⚠️ El valor depositado no es válido.",
+            alertType: 1,
+          }),
+        );
+
+        return;
+      }
+
+      const datosActualizar = {
+        ...data,
+
+        valorDepositado,
+
+        entidad:
+          data.entidad?.trim() || null,
+
+        idDeposito:
+          data.idDeposito?.trim() ||
+          null,
+
+        observacion:
+          data.observacion?.trim() ||
+          "",
+
+        usuarioEdicion:
+          user?.email ||
+          "Usuario no identificado",
+      };
+
+
+      await updatePago(
+        PATH_PAGOS,
+        pagoId,
+        datosActualizar,
+      );
+
       cancelarEdicion();
-    } catch (error) {
-      alert("Error al guardar los cambios.");
+
+      /*
+       * Actualiza solo la página actual.
+       */
+      await cargarPagosActuales();
+
+      dispatch(
+        showAlert({
+          message:
+            "✅ La validación del pago fue registrada correctamente.",
+          alertType: 2,
+        }),
+      );
+    } catch (errorGuardar) {
+      console.error(
+        "ERROR AL GUARDAR VALIDACIÓN:",
+        errorGuardar,
+      );
+
+      const message =
+        errorGuardar?.response?.data
+          ?.message ||
+        errorGuardar?.response?.data
+          ?.error ||
+        errorGuardar?.message ||
+        "No se pudo guardar la validación.";
+
+      dispatch(
+        showAlert({
+          message: `⚠️ ${message}`,
+          alertType: 1,
+        }),
+      );
     }
   };
 
   const deletePagoPr = async (id) => {
     try {
       await updatePago(PATH_PAGOS, id, { confirmacion: false });
-      await getPago(PATH_PAGOS);
+      await cargarPagosActuales();
       cancelarEdicion();
       setShowDelete(false);
     } catch (error) {
@@ -252,7 +777,7 @@ const ValidacionPago = () => {
   const restaurarPagoPr = async (id) => {
     try {
       await updatePago(PATH_PAGOS, id, { confirmacion: true });
-      await getPago(PATH_PAGOS);
+      await cargarPagosActuales();
       cancelarEdicion();
       setShowRestaurar(false);
     } catch (error) {
@@ -260,13 +785,29 @@ const ValidacionPago = () => {
     }
   };
 
-  const getListaCursos = (arr) => {
-    const cursosSet = new Set();
-    arr.forEach((p) => p.curso && cursosSet.add(p.curso));
-    return Array.from(cursosSet);
-  };
+  const listaCursos = useMemo(() => {
+    let cursosData = [];
 
-  const listaCursos = getListaCursos(pago);
+    if (Array.isArray(courses)) {
+      cursosData = courses;
+    } else if (Array.isArray(courses?.data)) {
+      cursosData = courses.data;
+    } else if (Array.isArray(courses?.results)) {
+      cursosData = courses.results;
+    }
+
+    return [
+      ...new Set(
+        cursosData
+          .map((course) =>
+            course.sigla || course.curso || "",
+          )
+          .filter(Boolean),
+      ),
+    ].sort((a, b) =>
+      String(a).localeCompare(String(b)),
+    );
+  }, [courses]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -285,89 +826,205 @@ const ValidacionPago = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
-  const ordenarPorFecha = (array) => {
-    return [...array].sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return ordenFechaDesc ? dateB - dateA : dateA - dateB;
-    });
-  };
 
-  const pagosOrdenados = ordenarPorFecha(pagosActivos);
+
 
   const descargarExcel = () => {
-    const datosExcel = pagosActivos.map((p) => ({
-      Grado: p?.inscripcion?.user?.grado || "",
-      Nombres: p?.inscripcion?.user?.firstName || "",
-      Apellidos: p?.inscripcion?.user?.lastName || "",
-      Cedula: p?.inscripcion?.user?.cI || "",
-      Curso: p.curso || "",
-      "Valor Depositado": Number(p.valorDepositado || 0).toFixed(2) || "0.00",
-      Comprobante: p.pagoUrl || "",
-      Verificado: p.verificado ? "Sí" : "No",
-      Fecha: p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "",
-      Email: p?.inscripcion?.user?.email || "",
-      Celular: p?.inscripcion?.user?.cellular || "",
-    }));
+    const datosExcel =
+      pagosMostrados.map((p) => ({
+        Grado:
+          p?.inscripcion?.user?.grado || "",
 
-    const ws = XLSX.utils.json_to_sheet(datosExcel);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Pagos");
-    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([wbout], { type: "application/octet-stream" });
-    saveAs(blob, "pagos_filtrados.xlsx");
+        Nombres:
+          p?.inscripcion?.user?.firstName || "",
+
+        Apellidos:
+          p?.inscripcion?.user?.lastName || "",
+
+        Cedula:
+          p?.inscripcion?.user?.cI || "",
+
+        Curso:
+          p.curso || "",
+
+        "Valor Depositado":
+          Number(
+            p.valorDepositado || 0,
+          ).toFixed(2),
+
+        Comprobante:
+          p.pagoUrl || "",
+
+        Verificado:
+          p.verificado ? "Sí" : "No",
+
+        Fecha:
+          p.createdAt
+            ? new Date(
+              p.createdAt,
+            ).toLocaleDateString()
+            : "",
+
+        Email:
+          p?.inscripcion?.user?.email || "",
+
+        Celular:
+          p?.inscripcion?.user?.cellular || "",
+      }));
+
+    const ws =
+      XLSX.utils.json_to_sheet(
+        datosExcel,
+      );
+
+    const wb =
+      XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      ws,
+      "Pagos",
+    );
+
+    const wbout =
+      XLSX.write(wb, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+    const blob =
+      new Blob(
+        [wbout],
+        {
+          type:
+            "application/octet-stream",
+        },
+      );
+
+    saveAs(
+      blob,
+      "pagos_pagina_actual.xlsx",
+    );
   };
 
   const descargarExcelInscripcion = () => {
+    if (
+      !Array.isArray(inscripcion) ||
+      inscripcion.length === 0
+    ) {
+      dispatch(
+        showAlert({
+          message:
+            "⚠️ Las inscripciones no se han cargado. Esta exportación se optimizará desde el backend.",
+          alertType: 1,
+        }),
+      );
+
+      return;
+    }
+
     const datosExcel = [...inscripcion]
-      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .sort(
+        (a, b) =>
+          new Date(a.createdAt) -
+          new Date(b.createdAt),
+      )
       .map((i) => ({
         id: i?.id || "",
         grado: i?.user?.grado || "",
-        nombres: i?.user?.firstName || "",
-        apellidos: i?.user?.lastName || "",
-        cedula: i?.user?.cI || "",
-        email: i?.user?.email || "",
-        aceptacion: i?.aceptacion || "",
-        curso: i?.curso || "",
-        userId: i?.userId || "",
-        createdAt: i?.createdAt || "",
-        updatedAt: i?.updatedAt || "",
-        courseId: i?.courseId || "",
-        observacion: i?.observacion || "",
-        usuarioEdicion: i?.usuarioEdicion || "",
+        nombres:
+          i?.user?.firstName || "",
+        apellidos:
+          i?.user?.lastName || "",
+        cedula:
+          i?.user?.cI || "",
+        email:
+          i?.user?.email || "",
+        aceptacion:
+          i?.aceptacion || "",
+        curso:
+          i?.curso || "",
+        userId:
+          i?.userId || "",
+        createdAt:
+          i?.createdAt || "",
+        updatedAt:
+          i?.updatedAt || "",
+        courseId:
+          i?.courseId || "",
+        observacion:
+          i?.observacion || "",
+        usuarioEdicion:
+          i?.usuarioEdicion || "",
       }));
 
-    const ws = XLSX.utils.json_to_sheet(datosExcel);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "inscripcion");
-    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([wbout], { type: "application/octet-stream" });
-    saveAs(blob, "inscripciones.xlsx");
-  };
-
-  const emitirFacturaManual = async (pagoId) => {
-    try {
-      if (isEmitiendoFactura) return;
-
-      setIsEmitiendoFactura(true);
-      setFacturandoPagoId(pagoId);
-
-      const { data } = await axios.post(
-        `${urlBase}/contifico/factura/emitir-manual`,
-        { pagoId },
+    const ws =
+      XLSX.utils.json_to_sheet(
+        datosExcel,
       );
 
-      setGeneraFactura(data);
+    const wb =
+      XLSX.utils.book_new();
 
-      getPago(PATH_PAGOS);
-    } catch (e) {
-      console.error("Error emitir factura:", e.response?.data || e.message);
-    } finally {
-      setIsEmitiendoFactura(false);
-      setFacturandoPagoId(null);
-    }
+    XLSX.utils.book_append_sheet(
+      wb,
+      ws,
+      "inscripcion",
+    );
+
+    const wbout =
+      XLSX.write(wb, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+    const blob =
+      new Blob(
+        [wbout],
+        {
+          type:
+            "application/octet-stream",
+        },
+      );
+
+    saveAs(
+      blob,
+      "inscripciones.xlsx",
+    );
   };
+
+  const emitirFacturaManual =
+    async (pagoId) => {
+      try {
+        if (isEmitiendoFactura) {
+          return;
+        }
+
+        setIsEmitiendoFactura(true);
+        setFacturandoPagoId(pagoId);
+
+        const { data } =
+          await axios.post(
+            `${urlBase}/contifico/factura/emitir-manual`,
+            {
+              pagoId,
+            },
+          );
+
+        setGeneraFactura(data);
+
+        await cargarPagosActuales();
+      } catch (error) {
+        console.error(
+          "Error emitir factura:",
+          error.response?.data ||
+          error.message,
+        );
+      } finally {
+        setIsEmitiendoFactura(false);
+        setFacturandoPagoId(null);
+      }
+    };
 
   const getFacturaUI = (p) => {
     // 1) No hay documento
@@ -399,7 +1056,198 @@ const ValidacionPago = () => {
     setFiltroFechaInicio("");
     setFiltroFechaFin("");
     setFiltroCertificado("");
+
+    setPaginaActual(1);
+    setEditPagoId(null);
+    setEditingEntregaId(null);
   };
+
+
+  const cambiarSeccion = (
+    nuevaSeccion,
+  ) => {
+    setActiveSection(
+      nuevaSeccion,
+    );
+
+    setMenuOpen(false);
+    setPaginaActual(1);
+    setPapelera(false);
+    setEditPagoId(null);
+    setEditingEntregaId(null);
+  };
+
+
+  const renderPaginacion = () => {
+    if (
+      totalRegistros === 0
+    ) {
+      return null;
+    }
+
+    const paginasVisibles =
+      Array.from(
+        {
+          length:
+            totalPaginas,
+        },
+        (_, index) =>
+          index + 1,
+      ).filter(
+        (numeroPagina) =>
+          numeroPagina === 1 ||
+          numeroPagina ===
+          totalPaginas ||
+          (
+            numeroPagina >=
+            paginaActual - 2 &&
+            numeroPagina <=
+            paginaActual + 2
+          ),
+      );
+
+    return (
+      <>
+        <div className="paginacion secPagination">
+          <div className="paginacion-flechas izquierda">
+            <button
+              type="button"
+              onClick={() =>
+                setPaginaActual(1)
+              }
+              disabled={
+                paginaActual === 1 ||
+                isLoading
+              }
+            >
+              «
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setPaginaActual(
+                  (prev) =>
+                    Math.max(
+                      prev - 1,
+                      1,
+                    ),
+                )
+              }
+              disabled={
+                paginaActual === 1 ||
+                isLoading
+              }
+            >
+              ‹
+            </button>
+          </div>
+
+          <div className="paginacion-numeros">
+            {paginasVisibles.map(
+              (
+                numeroPagina,
+                index,
+                array,
+              ) => (
+                <React.Fragment
+                  key={
+                    numeroPagina
+                  }
+                >
+                  {index > 0 &&
+                    numeroPagina -
+                    array[
+                    index - 1
+                    ] >
+                    1 && (
+                      <span className="puntos">
+                        ...
+                      </span>
+                    )}
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPaginaActual(
+                        numeroPagina,
+                      )
+                    }
+                    className={
+                      paginaActual ===
+                        numeroPagina
+                        ? "pagina-actual"
+                        : ""
+                    }
+                    disabled={
+                      isLoading
+                    }
+                  >
+                    {
+                      numeroPagina
+                    }
+                  </button>
+                </React.Fragment>
+              ),
+            )}
+          </div>
+
+          <div className="paginacion-flechas derecha">
+            <button
+              type="button"
+              onClick={() =>
+                setPaginaActual(
+                  (prev) =>
+                    Math.min(
+                      prev + 1,
+                      totalPaginas,
+                    ),
+                )
+              }
+              disabled={
+                paginaActual ===
+                totalPaginas ||
+                isLoading
+              }
+            >
+              ›
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setPaginaActual(
+                  totalPaginas,
+                )
+              }
+              disabled={
+                paginaActual ===
+                totalPaginas ||
+                isLoading
+              }
+            >
+              »
+            </button>
+          </div>
+        </div>
+
+        <div className="numero-registros secCount">
+          Mostrando{" "}
+          {registroDesde}–{registroHasta}{" "}
+          de {totalRegistros} registros
+          {" · "}
+          Página {paginaActual} de{" "}
+          {totalPaginas}
+        </div>
+      </>
+    );
+  };
+
+
+  const dashboardDisponible =
+    pagoDashboard &&
+    !Array.isArray(pagoDashboard) &&
+    typeof pagoDashboard === "object";
 
   const renderContent = () => {
     switch (activeSection) {
@@ -410,7 +1258,7 @@ const ValidacionPago = () => {
               <h2 className="secTitle">📋 Resumen General</h2>
             </div>
 
-            {!pagoDashboard ? (
+            {!dashboardDisponible ? (
               <p className="secEmpty">Cargando resumen...</p>
             ) : (
               <div className="vpResumenGrid">
@@ -418,11 +1266,11 @@ const ValidacionPago = () => {
                   <div className="vpStatLabel">Total Pagos / Validados</div>
                   <div className="vpStatValue">
                     <span className="vpStatMain">
-                      {pagoDashboard.totalPagosNum}
+                      {pagoDashboard?.totalPagosNum ?? 0}
                     </span>
                     <span className="vpStatSep">/</span>
                     <span className="vpStatOk">
-                      {pagoDashboard.totalPagosVerificados}
+                      {pagoDashboard?.totalPagosVerificados ?? 0}
                     </span>
                   </div>
                 </div>
@@ -465,7 +1313,7 @@ const ValidacionPago = () => {
                   <div className="vpStatLabel">Certificados pagados</div>
                   <div className="vpStatValue">
                     <span className="vpStatMain">
-                      {pagoDashboard.totalPagosDinstint}
+                      {pagoDashboard?.totalPagosDinstint ?? 0}
                     </span>
                   </div>
                 </div>
@@ -581,8 +1429,11 @@ const ValidacionPago = () => {
               <button
                 className="secBtnPrimary vpTrashBtn"
                 type="button"
-                onClick={() => setPapelera(!papelera)}
-                title={papelera ? "Volver a activos" : "Ver eliminados"}
+                onClick={() => {
+                  setPapelera((prev) => !prev);
+                  setPaginaActual(1);
+                  setEditPagoId(null);
+                }} title={papelera ? "Volver a activos" : "Ver eliminados"}
               >
                 {papelera ? "↩️ Activos" : "🗑️ Papelera"}
               </button>
@@ -590,340 +1441,348 @@ const ValidacionPago = () => {
 
             {papelera ? (
               <p className="vpInfoDanger">
-                Mostrando {pagosEliminados.length} registros eliminados
+                Mostrando {totalRegistros} registros eliminados
               </p>
             ) : (
               <p className="vpInfo">
-                Mostrando {pagosActivos.length} resultados /{" "}
-                <span className="vpInfoOk">
-                  {pagosActivos.filter((p) => p.verificado).length} pagos
-                  validados
-                </span>
+                Mostrando {totalRegistros} resultados
+
               </p>
             )}
 
-            {(papelera ? pagosEliminados : pagosOrdenados)?.length ? (
-              <div className="secTableWrap">
-                <table className="secTable vpTable">
-                  <thead>
-                    <tr>
-                      <th>Discente</th>
-                      <th
-                        className="vpThSortable"
-                        onClick={() => setOrdenFechaDesc((prev) => !prev)}
-                        title="Ordenar por fecha"
-                      >
-                        Fecha {ordenFechaDesc ? "⬇️" : "⬆️"}
-                      </th>
-                      <th>Curso</th>
-                      <th>Distin</th>
-                      <th>Mon</th>
-                      <th>Valor</th>
-                      <th>Entidad</th>
-                      <th>Id Pago</th>
-                      <th>Comp</th>
-                      <th>Verif</th>
-                      <th>Obser</th>
-                      <th>Editor</th>
-                      <th colSpan={papelera ? 1 : 2}>
-                        {papelera ? "Restaurar" : "Acción"}
-                      </th>
-                    </tr>
-                  </thead>
+            {pagosMostrados.length ? (
+              <>
+                {renderPaginacion()}
 
-                  <tbody>
-                    {(papelera ? pagosEliminados : pagosOrdenados).map((p) => {
-                      const isEditing = editPagoId === p.id;
+                <div className="secTableWrap">
 
-                      return (
-                        <tr key={p.id}>
-                          <td className="vpTdWrap">
-                            {p
-                              ? `${p?.inscripcion?.user?.grado} ${p?.inscripcion?.user?.firstName} ${p?.inscripcion?.user?.lastName}`
-                              : "Sin Inscripción"}
-                          </td>
+                  <table className="secTable vpTable">
+                    <thead>
+                      <tr>
+                        <th>Discente</th>
+                        <th
+                          className="vpThSortable"
+                          onClick={() => setOrdenFechaDesc((prev) => !prev)}
+                          title="Ordenar por fecha"
+                        >
+                          Fecha {ordenFechaDesc ? "⬇️" : "⬆️"}
+                        </th>
+                        <th>Curso</th>
+                        <th>Distin</th>
+                        <th>Mon</th>
+                        <th>Valor</th>
+                        <th>Entidad</th>
+                        <th>Id Pago</th>
+                        <th>Comp</th>
+                        <th>Verif</th>
+                        <th>Obser</th>
+                        <th>Editor</th>
+                        <th colSpan={papelera ? 1 : 2}>
+                          {papelera ? "Restaurar" : "Acción"}
+                        </th>
+                      </tr>
+                    </thead>
 
-                          <td>
-                            {p.createdAt
-                              ? new Date(p.createdAt).toLocaleDateString()
-                              : "-"}
-                          </td>
+                    <tbody>
+                      {pagosMostrados.map((p) => {
+                        const isEditing = editPagoId === p.id;
 
-                          <td className="vpTdWrap">{p.curso}</td>
-
-                          <td style={{ textAlign: "center" }}>
-                            {papelera ? (
-                              p.distintivo ? (
-                                "✅"
-                              ) : (
-                                "❌"
-                              )
-                            ) : isEditing ? (
-                              <input
-                                type="checkbox"
-                                {...register("distintivo")}
-                              />
-                            ) : p.distintivo ? (
-                              "✅"
-                            ) : (
-                              "❌"
-                            )}
-                          </td>
-
-                          <td style={{ textAlign: "center" }}>
-                            {papelera ? (
-                              p.moneda ? (
-                                "✅"
-                              ) : (
-                                "❌"
-                              )
-                            ) : isEditing ? (
-                              <input type="checkbox" {...register("moneda")} />
-                            ) : p.moneda ? (
-                              "✅"
-                            ) : (
-                              "❌"
-                            )}
-                          </td>
-
-                          <td>
-                            {papelera ? (
-                              `$${Number(p.valorDepositado || 0).toFixed(2)}`
-                            ) : isEditing ? (
-                              <input
-                                type="number"
-                                step="0.01"
-                                {...register("valorDepositado")}
-                                className="vpMiniInput"
-                              />
-                            ) : (
-                              `$${Number(p.valorDepositado || 0).toFixed(2)}`
-                            )}
-                          </td>
-
-                          <td className="vpTdWrap">
-                            {papelera ? (
-                              p.entidad || "---"
-                            ) : isEditing ? (
-                              <select
-                                {...register("entidad")}
-                                className="secInput vpMiniSelect"
-                                required
-                              >
-                                <option value="">Entidad</option>
-                                {[
-                                  ...new Set(
-                                    variables
-                                      .map((v) => v.entidad)
-                                      .filter(Boolean),
-                                  ),
-                                ].map((entidad, i) => (
-                                  <option key={i} value={entidad}>
-                                    {entidad}
-                                  </option>
-                                ))}
-                              </select>
-                            ) : (
-                              p.entidad || "---"
-                            )}
-                          </td>
-
-                          <td>
-                            {papelera ? (
-                              p.idDeposito || "---"
-                            ) : isEditing ? (
-                              <input
-                                type="text"
-                                {...register("idDeposito")}
-                                className="vpMiniInput"
-                              />
-                            ) : (
-                              p.idDeposito || "---"
-                            )}
-                          </td>
-
-                          <td>
-                            {p.pagoUrl ? (
-                              <a
-                                className="vpLink"
-                                href={p.pagoUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Ver
-                              </a>
-                            ) : (
-                              "No disponible"
-                            )}
-                          </td>
-
-                          <td style={{ textAlign: "center" }}>
-                            {papelera ? (
-                              p.verificado ? (
-                                "✅"
-                              ) : (
-                                "❌"
-                              )
-                            ) : isEditing ? (
-                              <input
-                                type="checkbox"
-                                {...register("verificado")}
-                              />
-                            ) : p.verificado ? (
-                              "✅"
-                            ) : (
-                              "❌"
-                            )}
-                          </td>
-
-                          <td className="vpTdWrap">
-                            {papelera ? (
-                              p.observacion || "👍"
-                            ) : isEditing ? (
-                              <input
-                                type="text"
-                                {...register("observacion")}
-                                className="vpMiniInput"
-                              />
-                            ) : (
-                              p.observacion || "👍"
-                            )}
-                          </td>
-
-                          <td className="vpTdWrap">
-                            {p.usuarioEdicion ? p.usuarioEdicion : "Sin editar"}
-                          </td>
-
-                          {papelera ? (
+                        return (
+                          <tr key={p.id}>
                             <td className="vpTdWrap">
-                              <button
-                                className="secBtnPrimary vpBtnSmall"
-                                type="button"
-                                onClick={() => {
-                                  setShowRestaurar(true);
-                                  setPagoIdRestaurar(p.id);
-                                }}
-                              >
-                                Restaurar
-                              </button>
+                              {p
+                                ? `${p?.inscripcion?.user?.grado} ${p?.inscripcion?.user?.firstName} ${p?.inscripcion?.user?.lastName}`
+                                : "Sin Inscripción"}
                             </td>
-                          ) : (
-                            <>
-                              <td className="vpTdWrap2">
-                                {isEditing ? (
-                                  <>
-                                    <button
-                                      onClick={handleSubmit((data) =>
-                                        guardarEdicion(p.id, data),
-                                      )}
-                                      className="vp-btn-save"
-                                      type="button"
-                                    >
-                                      Guardar
-                                    </button>
-                                    <button
-                                      onClick={cancelarEdicion}
-                                      className="vp-btn-cancel"
-                                      type="button"
-                                    >
-                                      Cancelar
-                                    </button>
-                                  </>
+
+                            <td>
+                              {p.createdAt
+                                ? new Date(p.createdAt).toLocaleDateString()
+                                : "-"}
+                            </td>
+
+                            <td className="vpTdWrap">{p.curso}</td>
+
+                            <td style={{ textAlign: "center" }}>
+                              {papelera ? (
+                                p.distintivo ? (
+                                  "✅"
                                 ) : (
-                                  <button
-                                    onClick={(e) => iniciarEdicion(p, e)}
-                                    className="vp-btn-edit"
-                                    type="button"
-                                  >
-                                    Registrar Validación
-                                  </button>
-                                )}
+                                  "❌"
+                                )
+                              ) : isEditing ? (
+                                <input
+                                  type="checkbox"
+                                  {...register("distintivo")}
+                                />
+                              ) : p.distintivo ? (
+                                "✅"
+                              ) : (
+                                "❌"
+                              )}
+                            </td>
 
-                                {(() => {
-                                  const f = getFacturaUI(p);
+                            <td style={{ textAlign: "center" }}>
+                              {papelera ? (
+                                p.moneda ? (
+                                  "✅"
+                                ) : (
+                                  "❌"
+                                )
+                              ) : isEditing ? (
+                                <input type="checkbox" {...register("moneda")} />
+                              ) : p.moneda ? (
+                                "✅"
+                              ) : (
+                                "❌"
+                              )}
+                            </td>
 
-                                  // Emitir (solo si pago está verificado)
-                                  if (f.type === "emitir") {
-                                    return (
+                            <td>
+                              {papelera ? (
+                                `$${Number(p.valorDepositado || 0).toFixed(2)}`
+                              ) : isEditing ? (
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  {...register("valorDepositado")}
+                                  className="vpMiniInput"
+                                />
+                              ) : (
+                                `$${Number(p.valorDepositado || 0).toFixed(2)}`
+                              )}
+                            </td>
+
+                            <td className="vpTdWrap">
+                              {papelera ? (
+                                p.entidad || "---"
+                              ) : isEditing ? (
+                                <select
+                                  {...register("entidad")}
+                                  className="secInput vpMiniSelect"
+                                  required
+                                >
+                                  <option value="">Entidad</option>
+                                  {[
+                                    ...new Set(
+                                      (Array.isArray(variables)
+                                        ? variables
+                                        : []
+                                      )
+                                        .map((v) => v.entidad)
+                                        .filter(Boolean),
+                                    ),
+                                  ].map((entidad, i) => (
+                                    <option key={i} value={entidad}>
+                                      {entidad}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                p.entidad || "---"
+                              )}
+                            </td>
+
+                            <td>
+                              {papelera ? (
+                                p.idDeposito || "---"
+                              ) : isEditing ? (
+                                <input
+                                  type="text"
+                                  {...register("idDeposito")}
+                                  className="vpMiniInput"
+                                />
+                              ) : (
+                                p.idDeposito || "---"
+                              )}
+                            </td>
+
+                            <td>
+                              {p.pagoUrl ? (
+                                <a
+                                  className="vpLink"
+                                  href={p.pagoUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  Ver
+                                </a>
+                              ) : (
+                                "No disponible"
+                              )}
+                            </td>
+
+                            <td style={{ textAlign: "center" }}>
+                              {papelera ? (
+                                p.verificado ? (
+                                  "✅"
+                                ) : (
+                                  "❌"
+                                )
+                              ) : isEditing ? (
+                                <input
+                                  type="checkbox"
+                                  {...register("verificado")}
+                                />
+                              ) : p.verificado ? (
+                                "✅"
+                              ) : (
+                                "❌"
+                              )}
+                            </td>
+
+                            <td className="vpTdWrap">
+                              {papelera ? (
+                                p.observacion || "👍"
+                              ) : isEditing ? (
+                                <input
+                                  type="text"
+                                  {...register("observacion")}
+                                  className="vpMiniInput"
+                                />
+                              ) : (
+                                p.observacion || "👍"
+                              )}
+                            </td>
+
+                            <td className="vpTdWrap">
+                              {p.usuarioEdicion ? p.usuarioEdicion : "Sin editar"}
+                            </td>
+
+                            {papelera ? (
+                              <td className="vpTdWrap">
+                                <button
+                                  className="secBtnPrimary vpBtnSmall"
+                                  type="button"
+                                  onClick={() => {
+                                    setShowRestaurar(true);
+                                    setPagoIdRestaurar(p.id);
+                                  }}
+                                >
+                                  Restaurar
+                                </button>
+                              </td>
+                            ) : (
+                              <>
+                                <td className="vpTdWrap2">
+                                  {isEditing ? (
+                                    <>
                                       <button
-                                        className="secBtnPrimary vpBtnSmall"
+                                        onClick={handleSubmit((data) =>
+                                          guardarEdicion(p.id, data),
+                                        )}
+                                        className="vp-btn-save"
                                         type="button"
-                                        disabled={
-                                          !p.verificado || isEmitiendoFactura
-                                        }
-                                        title={
-                                          !p.verificado
-                                            ? "Primero verifica el pago"
-                                            : "Emitir factura en Contífico"
-                                        }
-                                        onClick={() =>
-                                          emitirFacturaManual(p.id)
-                                        }
-                                        style={{ marginLeft: 8 }}
                                       >
-                                        {facturandoPagoId === p.id
-                                          ? "Facturando..."
-                                          : "Facturar"}
+                                        Guardar
                                       </button>
-                                    );
-                                  }
+                                      <button
+                                        onClick={cancelarEdicion}
+                                        className="vp-btn-cancel"
+                                        type="button"
+                                      >
+                                        Cancelar
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <button
+                                      onClick={(e) => iniciarEdicion(p, e)}
+                                      className="vp-btn-edit"
+                                      type="button"
+                                    >
+                                      Registrar Validación
+                                    </button>
+                                  )}
 
-                                  // Pendiente
-                                  if (f.type === "pendiente") {
-                                    return (
+                                  {(() => {
+                                    const f = getFacturaUI(p);
+
+                                    // Emitir (solo si pago está verificado)
+                                    if (f.type === "emitir") {
+                                      return (
+                                        <button
+                                          className="secBtnPrimary vpBtnSmall"
+                                          type="button"
+                                          disabled={
+                                            !p.verificado || isEmitiendoFactura
+                                          }
+                                          title={
+                                            !p.verificado
+                                              ? "Primero verifica el pago"
+                                              : "Emitir factura en Contífico"
+                                          }
+                                          onClick={() =>
+                                            emitirFacturaManual(p.id)
+                                          }
+                                          style={{ marginLeft: 8 }}
+                                        >
+                                          {facturandoPagoId === p.id
+                                            ? "Facturando..."
+                                            : "Facturar"}
+                                        </button>
+                                      );
+                                    }
+
+                                    // Pendiente
+                                    if (f.type === "pendiente") {
+                                      return (
+                                        <span
+                                          style={{ marginLeft: 10, fontSize: 12 }}
+                                        >
+                                          🟡 Pendiente
+                                        </span>
+                                      );
+                                    }
+
+                                    // Ver
+                                    return f.href ? (
+                                      <a
+                                        className="vpLink"
+                                        href={f.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ marginLeft: 10 }}
+                                      >
+                                        Ver
+                                      </a>
+                                    ) : (
                                       <span
                                         style={{ marginLeft: 10, fontSize: 12 }}
                                       >
-                                        🟡 Pendiente
+                                        🟢 Autorizada
                                       </span>
                                     );
-                                  }
+                                  })()}
+                                </td>
 
-                                  // Ver
-                                  return f.href ? (
-                                    <a
-                                      className="vpLink"
-                                      href={f.href}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      style={{ marginLeft: 10 }}
-                                    >
-                                      Ver
-                                    </a>
-                                  ) : (
-                                    <span
-                                      style={{ marginLeft: 10, fontSize: 12 }}
-                                    >
-                                      🟢 Autorizada
-                                    </span>
-                                  );
-                                })()}
-                              </td>
+                                <td>
+                                  <button
+                                    className="secBtnDanger vpBtnSmall"
+                                    type="button"
+                                    onClick={() => {
+                                      setShowDelete(true);
+                                      setPagoIdDelete(p.id);
+                                    }}
+                                  >
+                                    Eliminar
+                                  </button>
+                                </td>
+                              </>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
 
-                              <td>
-                                <button
-                                  className="secBtnDanger vpBtnSmall"
-                                  type="button"
-                                  onClick={() => {
-                                    setShowDelete(true);
-                                    setPagoIdDelete(p.id);
-                                  }}
-                                >
-                                  Eliminar
-                                </button>
-                              </td>
-                            </>
-                          )}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                {renderPaginacion()}
+              </>
             ) : (
               <p className="secEmpty">No hay pagos para mostrar.</p>
-            )}
-          </section>
+            )
+            }
+          </section >
         );
 
       case "registrarEntregas":
@@ -1045,8 +1904,10 @@ const ValidacionPago = () => {
             </div>
 
             <p className="vpInfo">
-              Mostrando {pagosDistintivos.length} resultados
+              Mostrando {totalRegistros} resultados
             </p>
+
+            {renderPaginacion()}
 
             <div className="secTableWrap">
               <table className="secTable vpTable">
@@ -1072,7 +1933,7 @@ const ValidacionPago = () => {
                 </thead>
 
                 <tbody>
-                  {pagosDistintivos.map((p) => {
+                  {pagosMostrados.map((p) => {
                     const startEditing = () => {
                       setEditingEntregaId(p.id);
                       reset({ entregado: p.entregado });
@@ -1083,7 +1944,7 @@ const ValidacionPago = () => {
                         await updatePago(PATH_PAGOS, p.id, {
                           entregado: data.entregado,
                         });
-                        await getPago(PATH_PAGOS);
+                        await cargarPagosActuales();
                         setEditingEntregaId(null);
                       } catch (error) {
                         alert("Error al actualizar entrega.");
@@ -1172,6 +2033,8 @@ const ValidacionPago = () => {
                 </tbody>
               </table>
             </div>
+
+            {renderPaginacion()}
           </section>
         );
 
@@ -1258,7 +2121,7 @@ const ValidacionPago = () => {
               )}
             </div>
 
-            <div className="secCount">Total: {pagosActivos.length}</div>
+            {renderPaginacion()}
 
             <div className="secTableWrap">
               <table className="secTable vpTable">
@@ -1284,7 +2147,7 @@ const ValidacionPago = () => {
                 </thead>
 
                 <tbody>
-                  {pagosActivos.map((p) => (
+                  {pagosMostrados.map((p) => (
                     <tr key={p.id}>
                       <td>{p?.inscripcion?.user?.grado || "-"}</td>
                       <td>{p?.inscripcion?.user?.firstName || "-"}</td>
@@ -1333,6 +2196,8 @@ const ValidacionPago = () => {
                 </tbody>
               </table>
             </div>
+
+            {renderPaginacion()}
           </section>
         );
 
@@ -1380,7 +2245,7 @@ const ValidacionPago = () => {
           <div className="secMenuHeader">
             <img
               src="/images/cumanda_sf.png"
-              alt="Eduka"
+              alt="Instituto Superior Tecnológico Cumandá"
               className="secMenuLogo"
             />
             <p className="secMenuSubtitle">Validación de Pagos</p>
@@ -1388,7 +2253,9 @@ const ValidacionPago = () => {
 
           <button
             className={`secMenuBtn ${activeSection === "resumen" ? "active" : ""}`}
-            onClick={() => setActiveSection("resumen")}
+            onClick={() =>
+              cambiarSeccion("resumen")
+            }
             type="button"
           >
             📋 Resumen
@@ -1396,7 +2263,7 @@ const ValidacionPago = () => {
 
           <button
             className={`secMenuBtn ${activeSection === "validarPagos" ? "active" : ""}`}
-            onClick={() => setActiveSection("validarPagos")}
+            onClick={() => cambiarSeccion("validarPagos")}
             type="button"
           >
             ✅ Validar Pagos
@@ -1404,7 +2271,7 @@ const ValidacionPago = () => {
 
           <button
             className={`secMenuBtn ${activeSection === "registrarEntregas" ? "active" : ""}`}
-            onClick={() => setActiveSection("registrarEntregas")}
+            onClick={() => cambiarSeccion("registrarEntregas")}
             type="button"
           >
             🎁 Entregas
@@ -1412,7 +2279,7 @@ const ValidacionPago = () => {
 
           <button
             className={`secMenuBtn ${activeSection === "listaPagos" ? "active" : ""}`}
-            onClick={() => setActiveSection("listaPagos")}
+            onClick={() => cambiarSeccion("listaPagos")}
             type="button"
           >
             💳 Lista Pagos
@@ -1420,7 +2287,7 @@ const ValidacionPago = () => {
 
           <button
             className={`secMenuBtn ${activeSection === "listaInscritos" ? "active" : ""}`}
-            onClick={() => setActiveSection("listaInscritos")}
+            onClick={() => cambiarSeccion("listaInscritos")}
             type="button"
           >
             📋 Lista Inscritos
@@ -1480,6 +2347,83 @@ const ValidacionPago = () => {
                   type="button"
                 >
                   No
+                </button>
+              </section>
+            </article>
+          </div>
+        )}
+
+        {showConfirmarCertificado && (
+          <div className="modal_overlay">
+            <article className="user_delete_content">
+              <h3
+                style={{
+                  marginBottom: 12,
+                }}
+              >
+                📄 Emitir certificado
+              </h3>
+
+              <p
+                style={{
+                  marginBottom: 20,
+                  lineHeight: 1.5,
+                  textAlign: "center",
+                }}
+              >
+                Estás marcando este pago
+                como <strong>VERIFICADO</strong>.
+                <br />
+                <br />
+                Al guardar los cambios se
+                emitirá automáticamente el
+                certificado del participante.
+                <br />
+                <br />
+                ¿Deseas continuar?
+              </p>
+
+              <section className="btn_content">
+                <button
+                  className="btn yes"
+                  type="button"
+                  onClick={async () => {
+                    const datos =
+                      datosPendientesGuardar;
+
+                    setShowConfirmarCertificado(
+                      false,
+                    );
+
+                    setDatosPendientesGuardar(
+                      null,
+                    );
+
+                    if (datos) {
+                      await guardarEdicionConfirmada(
+                        datos.pagoId,
+                        datos.data,
+                      );
+                    }
+                  }}
+                >
+                  ✅ Sí, continuar
+                </button>
+
+                <button
+                  className="btn no"
+                  type="button"
+                  onClick={() => {
+                    setShowConfirmarCertificado(
+                      false,
+                    );
+
+                    setDatosPendientesGuardar(
+                      null,
+                    );
+                  }}
+                >
+                  Cancelar
                 </button>
               </section>
             </article>
