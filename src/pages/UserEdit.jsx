@@ -8,103 +8,155 @@ import { useDispatch } from "react-redux";
 import { showAlert } from "../store/states/alert.slice";
 
 const PATH_USERS = "/users";
+const PATH_USERS_SEARCH = "/users/search";
 const PATH_SENPLADES = "/senplades";
 const PATH_VARIABLES = "/variables";
+
+const SEARCH_MIN_LENGTH = 2;
+const SEARCH_LIMIT = 10;
+const SEARCH_DEBOUNCE_MS = 450;
 
 const UserEdit = () => {
   const dispatch = useDispatch();
   const debounceRef = useRef(null);
+  const searchRequestRef = useRef(0);
 
   const [query, setQuery] = useState("");
   const [sugerencias, setSugerencias] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userEdit, setUserEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false)
-  const [userIdDelete, setUserIdDelete] = useState()
+  const [showDelete, setShowDelete] = useState(false);
+  const [userIdDelete, setUserIdDelete] = useState(null);
+  const [busquedaRealizada, setBusquedaRealizada] = useState(false);
+  const [cargandoDetalle, setCargandoDetalle] = useState(false);
 
-  const [senplades, getSenplades] = useCrud();
-  const [variables, getVariables] = useCrud();
+  const [senplades, getSenplades, , , , senpladesError, isLoadingSenplades] = useCrud();
+  const [variables, getVariables, , , , variablesError, isLoadingVariables] = useCrud();
+  const [, searchUsers, , , , searchError, isLoadingSearch] = useCrud();
+  const [, getUserDetail, , , , detailError, isLoadingDetail] = useCrud();
 
-  // usuarios para sugerencias
-  const [usersAll, getUsers, , , , , isLoadingUsers] = useCrud();
+  const [
+    ,
+    updateUser,
+    ,
+    loggedUser,
+    ,
+    ,
+    isLoadingAuth,
+    authError,
+    ,
+    ,
+    ,
+    ,
+    userUpdate,
+    ,
+    ,
+    deleteUserApi,
+    deleteReg,
+  ] = useAuth();
 
-  // updateUser del auth
-  const [, updateUser, , loggedUser, , , isLoadingAuth, error, , , , , userUpdate, , , deleteUserApi, deleteReg] =
-    useAuth();
-
-  // ====== STATES CONTROLADOS (TODO editable) ======
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [cI, setCI] = useState("");
   const [cellular, setCellular] = useState("");
   const [dateBirth, setDateBirth] = useState("");
-
   const [cantonesOption, setCantonesOption] = useState([]);
   const [selectedProvincia, setSelectedProvincia] = useState("");
   const [selectedCanton, setSelectedCanton] = useState("");
   const [selectedGenero, setSelectedGenero] = useState("");
   const [selectedGrado, setSelectedGrado] = useState("");
   const [selectedSubsistema, setSelectedSubsistema] = useState("");
-
-  // role como state controlado
   const [selectedRole, setSelectedRole] = useState("student");
 
-  // catálogos
+  const isLoading =
+    isLoadingSearch ||
+    isLoadingDetail ||
+    cargandoDetalle ||
+    isLoadingAuth ||
+    isLoadingSenplades ||
+    isLoadingVariables;
+
   useEffect(() => {
     getSenplades(PATH_SENPLADES);
     getVariables(PATH_VARIABLES);
   }, []);
-
-  // usuarios para sugerencias
-  useEffect(() => {
-    getUsers(`${PATH_USERS}?page=1&limit=50000`);
-  }, [userUpdate]);
 
   useEffect(() => {
     if (userUpdate) loggedUser();
   }, [userUpdate]);
 
   useEffect(() => {
-    if (error) {
-      const msg = error?.response?.data?.message || "Error al actualizar";
-      dispatch(showAlert({ message: `⚠️ ${msg}`, alertType: 1 }));
-    }
-  }, [error]);
+    const error = authError || searchError || detailError || senpladesError || variablesError;
+    if (!error) return;
 
+    const responseData = error?.response?.data;
+    const message =
+      responseData?.message ||
+      responseData?.error ||
+      error?.message ||
+      "No se pudo completar la operación.";
+
+    dispatch(showAlert({ message: `⚠️ ${message}`, alertType: 1 }));
+  }, [authError, searchError, detailError, senpladesError, variablesError, dispatch]);
 
   useEffect(() => {
-    if (deleteReg) {
-      dispatch(showAlert({ message: `⚠️ ${deleteReg?.message}`, alertType: 1 }));
-    }
-  }, [deleteUserApi]);
+    if (!deleteReg) return;
+    dispatch(
+      showAlert({
+        message: deleteReg?.message || "✅ Usuario eliminado correctamente.",
+        alertType: 2,
+      }),
+    );
+  }, [deleteReg, dispatch]);
 
-  const usersList = useMemo(() => usersAll?.data || [], [usersAll]);
-  const senpladesVal = senplades || [];
-  const variablesVal = variables || [];
+  const senpladesVal = useMemo(() => {
+    if (Array.isArray(senplades)) return senplades;
+    if (Array.isArray(senplades?.data)) return senplades.data;
+    return [];
+  }, [senplades]);
+
+  const variablesVal = useMemo(() => {
+    if (Array.isArray(variables)) return variables;
+    if (Array.isArray(variables?.data)) return variables.data;
+    return [];
+  }, [variables]);
+
+  const provincias = useMemo(
+    () =>
+      [...new Set(senpladesVal.map((item) => item?.provincia).filter(Boolean))].sort((a, b) =>
+        String(a).localeCompare(String(b)),
+      ),
+    [senpladesVal],
+  );
+
+  const generos = useMemo(() => variablesVal.filter((item) => item?.genero), [variablesVal]);
+  const grados = useMemo(() => variablesVal.filter((item) => item?.grado), [variablesVal]);
+  const subsistemas = useMemo(
+    () => variablesVal.filter((item) => item?.subsistema),
+    [variablesVal],
+  );
 
   const obtenerCantonesPorProvincia = (provincia) =>
     senpladesVal.filter((item) => item.provincia === provincia);
 
   const handleProvinciaChange = (provincia) => {
     setSelectedProvincia(provincia);
-    const cantones = obtenerCantonesPorProvincia(provincia);
-    setCantonesOption(cantones);
+    setCantonesOption(obtenerCantonesPorProvincia(provincia));
     setSelectedCanton("");
   };
 
-  // ===== validaciones =====
   const validarCedula = (cedula) => {
-    cedula = cedula ? cedula.replace(/\D/g, "") : "";
-    if (!/^\d{10}$/.test(cedula)) return false;
+    const cedulaLimpia = cedula ? cedula.replace(/\D/g, "") : "";
+    if (!/^\d{10}$/.test(cedulaLimpia)) return false;
 
-    const digitos = cedula.split("").map(Number);
+    const digitos = cedulaLimpia.split("").map(Number);
     const digitoVerificador = digitos.pop();
     let suma = 0;
 
-    for (let i = 0; i < digitos.length; i++) {
-      let valor = digitos[i];
-      if (i % 2 === 0) {
+    for (let index = 0; index < digitos.length; index += 1) {
+      let valor = digitos[index];
+      if (index % 2 === 0) {
         valor *= 2;
         if (valor > 9) valor -= 9;
       }
@@ -115,78 +167,113 @@ const UserEdit = () => {
     return decenaSuperior - suma === digitoVerificador;
   };
 
-  const capitalizeWords = (str) =>
-    (str || "")
+  const capitalizeWords = (text) =>
+    (text || "")
       .trim()
       .split(/\s+/)
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ");
 
-  // ===== sugerencias: cédula o nombre =====
+  const cargarFormularioUsuario = (usuario) => {
+    setSelectedUser(usuario);
+    setUserEdit(false);
+    setFirstName(usuario?.firstName || "");
+    setLastName(usuario?.lastName || "");
+    setEmail(usuario?.email || "");
+    setCI(usuario?.cI || "");
+    setCellular(usuario?.cellular || "");
+    setDateBirth(usuario?.dateBirth ? String(usuario.dateBirth).slice(0, 10) : "");
+    setSelectedProvincia(usuario?.province || "");
+    setCantonesOption(obtenerCantonesPorProvincia(usuario?.province || ""));
+    setSelectedCanton(usuario?.city || "");
+    setSelectedGenero(usuario?.genre || "");
+    setSelectedGrado(usuario?.grado || "");
+    setSelectedSubsistema(usuario?.subsistema || "");
+    setSelectedRole(usuario?.role || "student");
+  };
+
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
-    const txt = (query || "").trim().toLowerCase();
-    if (txt.length < 2) {
+    const texto = String(query || "").trim();
+    if (texto.length < SEARCH_MIN_LENGTH) {
       setSugerencias([]);
-      return;
+      setBusquedaRealizada(false);
+      return undefined;
     }
 
-    debounceRef.current = setTimeout(() => {
-      const mapa = new Map();
+    const nombreSeleccionado = selectedUser
+      ? `${selectedUser.firstName || ""} ${selectedUser.lastName || ""}`.trim()
+      : "";
 
-      usersList.forEach((u) => {
-        if (!u) return;
-        const ciTxt = String(u.cI || "");
-        const full = `${u.firstName || ""} ${u.lastName || ""}`.trim().toLowerCase();
+    if (selectedUser && texto === nombreSeleccionado) return undefined;
 
-        if (ciTxt.includes(txt) || full.includes(txt)) {
-          if (!mapa.has(u.id)) mapa.set(u.id, u);
+    debounceRef.current = setTimeout(async () => {
+      const requestId = searchRequestRef.current + 1;
+      searchRequestRef.current = requestId;
+
+      try {
+        setBusquedaRealizada(false);
+        const result = await searchUsers(
+          `${PATH_USERS_SEARCH}?q=${encodeURIComponent(texto)}&limit=${SEARCH_LIMIT}`,
+        );
+
+        if (requestId !== searchRequestRef.current) return;
+
+        const data = Array.isArray(result)
+          ? result
+          : Array.isArray(result?.data)
+            ? result.data
+            : [];
+
+        setSugerencias(data);
+        setBusquedaRealizada(true);
+      } catch {
+        if (requestId === searchRequestRef.current) {
+          setSugerencias([]);
+          setBusquedaRealizada(true);
         }
-      });
+      }
+    }, SEARCH_DEBOUNCE_MS);
 
-      setSugerencias(Array.from(mapa.values()).slice(0, 10));
-    }, 250);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query, selectedUser]);
 
-    return () => clearTimeout(debounceRef.current);
-  }, [query, usersList]);
+  const seleccionarUser = async (usuarioSugerencia) => {
+    try {
+      setCargandoDetalle(true);
+      setSugerencias([]);
+      setBusquedaRealizada(false);
 
-  const seleccionarUser = (u) => {
-    setSelectedUser(u);
-    setUserEdit(false);
-    setSugerencias([]);
-    setQuery(`${u.firstName || ""} ${u.lastName || ""}`.trim());
+      const nombre = `${usuarioSugerencia.firstName || ""} ${usuarioSugerencia.lastName || ""}`.trim();
+      setQuery(nombre);
 
-    // states controlados
-    setFirstName(u.firstName || "");
-    setLastName(u.lastName || "");
-    setEmail(u.email || "");
-    setCI(u.cI || "");
-    setCellular(u.cellular || "");
-    setDateBirth(u.dateBirth || "");
-
-    setSelectedProvincia(u.province || "");
-    setCantonesOption(obtenerCantonesPorProvincia(u.province || ""));
-    setSelectedCanton(u.city || "");
-    setSelectedGenero(u.genre || "");
-    setSelectedGrado(u.grado || "");
-    setSelectedSubsistema(u.subsistema || "");
-    setSelectedRole(u.role || "student");
+      const usuarioCompleto = await getUserDetail(`${PATH_USERS}/${usuarioSugerencia.id}`);
+      cargarFormularioUsuario(usuarioCompleto);
+    } catch {
+      setSelectedUser(null);
+    } finally {
+      setCargandoDetalle(false);
+    }
   };
 
   const limpiar = () => {
+    searchRequestRef.current += 1;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
     setQuery("");
     setSugerencias([]);
+    setBusquedaRealizada(false);
     setSelectedUser(null);
     setUserEdit(false);
-
     setFirstName("");
     setLastName("");
     setEmail("");
     setCI("");
     setCellular("");
     setDateBirth("");
-
     setSelectedProvincia("");
     setCantonesOption([]);
     setSelectedCanton("");
@@ -196,11 +283,10 @@ const UserEdit = () => {
     setSelectedRole("student");
   };
 
-  const submitUpdate = async (e) => {
-    e.preventDefault();
+  const submitUpdate = async (event) => {
+    event.preventDefault();
     if (!selectedUser?.id) return;
 
-    // normalizaciones
     const cedulaLimpia = cI ? cI.trim().replace(/\D/g, "") : "";
     const celularLimpio = cellular ? cellular.trim().replace(/\D/g, "") : "";
     const emailFormateado = (email || "").trim().toLowerCase();
@@ -209,74 +295,89 @@ const UserEdit = () => {
     const isValidCellular = celularLimpio ? /^09\d{8}$/.test(celularLimpio) : true;
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailFormateado);
 
-    if (!isValidCedula)
-      return dispatch(showAlert({ message: "⚠️ La cédula ingresada es incorrecta.", alertType: 1 }));
+    if (!isValidCedula) {
+      dispatch(showAlert({ message: "⚠️ La cédula ingresada es incorrecta.", alertType: 1 }));
+      return;
+    }
 
-    if (!isValidEmail)
-      return dispatch(showAlert({ message: "⚠️ El email es incorrecto.", alertType: 1 }));
+    if (!isValidEmail) {
+      dispatch(showAlert({ message: "⚠️ El email es incorrecto.", alertType: 1 }));
+      return;
+    }
 
-    if (!isValidCellular)
-      return dispatch(
+    if (!isValidCellular) {
+      dispatch(
         showAlert({
           message: "⚠️ Celular inválido. Debe empezar con 09 y tener 10 dígitos.",
           alertType: 1,
-        })
+        }),
       );
+      return;
+    }
 
     const formattedData = {
       firstName: capitalizeWords(firstName),
       lastName: capitalizeWords(lastName),
       email: emailFormateado,
-
       cI: cedulaLimpia || null,
       cellular: celularLimpio || null,
       dateBirth: dateBirth || null,
-
       province: selectedProvincia || null,
       city: selectedCanton || null,
       genre: selectedGenero || null,
       grado: selectedGrado || null,
       subsistema: selectedSubsistema || null,
-
       role: selectedRole || "student",
     };
 
-    await updateUser(formattedData, selectedUser.id);
+    try {
+      await updateUser(formattedData, selectedUser.id);
 
-    dispatch(showAlert({ message: "✅ Usuario actualizado", alertType: 2 }));
-    setUserEdit(false);
+      setSelectedUser((previous) =>
+        previous ? { ...previous, ...formattedData } : previous,
+      );
+      setFirstName(formattedData.firstName);
+      setLastName(formattedData.lastName);
+      setEmail(formattedData.email);
+      setQuery(`${formattedData.firstName} ${formattedData.lastName}`.trim());
+      setUserEdit(false);
 
-    await getUsers(`${PATH_USERS}?page=1&limit=5000`);
-
-    // refrescar tarjeta (opcional)
-    setSelectedUser((prev) => (prev ? { ...prev, ...formattedData } : prev));
+      dispatch(
+        showAlert({
+          message: "✅ Usuario actualizado correctamente.",
+          alertType: 2,
+        }),
+      );
+    } catch {
+      // El mensaje real se muestra desde authError.
+    }
   };
 
   const deleteUser = async (id) => {
-
     try {
-      await deleteUserApi(id)
-
+      await deleteUserApi(id);
       setShowDelete(false);
-    } catch (error) {
-      alert("Error al guardar los cambios.");
+      setUserIdDelete(null);
+      limpiar();
+    } catch {
+      // El mensaje real se muestra desde authError.
     }
   };
 
   return (
     <div className="ue_page">
-      {(isLoadingUsers || isLoadingAuth) && <IsLoading />}
+      {false && <IsLoading />}
 
       <section className="ue_shell">
         <div className="ue_card">
           <div className="ue_header">
             <h2 className="ue_title">Editar usuarios</h2>
             <p className="ue_subtitle">
-              Busca por <strong>cédula</strong> o <strong>nombres</strong>. Selecciona y edita.
+              Busca por <strong>cédula</strong> o <strong>nombres</strong>. La información
+              completa se carga únicamente al seleccionar un usuario.
             </p>
           </div>
 
-          {/* BUSCADOR */}
           <div className="ue_search">
             <div className="ue_searchBox">
               <input
@@ -284,28 +385,47 @@ const UserEdit = () => {
                 type="text"
                 placeholder="🔍 Buscar por cédula o nombres..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setSelectedUser(null);
+                  setUserEdit(false);
+                }}
                 autoComplete="off"
+                aria-label="Buscar usuario"
               />
 
-              {sugerencias.length > 0 && (
+              {isLoadingSearch && query.trim().length >= SEARCH_MIN_LENGTH && (
+                <div className="ue_searchStatus">Buscando usuarios...</div>
+              )}
+
+              {!isLoadingSearch && sugerencias.length > 0 && (
                 <ul className="ue_suggest" role="listbox">
-                  {sugerencias.map((u) => (
+                  {sugerencias.map((usuario) => (
                     <li
-                      key={u.id}
+                      key={usuario.id}
                       className="ue_suggestItem"
                       role="option"
-                      onClick={() => seleccionarUser(u)}
+                      aria-selected="false"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => seleccionarUser(usuario)}
                     >
                       <strong>
-                        {u.firstName} {u.lastName}
-                      </strong>{" "}
-                      — {u.cI || "Sin cédula"}{" "}
-                      <span className="ue_suggestMuted">({u.email})</span>
+                        {usuario.firstName} {usuario.lastName}
+                      </strong>
+                      <span className="ue_suggestCi">{usuario.cI || "Sin cédula"}</span>
+                      <span className="ue_suggestMuted">{usuario.email || "Sin email"}</span>
                     </li>
                   ))}
                 </ul>
               )}
+
+              {!isLoadingSearch &&
+                busquedaRealizada &&
+                query.trim().length >= SEARCH_MIN_LENGTH &&
+                sugerencias.length === 0 &&
+                !selectedUser && (
+                  <div className="ue_searchEmpty">No se encontraron usuarios.</div>
+                )}
             </div>
 
             <button className="ue_btnDanger" type="button" onClick={limpiar}>
@@ -314,7 +434,9 @@ const UserEdit = () => {
           </div>
 
           {!selectedUser ? (
-            <p className="ue_empty">✍️ Escribe al menos 2 caracteres para ver sugerencias.</p>
+            <p className="ue_empty">
+              ✍️ Escribe al menos {SEARCH_MIN_LENGTH} caracteres y selecciona una sugerencia.
+            </p>
           ) : (
             <section className="ue_profile">
               <div className="ue_profileTop">
@@ -323,7 +445,8 @@ const UserEdit = () => {
                     {selectedUser.firstName} {selectedUser.lastName}
                   </h3>
                   <p className="ue_profileMeta">
-                    <strong>ID:</strong> {selectedUser.id} · <strong>Email:</strong> {selectedUser.email}
+                    <strong>ID:</strong> {selectedUser.id} · <strong>Email:</strong>{" "}
+                    {selectedUser.email}
                   </p>
                 </div>
 
@@ -331,7 +454,7 @@ const UserEdit = () => {
                   <button
                     type="button"
                     className="ue_btnPrimary"
-                    onClick={() => setUserEdit((s) => !s)}
+                    onClick={() => setUserEdit((current) => !current)}
                   >
                     {userEdit ? "Cancelar edición" : "Editar"}
                     <span className="ue_btnArrow">➜</span>
@@ -339,10 +462,10 @@ const UserEdit = () => {
 
                   <button
                     type="button"
-                    className="ue_btnPrimary delete"
+                    className="ue_btnPrimary ue_btnDelete"
                     onClick={() => {
-                      setUserIdDelete(selectedUser.id)
-                      setShowDelete(true)
+                      setUserIdDelete(selectedUser.id);
+                      setShowDelete(true);
                     }}
                   >
                     Eliminar
@@ -351,100 +474,51 @@ const UserEdit = () => {
               </div>
 
               <form className="ue_form" onSubmit={submitUpdate}>
-                {/* col 1 */}
                 <article className="ue_col">
                   <label className="ue_label">
                     <span className="ue_span">Nombres</span>
-                    <input
-                      className="ue_input"
-                      readOnly={!userEdit}
-                      style={{ border: userEdit ? "2px solid #cfd5e6" : "none" }}
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      type="text"
-                    />
+                    <input className="ue_input" readOnly={!userEdit} value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" />
                   </label>
 
                   <label className="ue_label">
                     <span className="ue_span">Apellidos</span>
-                    <input
-                      className="ue_input"
-                      readOnly={!userEdit}
-                      style={{ border: userEdit ? "2px solid #cfd5e6" : "none" }}
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      type="text"
-                    />
+                    <input className="ue_input" readOnly={!userEdit} value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" />
                   </label>
 
                   <label className="ue_label">
                     <span className="ue_span">Email</span>
-                    <input
-                      className="ue_input"
-                      readOnly={!userEdit}
-                      style={{ border: userEdit ? "2px solid #cfd5e6" : "none" }}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      type="text"
-                    />
+                    <input className="ue_input" readOnly={!userEdit} value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
                   </label>
 
                   <label className="ue_label">
                     <span className="ue_span">Cédula</span>
-                    <input
-                      className="ue_input"
-                      readOnly={!userEdit}
-                      style={{ border: userEdit ? "2px solid #cfd5e6" : "none" }}
-                      value={cI}
-                      onChange={(e) => setCI(e.target.value)}
-                      type="text"
-                    />
+                    <input className="ue_input" readOnly={!userEdit} value={cI} onChange={(e) => setCI(e.target.value)} type="text" inputMode="numeric" />
                   </label>
                 </article>
 
-                {/* col 2 */}
                 <article className="ue_col">
                   <label className="ue_label">
                     <span className="ue_span">Celular</span>
-                    <input
-                      className="ue_input"
-                      readOnly={!userEdit}
-                      style={{ border: userEdit ? "2px solid #cfd5e6" : "none" }}
-                      value={cellular}
-                      onChange={(e) => setCellular(e.target.value)}
-                      type="text"
-                    />
+                    <input className="ue_input" readOnly={!userEdit} value={cellular} onChange={(e) => setCellular(e.target.value)} type="text" inputMode="numeric" />
                   </label>
 
                   <label className="ue_label">
                     <span className="ue_span">Fecha nacimiento</span>
-                    <input
-                      className="ue_input"
-                      readOnly={!userEdit}
-                      style={{ border: userEdit ? "2px solid #cfd5e6" : "none" }}
-                      value={dateBirth || ""}
-                      onChange={(e) => setDateBirth(e.target.value)}
-                      type="date"
-                    />
+                    <input className="ue_input" readOnly={!userEdit} value={dateBirth || ""} onChange={(e) => setDateBirth(e.target.value)} type="date" />
                   </label>
 
                   <label className="ue_label">
                     <span className="ue_span">Rol</span>
                     {!userEdit ? (
-                      <input className="ue_input" readOnly style={{ border: "none" }} value={selectedRole || ""} />
+                      <input className="ue_input" readOnly value={selectedRole || ""} />
                     ) : (
-                      <select
-                        className="ue_input"
-                        style={{ border: "2px solid #cfd5e6" }}
-                        value={selectedRole}
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      >
+                      <select className="ue_input" value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
                         <option value="student">student</option>
                         <option value="Administrador">Administrador</option>
                         <option value="SubAdministrador">SubAdministrador</option>
                         <option value="Validador">Validador</option>
                         <option value="Secretaria">Secretaria</option>
-                        <option value="instituto_cmcsce">instituto_cmcsce</option>
+                        <option value="instituto_ciccenic">instituto_ciccenic</option>
                       </select>
                     )}
                   </label>
@@ -452,43 +526,28 @@ const UserEdit = () => {
                   <label className="ue_label">
                     <span className="ue_span">Género</span>
                     {!userEdit ? (
-                      <input className="ue_input" readOnly style={{ border: "none" }} value={selectedGenero || ""} />
+                      <input className="ue_input" readOnly value={selectedGenero || ""} />
                     ) : (
-                      <select
-                        className="ue_input"
-                        style={{ border: "2px solid #cfd5e6" }}
-                        value={selectedGenero}
-                        onChange={(e) => setSelectedGenero(e.target.value)}
-                      >
+                      <select className="ue_input" value={selectedGenero} onChange={(e) => setSelectedGenero(e.target.value)}>
                         <option value="">Seleccione</option>
-                        {variablesVal?.filter((v) => v.genero).map((g) => (
-                          <option key={g.id} value={g.genero}>
-                            {g.genero}
-                          </option>
+                        {generos.map((item) => (
+                          <option key={item.id} value={item.genero}>{item.genero}</option>
                         ))}
                       </select>
                     )}
                   </label>
                 </article>
 
-                {/* col 3 */}
                 <article className="ue_col">
                   <label className="ue_label">
                     <span className="ue_span">Provincia</span>
                     {!userEdit ? (
-                      <input className="ue_input" readOnly style={{ border: "none" }} value={selectedProvincia || ""} />
+                      <input className="ue_input" readOnly value={selectedProvincia || ""} />
                     ) : (
-                      <select
-                        className="ue_input"
-                        style={{ border: "2px solid #cfd5e6" }}
-                        value={selectedProvincia}
-                        onChange={(e) => handleProvinciaChange(e.target.value)}
-                      >
+                      <select className="ue_input" value={selectedProvincia} onChange={(e) => handleProvinciaChange(e.target.value)}>
                         <option value="">Seleccione</option>
-                        {[...new Set(senpladesVal?.map((e) => e.provincia))].map((prov) => (
-                          <option key={prov} value={prov}>
-                            {prov}
-                          </option>
+                        {provincias.map((provincia) => (
+                          <option key={provincia} value={provincia}>{provincia}</option>
                         ))}
                       </select>
                     )}
@@ -497,19 +556,12 @@ const UserEdit = () => {
                   <label className="ue_label">
                     <span className="ue_span">Ciudad</span>
                     {!userEdit ? (
-                      <input className="ue_input" readOnly style={{ border: "none" }} value={selectedCanton || ""} />
+                      <input className="ue_input" readOnly value={selectedCanton || ""} />
                     ) : (
-                      <select
-                        className="ue_input"
-                        style={{ border: "2px solid #cfd5e6" }}
-                        value={selectedCanton}
-                        onChange={(e) => setSelectedCanton(e.target.value)}
-                      >
+                      <select className="ue_input" value={selectedCanton} onChange={(e) => setSelectedCanton(e.target.value)}>
                         <option value="">Seleccione</option>
-                        {[...new Set(cantonesOption?.map((e) => e.canton))].map((canton) => (
-                          <option key={canton} value={canton}>
-                            {canton}
-                          </option>
+                        {[...new Set(cantonesOption.map((item) => item?.canton).filter(Boolean))].map((canton) => (
+                          <option key={canton} value={canton}>{canton}</option>
                         ))}
                       </select>
                     )}
@@ -518,19 +570,12 @@ const UserEdit = () => {
                   <label className="ue_label">
                     <span className="ue_span">Subsistema</span>
                     {!userEdit ? (
-                      <input className="ue_input" readOnly style={{ border: "none" }} value={selectedSubsistema || ""} />
+                      <input className="ue_input" readOnly value={selectedSubsistema || ""} />
                     ) : (
-                      <select
-                        className="ue_input"
-                        style={{ border: "2px solid #cfd5e6" }}
-                        value={selectedSubsistema}
-                        onChange={(e) => setSelectedSubsistema(e.target.value)}
-                      >
+                      <select className="ue_input" value={selectedSubsistema} onChange={(e) => setSelectedSubsistema(e.target.value)}>
                         <option value="">Seleccione</option>
-                        {variablesVal?.filter((v) => v.subsistema).map((s) => (
-                          <option key={s.id} value={s.subsistema}>
-                            {s.subsistema}
-                          </option>
+                        {subsistemas.map((item) => (
+                          <option key={item.id} value={item.subsistema}>{item.subsistema}</option>
                         ))}
                       </select>
                     )}
@@ -539,19 +584,12 @@ const UserEdit = () => {
                   <label className="ue_label">
                     <span className="ue_span">Grado</span>
                     {!userEdit ? (
-                      <input className="ue_input" readOnly style={{ border: "none" }} value={selectedGrado || ""} />
+                      <input className="ue_input" readOnly value={selectedGrado || ""} />
                     ) : (
-                      <select
-                        className="ue_input"
-                        style={{ border: "2px solid #cfd5e6" }}
-                        value={selectedGrado}
-                        onChange={(e) => setSelectedGrado(e.target.value)}
-                      >
+                      <select className="ue_input" value={selectedGrado} onChange={(e) => setSelectedGrado(e.target.value)}>
                         <option value="">Seleccione</option>
-                        {variablesVal?.filter((v) => v.grado).map((g) => (
-                          <option key={g.id} value={g.grado}>
-                            {g.grado}
-                          </option>
+                        {grados.map((item) => (
+                          <option key={item.id} value={item.grado}>{item.grado}</option>
                         ))}
                       </select>
                     )}
@@ -559,27 +597,24 @@ const UserEdit = () => {
                 </article>
 
                 <div className="ue_footer">
-                  <button className="ue_btnPrimaryFull" type="submit" disabled={!userEdit}>
-                    Guardar cambios <span className="ue_btnArrow">➜</span>
+                  <button className="ue_btnPrimaryFull" type="submit" disabled={!userEdit || isLoadingAuth}>
+                    {isLoadingAuth ? "Guardando..." : "Guardar cambios"}
+                    <span className="ue_btnArrow">➜</span>
                   </button>
                 </div>
-
-
-
               </form>
             </section>
           )}
-
-
         </div>
       </section>
+
       {showDelete && (
         <div className="modal_overlay_user">
           <article className="user_delete_content_2">
             <span>¿Deseas eliminar el registro?</span>
             <section className="btn_content_2">
-              <button className="btn yes" onClick={() => deleteUser(userIdDelete)} type="button">
-                Sí
+              <button className="btn yes" onClick={() => deleteUser(userIdDelete)} type="button" disabled={isLoadingAuth}>
+                {isLoadingAuth ? "Eliminando..." : "Sí"}
               </button>
               <button
                 className="btn no"
@@ -588,6 +623,7 @@ const UserEdit = () => {
                   setUserIdDelete(null);
                 }}
                 type="button"
+                disabled={isLoadingAuth}
               >
                 No
               </button>
